@@ -1,0 +1,42 @@
+package frc.robot.commands.aiming;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.limelight.Limelight;
+import frc.robot.subsystems.limelight.Limelight.AprilTagTarget;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
+
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
+
+import java.util.Optional;
+
+import edu.wpi.first.wpilibj.XboxController;
+
+public class SpeakerAimingCommand extends Command {
+    public SpeakerAimingCommand(
+		SwerveSubsystem swerveSubsystem,
+		XboxController drivController
+	) {
+		
+    }
+
+    @Override
+	public void initialize() {
+		
+    }
+
+    @Override
+	public void execute() {
+		if (Limelight.getTarget().isEmpty())
+			return;
+		//double targetAngle = Limelight.getTarget()
+		//<Optional>AprilTagTarget aprilTagTarget = Optional<T>.of(Limelight.getTarget());
+		<Optional>AprilTagTarget aprilTagTarget = Optional.empty();
+
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        
+    }
+}
