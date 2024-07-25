@@ -18,6 +18,8 @@ import frc.robot.a.TunableNumber;
 import static edu.wpi.first.units.Units.*;
 
 public class Constants {
+	public static final boolean TUNING = true;
+
 	public class RobotConstants {
 	
 		public static String CAN_BUS_NAME = "6941CANivore1";

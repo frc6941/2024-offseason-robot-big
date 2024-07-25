@@ -63,7 +63,6 @@ public class ControllerDriveCommand extends Command {
 		// Constants.SwerveDrivetrian.modules[2] = Constants.SwerveDrivetrian.BackLeft;
 		// Constants.SwerveDrivetrian.modules[3] = Constants.SwerveDrivetrian.BackLeft;
 
-
 		//Process the inputs to prevent too high speed/change rate
 		double toApplyX = VelocityX.get();
 		toApplyX = Utils.sign(-toApplyX)
