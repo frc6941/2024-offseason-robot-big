@@ -1,8 +1,7 @@
 package org.frcteam6941.control;
 
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
-import com.pathplanner.lib.server.PathPlannerServer;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.path.PathPlannerTrajectory.State;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -16,7 +15,7 @@ public class HolonomicTrajectoryFollower extends PathPlannerTrajectoryFollowerBa
     private final ProfiledPIDController thetaController;
     private final SimpleMotorFeedforward feedforward;
 
-    private PathPlannerTrajectory.PathPlannerState lastState = null;
+    private State lastState = null;
     private Pose2d actualPose = null;
 
     private boolean finished = false;
@@ -55,38 +54,38 @@ public class HolonomicTrajectoryFollower extends PathPlannerTrajectoryFollowerBa
 
         actualPose = currentPose;
 
-        lastState = (PathPlannerState) trajectory.sample(time);
-        double x = xController.calculate(currentPose.getX(), lastState.poseMeters.getX());
-        double y = yController.calculate(currentPose.getY(), lastState.poseMeters.getY());
+        lastState = (State) trajectory.sample(time);
+        double x = xController.calculate(currentPose.getX(), lastState.positionMeters.getX());
+        double y = yController.calculate(currentPose.getY(), lastState.positionMeters.getY());
         double rotation = 0.0;
         Translation2d translationVector = new Translation2d(x, y);
 
-        
         if (this.lastState != null) {
-            Translation2d targetDisplacement = lastState.poseMeters.getTranslation()
-                    .minus(this.lastState.poseMeters.getTranslation());
-            double feedForwardGain = feedforward.calculate(lastState.velocityMetersPerSecond,
-                    lastState.accelerationMetersPerSecondSq) / 12.0;
+            Translation2d targetDisplacement = lastState.positionMeters
+                    .minus(this.lastState.positionMeters);
+            double feedForwardGain = feedforward.calculate(lastState.velocityMps,
+                    lastState.accelerationMpsSq) / 12.0;
 
             if (targetDisplacement.getNorm() != 0.00) { // Prevent NaN cases
-                Translation2d feedForwardVector = targetDisplacement.times(feedForwardGain / targetDisplacement.getNorm());
+                Translation2d feedForwardVector = targetDisplacement
+                        .times(feedForwardGain / targetDisplacement.getNorm());
                 translationVector = translationVector.plus(feedForwardVector);
             }
         }
 
         if (this.lockAngle) {
-            rotation = this.thetaController.calculate(currentPose.getRotation().getDegrees(), lastState.holonomicRotation.getDegrees());
+            rotation = this.thetaController.calculate(currentPose.getRotation().getDegrees(),
+                    lastState.targetHolonomicRotation.getDegrees());
         }
 
         return new HolonomicDriveSignal(
                 translationVector,
                 rotation,
                 true,
-                false
-        );
+                false);
     }
 
-    public PathPlannerTrajectory.PathPlannerState getLastState() {
+    public State getLastState() {
         return lastState;
     }
 
@@ -113,10 +112,11 @@ public class HolonomicTrajectoryFollower extends PathPlannerTrajectoryFollowerBa
     }
 
     public void sendData() {
-        if (isPathFollowing()) {
-            PathPlannerServer.sendActivePath(getCurrentTrajectory().get().getStates());
-            PathPlannerServer.sendPathFollowingData(new Pose2d(lastState.poseMeters.getTranslation(), lastState.holonomicRotation), actualPose);
-        }
+        // if (isPathFollowing()) {
+        //     PathPlannerServer.sendActivePath(getCurrentTrajectory().get().getStates());
+        //     PathPlannerServer.sendPathFollowingData(
+        //             new Pose2d(lastState.positionMeters.getTranslation(), lastState.holonomicRotation), actualPose);
+        // }
     }
 
     @Override

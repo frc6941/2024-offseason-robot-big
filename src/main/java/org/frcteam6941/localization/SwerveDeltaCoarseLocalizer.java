@@ -1,11 +1,8 @@
 package org.frcteam6941.localization;
 
 import edu.wpi.first.math.MatBuilder;
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import frc.robot.Constants;
 import lombok.Synchronized;
 import org.frcteam6941.utils.InterpolatingTreeMap;
@@ -16,7 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.Timer;
 
 public class SwerveDeltaCoarseLocalizer implements Localizer {
@@ -44,7 +41,7 @@ public class SwerveDeltaCoarseLocalizer implements Localizer {
     private final Object statusLock = new Object();
 
     public SwerveDeltaCoarseLocalizer(SwerveDriveKinematics kinematics, int poseBufferSize, int velocityBufferSize,
-                                int accelerationBufferSize) {
+                                int accelerationBufferSize, SwerveModulePosition[] initPosition) {
         this.poseBufferSize = poseBufferSize;
         this.velocityBufferSize = velocityBufferSize;
         this.accelerationBufferSize = accelerationBufferSize;
@@ -59,21 +56,16 @@ public class SwerveDeltaCoarseLocalizer implements Localizer {
         vehicleVelocityMeasuredFilter.add(new Pose2d());
         vehicleAccelerationMeasuredFilter.add(new Pose2d());
 
-        swerveOdometry = new SwerveDriveOdometry(kinematics, new Rotation2d(), new Pose2d());
-        poseEstimator = new SwerveDrivePoseEstimator(new Rotation2d(), new Pose2d(), kinematics,
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.01, 0.01, 0.001), // State Error
-                new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.001), // Encoder Error
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.03, 0.03, 0.001), // Vision Error,
-                Constants.LOOPER_DT);
-
+        swerveOdometry = new SwerveDriveOdometry(kinematics, new Rotation2d(), initPosition);
+        poseEstimator = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), initPosition, new Pose2d());
     }
 
     public synchronized Pose2d updateWithTime(double time, double dt, Rotation2d gyroAngle,
-                                              SwerveModuleState[] moduleStates) {
+                                              SwerveModulePosition[] moduleStates) {
         dt = Constants.LOOPER_DT;
         synchronized (statusLock) {
             // Get pose from kinematics update
-            Pose2d pose = swerveOdometry.updateWithTime(time, gyroAngle, moduleStates);
+            Pose2d pose = swerveOdometry.update(gyroAngle, moduleStates);
             poseEstimator.updateWithTime(time, gyroAngle, moduleStates);
 
             // First, get the displacement
@@ -213,11 +205,10 @@ public class SwerveDeltaCoarseLocalizer implements Localizer {
         }
     }
 
-    @Override
-    public synchronized void reset(Pose2d resetPose) {
+    public synchronized void reset(Pose2d resetPose, SwerveModulePosition[] modulePositions) {
         synchronized (statusLock) {
-            swerveOdometry.resetPosition(resetPose, resetPose.getRotation());
-            poseEstimator.resetPosition(resetPose, resetPose.getRotation());
+            swerveOdometry.resetPosition(resetPose.getRotation(), modulePositions, resetPose);
+            poseEstimator.resetPosition(resetPose.getRotation(), modulePositions, resetPose);
             previousPose = null;
             fieldToVehicle = new InterpolatingTreeMap<Double, Pose2d>(poseBufferSize);
             fieldToVehicle.put(Timer.getFPGATimestamp(), resetPose);

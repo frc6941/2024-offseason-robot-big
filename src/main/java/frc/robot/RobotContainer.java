@@ -4,59 +4,43 @@
 
 package frc.robot;
 
+import org.frcteam6941.looper.UpdateManager;
+
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.commands.swerve.ControllerDriveCommand;
-import frc.robot.commands.swerve.SetFieldCentricCommand;
-import frc.robot.commands.swerve.SwerveDrivetrainSpinCommand;
-import frc.robot.subsystems.swerve.SwerveSubsystem;
-//import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.swerve.Swerve;
+import lombok.Getter;
 
 public class RobotContainer {
-	//Define the subsystems and configure them in detail in configureSubsystems()
-	SwerveSubsystem swerveSubsystem;
+	Swerve swerve = Swerve.getInstance();
+
+	@Getter
+	private UpdateManager updateManager;
+
+	CommandXboxController driverController = new CommandXboxController(0);
 
 	public RobotContainer() {
-		configureSubsystems();
-		System.out.println("Subsystems Init Completed!");
+		updateManager = new UpdateManager(
+				swerve);
+		updateManager.registerAll();
+
 		configureBindings();
 		System.out.println("Init Completed!");
 	}
 
-	/** Every subsystem should be defined here */
-	private void configureSubsystems() {
-		swerveSubsystem = new SwerveSubsystem(
-				Constants.SwerveDrivetrian.DrivetrainConstants, 
-				Constants.SwerveDrivetrian.modules);	
-	}
-
 	/** Bind controller keys to commands */
-	private void configureBindings() 
-	{
-		//SuerveSubsystem
-		//Driving follow the controller in field centric mode
-		//Drive mode 1
-		// swerveSubsystem.setDefaultCommand(
-		// 	new ControllerDriveCommand(
-		// 			swerveSubsystem,
-		// 			() -> Constants.RobotConstants.driverController.getLeftY(),
-		// 			() -> Constants.RobotConstants.driverController.getLeftX(),
-		// 			() -> Constants.RobotConstants.driverController.getRightX()));
-		//Drive mode 2			
-		swerveSubsystem.setDefaultCommand(
-			new ControllerDriveCommand(
-					swerveSubsystem,
-					() -> Constants.RobotConstants.driverController.getLeftY(),
-					() -> Constants.RobotConstants.driverController.getRightX(),
-					() -> Constants.RobotConstants.driverController.getRightTriggerAxis()
-					- Constants.RobotConstants.driverController.getLeftTriggerAxis()));
-		//Press start to change the center of the field
-		Constants.RobotConstants.driverController.start()
-				.onTrue(new SetFieldCentricCommand(swerveSubsystem));
-		//Press A to trun 45 degrees in clockwise
-		Constants.RobotConstants.driverController.a()
-				.onTrue(new SwerveDrivetrainSpinCommand(swerveSubsystem, 45.0));
-
+	private void configureBindings() {
+		swerve.setDefaultCommand(Commands
+				.runOnce(() -> swerve.drive(
+						new Translation2d(
+								driverController.getLeftY(),
+								driverController.getLeftX()),
+						driverController.getRightX(),
+						true,
+						false),
+						swerve));
 	}
 
 	public Command getAutonomousCommand() {

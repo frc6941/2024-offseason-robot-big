@@ -1,6 +1,6 @@
 package org.frcteam6941.drivers;
 
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -16,12 +16,10 @@ public class Pigeon2Gyro implements Gyro {
 
     public Pigeon2Gyro(int port) {        
         mGyro = new Pigeon2(port, "");
-        mGyro.configFactoryDefault();
     }
 
     public Pigeon2Gyro(int port, String canbus) {
         mGyro = new Pigeon2(port, canbus);
-        mGyro.configFactoryDefault();
     }
 
     @Override
@@ -78,26 +76,24 @@ public class Pigeon2Gyro implements Gyro {
     }
 
     public Rotation2d getUnadjustedYaw() {
-        return Rotation2d.fromDegrees(mGyro.getYaw());
+        return Rotation2d.fromDegrees(mGyro.getYaw().getValueAsDouble());
     }
 
     public Rotation2d getUnadjustedPitch() {
-        return Rotation2d.fromDegrees(mGyro.getPitch());
+        return Rotation2d.fromDegrees(mGyro.getPitch().getValueAsDouble());
     }
 
     public Rotation2d getUnadjustedRoll() {
-        return Rotation2d.fromDegrees(mGyro.getRoll());
+        return Rotation2d.fromDegrees(mGyro.getRoll().getValueAsDouble());
     }
 
     public double getYawAngularVelocity() {
-        double[] xyz_dps = new double[] {0.0, 0.0, 0.0};
-        mGyro.getRawGyro(xyz_dps);
-        return xyz_dps[2];
+        return  mGyro.getAngularVelocityYWorld().getValueAsDouble();
     }
     @Override
     public double[] getRaw() {
         double[] xyz_dps = new double[] {0.0, 0.0, 0.0};
-        mGyro.getRawGyro(xyz_dps);
+        // mGyro.getRawGyro(xyz_dps);
         return xyz_dps;
     }
 }

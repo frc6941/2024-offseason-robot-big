@@ -18,5 +18,4 @@ public interface Localizer {
     double getDistanceDriven();
 
     void addMeasurement(double time, Pose2d measuredDelta, Pose2d stdDeviation);
-    void reset(Pose2d resetPose);
 }
