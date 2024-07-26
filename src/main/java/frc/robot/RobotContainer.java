@@ -39,8 +39,9 @@ public class RobotContainer {
 				.runOnce(() -> swerve.drive(
 						new Translation2d(
 								driverController.getLeftY()*Constants.SwerveDrivetrian.maxSpeed.magnitude(),
-								driverController.getLeftX()*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
-						driverController.getRightX(),
+								driverController.getRightX()*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
+						Constants.RobotConstants.driverController.getRightTriggerAxis()
+						- Constants.RobotConstants.driverController.getLeftTriggerAxis(),
 						true,
 						true),
 						swerve));
