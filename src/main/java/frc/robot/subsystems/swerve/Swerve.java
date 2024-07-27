@@ -35,6 +35,7 @@ import org.frcteam6941.looper.Updatable;
 import org.frcteam6941.swerve.*;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 import org.frcteam6941.utils.AngleNormalization;
+import frc.robot.Robot;
 
 import java.util.Optional;
 
@@ -153,6 +154,7 @@ public class Swerve implements Updatable, Subsystem {
         swerveLocalizer.updateWithTime(time, dt, gyro.getYaw(), getModulePositions());
     }
 
+	//int cnt = 0;//TODO delete
     /**
      * Core method to update swerve modules according to the
      * {@link HolonomicDriveSignal} given.
@@ -166,16 +168,21 @@ public class Swerve implements Updatable, Subsystem {
         if (driveSignal == null) {
             desiredChassisSpeed = new ChassisSpeeds(0.0, 0.0, 0.0);
             driveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
-        } else {
-            double x = driveSignal.getTranslation().getX();
-            double y = driveSignal.getTranslation().getY();
-            double rotation = driveSignal.getRotation();
-            Rotation2d robotAngle = swerveLocalizer.getLatestPose().getRotation();
+		} else {
+			double x = driveSignal.getTranslation().getX();
+			double y = driveSignal.getTranslation().getY();
+			double rotation = driveSignal.getRotation();
+			Rotation2d robotAngle = swerveLocalizer.getLatestPose().getRotation();
 
-            if (driveSignal.isFieldOriented())
-                desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, robotAngle);
-            else desiredChassisSpeed = new ChassisSpeeds(x, y, rotation);
-        }
+			if (driveSignal.isFieldOriented())
+				desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, robotAngle);
+			else
+				desiredChassisSpeed = new ChassisSpeeds(x, y, rotation);
+		}
+
+		// if (Robot.timer.Output()) {
+		// 	System.out.println(desiredChassisSpeed.omegaRadiansPerSecond);
+		// }
 
         Twist2d twist = new Pose2d().log(new Pose2d(
                         new Translation2d(
@@ -195,10 +202,15 @@ public class Swerve implements Updatable, Subsystem {
         setpoint = generator.generateSetpoint(
                 kinematicLimits, previousSetpoint, desiredChassisSpeed, dt);
         previousSetpoint = setpoint;
+		//cnt++; //TODO delete
         for (SwerveModuleBase mod : swerveMods) {
             //System.out.println(setpoint.mModuleStates[mod.getModuleNumber()]);//add
 			mod.setDesiredState(setpoint.mModuleStates[mod.getModuleNumber()], driveSignal.isOpenLoop(), false);
-        }
+			//testing and printing module status
+			//if (cnt%50 == 0) System.out.println(mod.getState());
+		}
+			//speed output
+    
     }
 
     @Synchronized
@@ -227,7 +239,14 @@ public class Swerve implements Updatable, Subsystem {
      * @param isFieldOriented       Is the drive signal field oriented.
      */
     public void drive(Translation2d translationalVelocity, double rotationalVelocity,
-                      boolean isFieldOriented, boolean isOpenLoop) {
+			boolean isFieldOriented, boolean isOpenLoop) {
+		if (Math.hypot(translationalVelocity.getX(), translationalVelocity.getY()) 
+					< Constants.SwerveDrivetrian.deadband) {
+			translationalVelocity = new Translation2d(0, 0);
+		}
+		if (Math.abs(rotationalVelocity) < Constants.SwerveDrivetrian.rotationalDeadband) {
+			rotationalVelocity = 0;
+		}
         driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented, isOpenLoop);
     }
 

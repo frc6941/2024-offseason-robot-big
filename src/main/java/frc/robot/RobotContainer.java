@@ -35,14 +35,26 @@ public class RobotContainer {
 
 	/** Bind controller keys to commands */
 	private void configureBindings() {
+		//Drive mode 1
+		// swerve.setDefaultCommand(Commands
+		// 		.runOnce(() -> swerve.drive(
+		// 				new Translation2d(
+		// 						-driverController.getLeftY()*Constants.SwerveDrivetrian.maxSpeed.magnitude(),
+		// 						-driverController.getLeftX()*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
+		// 				-Constants.RobotConstants.driverController.getRightX(),
+		// 				true,
+		// 				true),
+		// 				swerve));
+		//Drive mode 2
 		swerve.setDefaultCommand(Commands
 				.runOnce(() -> swerve.drive(
 						new Translation2d(
-								driverController.getLeftY()*Constants.SwerveDrivetrian.maxSpeed.magnitude(),
-								driverController.getRightX()*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
-						Constants.RobotConstants.driverController.getRightTriggerAxis()
-						- Constants.RobotConstants.driverController.getLeftTriggerAxis(),
-						true,
+								- driverController.getLeftY()*Constants.SwerveDrivetrian.maxSpeed.magnitude(),
+								- driverController.getRightX()*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
+						(Constants.RobotConstants.driverController.getRightTriggerAxis()
+								- Constants.RobotConstants.driverController.getLeftTriggerAxis())
+								* Constants.SwerveDrivetrian.maxAngularRate.magnitude(),
+						false,
 						true),
 						swerve));
 		driverController.start().onTrue(Commands.runOnce(() -> {

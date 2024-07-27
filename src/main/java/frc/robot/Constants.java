@@ -25,6 +25,7 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.a.TunableNumber;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 
 public class Constants {
 	public static final boolean TUNING = true;
@@ -50,7 +51,7 @@ public class Constants {
 				.withPigeon2Configs(null); // optional
 
 		/** The max speed of the swerve (should not larger than speedAt12Volts) */
-		public static final Measure<Velocity<Distance>> maxSpeed = MetersPerSecond.of(1);
+		public static final Measure<Velocity<Distance>> maxSpeed = MetersPerSecond.of(6);
 		/** The max turning speed of the swerve */
 		public static final Measure<Velocity<Angle>> maxAngularRate = RotationsPerSecond.of(1.5 * Math.PI);
 
@@ -73,11 +74,20 @@ public class Constants {
 
 		public static class steerGainsClass {
 			public static final TunableNumber STEER_KP = new TunableNumber("STEER PID/kp", 120);
-			public static final TunableNumber STEER_KD = new TunableNumber("STEER PID/kd", 0.2);
-			public static final TunableNumber STEER_KI = new TunableNumber("STEER PID/ki", 0.005);
+			public static final TunableNumber STEER_KI = new TunableNumber("STEER PID/ki", 0.2);
+			public static final TunableNumber STEER_KD = new TunableNumber("STEER PID/kd", 0.005);
 			public static final TunableNumber STEER_KA = new TunableNumber("STEER PID/ka", 0);
 			public static final TunableNumber STEER_KV = new TunableNumber("STEER PID/kv", 0);
 			public static final TunableNumber STEER_KS = new TunableNumber("STEER PID/ks", 0);
+		}
+
+		public static class driveGainsClass {
+			public static final TunableNumber DRIVE_KP = new TunableNumber("DRIVE PID/kp", 0.03);
+			public static final TunableNumber DRIVE_KI = new TunableNumber("DRIVE PID/ki", 0);
+			public static final TunableNumber DRIVE_KD = new TunableNumber("DRIVE PID/kd", 0);
+			public static final TunableNumber DRIVE_KA = new TunableNumber("DRIVE PID/ka", 0);
+			public static final TunableNumber DRIVE_KV = new TunableNumber("DRIVE PID/kv", 0.12);
+			public static final TunableNumber DRIVE_KS = new TunableNumber("DRIVE PID/ks", 0);
 		}
 
 		/** Swerve steering gains */
@@ -91,7 +101,7 @@ public class Constants {
 
 		/** Swerve driving gains */
 		private static final Slot0Configs driveGains = new Slot0Configs()
-				.withKP(0.03)//0.3
+				.withKP(1)//0.3
 				.withKI(0)
 				.withKD(0)
 				.withKS(0)

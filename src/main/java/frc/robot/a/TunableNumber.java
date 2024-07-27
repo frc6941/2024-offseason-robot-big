@@ -21,7 +21,7 @@ public class TunableNumber {
 	 * @param dashboardKey Key on dashboard
 	 */
 	public TunableNumber(String dashboardKey) {
-		this.key = tableKey + "/" + dashboardKey;
+		this.key = /*tableKey + "/" +*/ dashboardKey;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class TunableNumber {
 	 */
 	public double get() {
 		return TUNING ? SmartDashboard.getNumber(key, defaultValue)
-			: defaultValue;
+				: defaultValue;
 		//return SmartDashboard.getNumber(key, 1234);
 	}
 

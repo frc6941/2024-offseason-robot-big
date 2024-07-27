@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.a.Timer;
 
 public class Robot extends TimedRobot {
+	// public static Timer timer;
 	private Command m_autonomousCommand;
 	
 	//CTRESwerveModule FL = new CTRESwerveModule(0, Constants.SwerveDrivetrian.FrontLeft, Constants.RobotConstants.CAN_BUS_NAME);
@@ -34,6 +36,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotPeriodic() {
+		// timer.UpdateTimer();
 		CommandScheduler.getInstance().run();
 		robotContainer.getUpdateManager().runEnableSingle();
 	}
@@ -82,7 +85,7 @@ public class Robot extends TimedRobot {
 		// 		new Rotation2d(driverController.getRightX() * 2 * Math.PI)),
 		// 		true,
 		// 		false);
-		System.out.println(Swerve.getInstance().getLocalizer().getLatestPose().getRotation());
+		//System.out.println(Swerve.getInstance().getLocalizer().getLatestPose().getRotation());
 	}
 
 	@Override
