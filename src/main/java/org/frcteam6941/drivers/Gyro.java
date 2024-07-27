@@ -10,5 +10,5 @@ public interface Gyro {
 
     void setYaw(double angle);
     void setPitch(double angle);
-    void setRoll(double angle);
+	void setRoll(double angle);
 }

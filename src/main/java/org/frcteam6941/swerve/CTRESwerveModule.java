@@ -13,8 +13,8 @@ import frc.robot.a.TunableNumber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CTRESwerveModule implements SwerveModuleBase {
-	edu.wpi.first.math.geometry.Rotation2d angleLowSpeed = new edu.wpi.first.math.geometry.Rotation2d(0, 0);
-	boolean lowSpeed = false;
+	// edu.wpi.first.math.geometry.Rotation2d angleLowSpeed = new edu.wpi.first.math.geometry.Rotation2d(0, 0);
+	// boolean lowSpeed = false;
 	public CTRESwerveModule(int id, SwerveModuleConstants constants, String canbusName) {
         moduleNumber = id;
         module = new SwerveModule(constants, canbusName);
@@ -41,8 +41,9 @@ public class CTRESwerveModule implements SwerveModuleBase {
         SwerveModulePosition pos = module.getPosition(true);
  	}
 
+	// int cnt = 0;
     @Override
-    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, boolean overrideMotion) {
+	public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, boolean overrideMotion) {
 		module.getSteerMotor().getConfigurator().apply(new Slot0Configs()
 				.withKP(Constants.SwerveDrivetrian.steerGainsClass.STEER_KP.get())
 				.withKI(Constants.SwerveDrivetrian.steerGainsClass.STEER_KI.get())
@@ -57,16 +58,16 @@ public class CTRESwerveModule implements SwerveModuleBase {
 				.withKA(Constants.SwerveDrivetrian.driveGainsClass.DRIVE_KA.get())
 				.withKV(Constants.SwerveDrivetrian.driveGainsClass.DRIVE_KV.get())
 				.withKS(Constants.SwerveDrivetrian.driveGainsClass.DRIVE_KS.get()));
-		if (desiredState.speedMetersPerSecond < 0.01 * Constants.SwerveDrivetrian.maxSpeed.magnitude()) {
-			if (!lowSpeed) {
-				angleLowSpeed = desiredState.angle;
-				lowSpeed = true;
-			}
-			desiredState.angle = angleLowSpeed;
-		}
-		else if (lowSpeed) {
-			lowSpeed = false;
-		}
+		// if (Math.abs(desiredState.speedMetersPerSecond) <= 0.15 * Constants.SwerveDrivetrian.maxSpeed.magnitude()) { 
+		// 	if (!lowSpeed) {
+		// 		angleLowSpeed = desiredState.angle;
+		// 		lowSpeed = true;
+		// 	}
+		// 	desiredState.angle = angleLowSpeed;
+		// }
+		// else if (lowSpeed) {
+		// 	lowSpeed = false;
+		// }
 		
 		module.apply(desiredState, isOpenLoop ? DriveRequestType.OpenLoopVoltage : DriveRequestType.Velocity);
 		// System.out.println(moduleNumber + " = " + desiredState.speedMetersPerSecond + " = "
@@ -76,7 +77,10 @@ public class CTRESwerveModule implements SwerveModuleBase {
 		SmartDashboard.putString("Drive Motor Voltage", module.getDriveMotor().getMotorVoltage());
 		SmartDashboard.putNumber("Steer Motor Voltage", module.getSteerMotor().getMotorVoltage());
 		*/
-
+		// cnt++;
+		// if (cnt % 50 == 0) {
+		// 	System.out.println(desiredState.speedMetersPerSecond);
+		// }
     }
 
 

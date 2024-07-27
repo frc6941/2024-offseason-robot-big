@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class Pigeon2Gyro implements Gyro {
     // Actual pigeon object
-    private final Pigeon2 mGyro;
+    public final Pigeon2 mGyro;
 
     // Configs
     private boolean inverted = false;
@@ -23,9 +23,10 @@ public class Pigeon2Gyro implements Gyro {
     }
 
     @Override
-    public Rotation2d getYaw() {
-        Rotation2d angle = getUnadjustedYaw().minus(yawAdjustmentAngle);
-        if (inverted) {
+	public Rotation2d getYaw() {
+		Rotation2d angle = getUnadjustedYaw().minus(yawAdjustmentAngle);
+		angle.getDegrees();
+		if (inverted) {
             return angle.unaryMinus();
         }
         return angle;
@@ -47,8 +48,10 @@ public class Pigeon2Gyro implements Gyro {
      * @param angleDeg New yaw in degrees
      */
     @Override
-    public void setYaw(double angleDeg) {
-        yawAdjustmentAngle = getUnadjustedYaw().rotateBy(Rotation2d.fromDegrees(angleDeg).unaryMinus());
+	public void setYaw(double angleDeg) {
+		//yawAdjustmentAngle = getUnadjustedYaw().rotateBy(Rotation2d.fromDegrees(angleDeg).unaryMinus());
+		yawAdjustmentAngle = Rotation2d.fromDegrees(angleDeg);
+		System.out.println(yawAdjustmentAngle);
     }
 
     /**

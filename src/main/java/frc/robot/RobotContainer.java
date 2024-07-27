@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import org.frcteam6941.drivers.Gyro;
 import org.frcteam6941.looper.UpdateManager;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -16,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
+
+import org.frcteam6941.drivers.Pigeon2Gyro;
 
 public class RobotContainer {
 	Swerve swerve = Swerve.getInstance();
@@ -51,15 +54,18 @@ public class RobotContainer {
 						new Translation2d(
 								- driverController.getLeftY()*Constants.SwerveDrivetrian.maxSpeed.magnitude(),
 								- driverController.getRightX()*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
-						(Constants.RobotConstants.driverController.getRightTriggerAxis()
-								- Constants.RobotConstants.driverController.getLeftTriggerAxis())
+						(-Constants.RobotConstants.driverController.getRightTriggerAxis()
+								+ Constants.RobotConstants.driverController.getLeftTriggerAxis())
 								* Constants.SwerveDrivetrian.maxAngularRate.magnitude(),
-						false,
+						true,
 						true),
 						swerve));
 		driverController.start().onTrue(Commands.runOnce(() -> {
-				Translation2d a = swerve.getLocalizer().getLatestPose().getTranslation();
-				Pose2d b = new Pose2d(a, new edu.wpi.first.math.geometry.Rotation2d());
+			//Pigeon2 mPigeon2 = new Pigeon2(Constants.SwerveDrivetrian.PIGEON_ID, Constants.RobotConstants.CAN_BUS_NAME);
+			edu.wpi.first.math.geometry.Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();//new edu.wpi.first.math.geometry.Rotation2d(mPigeon2.getYaw().getValueAsDouble());
+			//swerve.getGyro().getYaw().;//.getLocalizer().getLatestPose().getRotation();
+				System.out.println("A = " + a);
+				Pose2d b = new Pose2d(new Translation2d(0,0), a);
 				swerve.resetPose(b);}));
 	}
 

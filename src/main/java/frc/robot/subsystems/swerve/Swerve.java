@@ -36,8 +36,8 @@ import org.frcteam6941.swerve.*;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 import org.frcteam6941.utils.AngleNormalization;
 import frc.robot.Robot;
-
 import java.util.Optional;
+import org.checkerframework.checker.units.qual.s;
 
 /**
  * Rectangular Swerve Drivetrain.
@@ -79,7 +79,6 @@ public class Swerve implements Updatable, Subsystem {
     private final double headingKp = 0.015000;
     private final double headingKi = 0.000070;
     private final double headingKd = 0.002000;
-
 
     // Logging
     private final NetworkTable dataTable = NetworkTableInstance.getDefault().getTable("Swerve");
@@ -163,8 +162,8 @@ public class Swerve implements Updatable, Subsystem {
      * @param dt          Delta time between updates.
      */
     private void updateModules(HolonomicDriveSignal driveSignal, double dt) {
-        ChassisSpeeds desiredChassisSpeed;
-
+		ChassisSpeeds desiredChassisSpeed;
+		
         if (driveSignal == null) {
             desiredChassisSpeed = new ChassisSpeeds(0.0, 0.0, 0.0);
             driveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
@@ -179,7 +178,7 @@ public class Swerve implements Updatable, Subsystem {
 			else
 				desiredChassisSpeed = new ChassisSpeeds(x, y, rotation);
 		}
-
+		//if(cnt % 50 ==0) System.out.println("Chassis Y" + desiredChassisSpeed.vyMetersPerSecond);
 		// if (Robot.timer.Output()) {
 		// 	System.out.println(desiredChassisSpeed.omegaRadiansPerSecond);
 		// }
@@ -197,18 +196,38 @@ public class Swerve implements Updatable, Subsystem {
         desiredChassisSpeed = new ChassisSpeeds(
                 twist.dx / Constants.LOOPER_DT,
                 twist.dy / Constants.LOOPER_DT,
-                twist.dtheta / Constants.LOOPER_DT);
-
+				twist.dtheta / Constants.LOOPER_DT);
+				
         setpoint = generator.generateSetpoint(
                 kinematicLimits, previousSetpoint, desiredChassisSpeed, dt);
-        previousSetpoint = setpoint;
+		previousSetpoint = setpoint;
+		// if (Math.abs(setpoint.mModuleStates[0].speedMetersPerSecond) < Constants.SwerveDrivetrian.deadband*2) {
+		// 	if (!lowSpeed) {
+		// 		for (int i = 0; i < 4; i++) {
+		// 			lowSpeedAngle[i] = setpoint.mModuleStates[i].angle;
+		// 		}
+		// 		lowSpeed = true;
+		// 	} else {
+		// 		for (int i = 0; i < 4; i++) {
+		// 			setpoint.mModuleStates[i].angle = lowSpeedAngle[i];
+		// 		}
+		// 	}
+		// } else if (lowSpeed) {
+		// 	lowSpeed = false;
+		// }
 		//cnt++; //TODO delete
-        for (SwerveModuleBase mod : swerveMods) {
-            //System.out.println(setpoint.mModuleStates[mod.getModuleNumber()]);//add
+		for (SwerveModuleBase mod : swerveMods) {
+			//System.out.println(setpoint.mModuleStates[mod.getModuleNumber()]);//add
 			mod.setDesiredState(setpoint.mModuleStates[mod.getModuleNumber()], driveSignal.isOpenLoop(), false);
 			//testing and printing module status
-			//if (cnt%50 == 0) System.out.println(mod.getState());
+			// if (cnt % 50 == 0) {
+			// 	System.out.println(setpoint.mModuleStates[mod.getModuleNumber()].angle);
+			// }
 		}
+		// if (cnt % 50 == 0) {
+		// 	System.out.println("Vx = " + setpoint.mChassisSpeeds.vxMetersPerSecond + "Vy = " + setpoint.mChassisSpeeds.vyMetersPerSecond);					
+		// 	System.out.println();
+		// }
 			//speed output
     
     }
@@ -240,15 +259,23 @@ public class Swerve implements Updatable, Subsystem {
      */
     public void drive(Translation2d translationalVelocity, double rotationalVelocity,
 			boolean isFieldOriented, boolean isOpenLoop) {
-		if (Math.hypot(translationalVelocity.getX(), translationalVelocity.getY()) 
-					< Constants.SwerveDrivetrian.deadband) {
-			translationalVelocity = new Translation2d(0, 0);
+		// if (Math.hypot(translationalVelocity.getX(), translationalVelocity.getY()) 
+		// 		< Constants.SwerveDrivetrian.deadband) {
+		// 	translationalVelocity = new Translation2d(0, 0);
+		// }
+		if (Math.abs(translationalVelocity.getX()) 
+				< Constants.SwerveDrivetrian.deadband) {
+			translationalVelocity = new Translation2d(0, translationalVelocity.getY());
+		}
+		if (Math.abs(translationalVelocity.getY()) 
+				< Constants.SwerveDrivetrian.deadband) {
+			translationalVelocity = new Translation2d(translationalVelocity.getX(), 0);
 		}
 		if (Math.abs(rotationalVelocity) < Constants.SwerveDrivetrian.rotationalDeadband) {
 			rotationalVelocity = 0;
 		}
-        driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented, isOpenLoop);
-    }
+		driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented, isOpenLoop);
+	}
 
     public void brake() {
         setState(State.BRAKE);
@@ -281,11 +308,13 @@ public class Swerve implements Updatable, Subsystem {
         kinematicLimits = limit;
     }
 
-    public void resetPose(Pose2d resetPose) {
-        gyro.setYaw(resetPose.getRotation().getDegrees());
+	public void resetPose(Pose2d resetPose) {
+		gyro.setYaw(resetPose.getRotation().getDegrees());
+		//System.out.println(resetPose.getRotation().getDegrees());
+		//System.out.println(gyro.getYaw().getDegrees());
         swerveLocalizer.reset(resetPose, getModulePositions());
     }
-
+	
     /**
      * Set the state of the module independently.
      *
