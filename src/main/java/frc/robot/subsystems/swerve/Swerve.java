@@ -13,7 +13,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -23,7 +22,6 @@ import frc.robot.Constants;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
-import org.frcteam6328.utils.TunableNumber;
 import org.frcteam6941.control.HolonomicDriveSignal;
 import org.frcteam6941.control.HolonomicTrajectoryFollower;
 import org.frcteam6941.drivers.DummyGyro;
@@ -35,9 +33,7 @@ import org.frcteam6941.looper.Updatable;
 import org.frcteam6941.swerve.*;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 import org.frcteam6941.utils.AngleNormalization;
-import frc.robot.Robot;
 import java.util.Optional;
-import org.checkerframework.checker.units.qual.s;
 
 /**
  * Rectangular Swerve Drivetrain.
@@ -219,6 +215,7 @@ public class Swerve implements Updatable, Subsystem {
 		for (SwerveModuleBase mod : swerveMods) {
 			//System.out.println(setpoint.mModuleStates[mod.getModuleNumber()]);//add
 			mod.setDesiredState(setpoint.mModuleStates[mod.getModuleNumber()], driveSignal.isOpenLoop(), false);
+			SmartDashboard.putNumber(String.valueOf(mod.getModuleNumber())+"testaa", setpoint.mModuleStates[mod.getModuleNumber()].speedMetersPerSecond);
 			//testing and printing module status
 			// if (cnt % 50 == 0) {
 			// 	System.out.println(setpoint.mModuleStates[mod.getModuleNumber()].angle);

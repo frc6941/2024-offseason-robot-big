@@ -10,7 +10,7 @@ public class Pigeon2Gyro implements Gyro {
 
     // Configs
     private boolean inverted = false;
-    private Rotation2d yawAdjustmentAngle = new Rotation2d();
+    private Rotation2d yawAdjustmentAngle = new Rotation2d(0);
     private Rotation2d rollAdjustmentAngle = new Rotation2d();
     private Rotation2d pitchAdjustmentAngle = new Rotation2d();
 
@@ -24,12 +24,24 @@ public class Pigeon2Gyro implements Gyro {
 
     @Override
 	public Rotation2d getYaw() {
-		Rotation2d angle = getUnadjustedYaw().minus(yawAdjustmentAngle);
-		angle.getDegrees();
+		// Rotation2d angle = getUnadjustedYaw().minus(yawAdjustmentAngle);
+		//angle.getDegrees();
+		double angle = getUnadjustedYaw().getDegrees();
+		angle %= 360;
+		angle = angle > 180 ? angle - 360 : angle;
+		angle = angle < -180 ? angle + 360 : angle;
+		angle -= yawAdjustmentAngle.getDegrees();
+		angle %= 360;
+		angle = angle > 180 ? angle - 360 : angle;
+		angle = angle < -180 ? angle + 360 : angle;
+		System.out.println(angle);
 		if (inverted) {
-            return angle.unaryMinus();
-        }
-        return angle;
+			return new Rotation2d(Math.toRadians(-angle));
+			//return angle.unaryMinus();
+		}
+		//System.out.println("ADJ = " + angle);
+		return new Rotation2d(Math.toRadians(angle));
+        //return angle;
     }
 
     @Override
@@ -50,8 +62,8 @@ public class Pigeon2Gyro implements Gyro {
     @Override
 	public void setYaw(double angleDeg) {
 		//yawAdjustmentAngle = getUnadjustedYaw().rotateBy(Rotation2d.fromDegrees(angleDeg).unaryMinus());
-		yawAdjustmentAngle = Rotation2d.fromDegrees(angleDeg);
-		System.out.println(yawAdjustmentAngle);
+		yawAdjustmentAngle = Rotation2d.fromDegrees(yawAdjustmentAngle.getDegrees()+angleDeg);
+		//System.out.println(yawAdjustmentAngle);
     }
 
     /**
@@ -78,7 +90,7 @@ public class Pigeon2Gyro implements Gyro {
         inverted = inv;
     }
 
-    public Rotation2d getUnadjustedYaw() {
+	public Rotation2d getUnadjustedYaw() {
         return Rotation2d.fromDegrees(mGyro.getYaw().getValueAsDouble());
     }
 
