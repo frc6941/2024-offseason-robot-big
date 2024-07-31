@@ -15,8 +15,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.CharacterizationDriveCommand;
 import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
+import frc.robot.commands.*;
 
 import org.frcteam6941.drivers.Pigeon2Gyro;
 
@@ -87,6 +89,7 @@ public class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
+		//return new CharacterizationDriveCommand(swerve, 3, 1.5, 6);
 		return Commands.print("No autonomous command configured");
 	}
 }

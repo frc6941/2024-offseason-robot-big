@@ -34,7 +34,7 @@ public class Pigeon2Gyro implements Gyro {
 		angle %= 360;
 		angle = angle > 180 ? angle - 360 : angle;
 		angle = angle < -180 ? angle + 360 : angle;
-		System.out.println(angle);
+		//System.out.println(angle);
 		if (inverted) {
 			return new Rotation2d(Math.toRadians(-angle));
 			//return angle.unaryMinus();

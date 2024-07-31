@@ -99,15 +99,19 @@ public class Swerve implements Updatable, Subsystem {
                 new CTRESwerveModule(3, Constants.SwerveDrivetrian.BackRight, Constants.RobotConstants.CAN_BUS_NAME),
             };
             gyro = new Pigeon2Gyro(Constants.SwerveDrivetrian.PIGEON_ID, Constants.RobotConstants.CAN_BUS_NAME);
-        } else {
-            swerveMods = new SwerveModuleBase[]{
-                new CTRESwerveModule(0, Constants.SwerveDrivetrian.FrontLeft, Constants.RobotConstants.CAN_BUS_NAME),
-                new CTRESwerveModule(1, Constants.SwerveDrivetrian.FrontRight, Constants.RobotConstants.CAN_BUS_NAME),
-                new CTRESwerveModule(2, Constants.SwerveDrivetrian.BackLeft, Constants.RobotConstants.CAN_BUS_NAME),
-                new CTRESwerveModule(3, Constants.SwerveDrivetrian.BackRight, Constants.RobotConstants.CAN_BUS_NAME),
-            };
-            gyro = new DummyGyro(Constants.LOOPER_DT);
-        }
+		} else {
+			swerveMods = new SwerveModuleBase[] {
+					new CTRESwerveModule(0, Constants.SwerveDrivetrian.FrontLeft,
+							Constants.RobotConstants.CAN_BUS_NAME),
+					new CTRESwerveModule(1, Constants.SwerveDrivetrian.FrontRight,
+							Constants.RobotConstants.CAN_BUS_NAME),
+					new CTRESwerveModule(2, Constants.SwerveDrivetrian.BackLeft,
+							Constants.RobotConstants.CAN_BUS_NAME),
+					new CTRESwerveModule(3, Constants.SwerveDrivetrian.BackRight,
+							Constants.RobotConstants.CAN_BUS_NAME),
+			};
+			gyro = new DummyGyro(Constants.LOOPER_DT);
+		}
 
         swerveKinematics = new SwerveDriveKinematics(
             Constants.SwerveDrivetrian.modulePlacements
@@ -316,7 +320,7 @@ public class Swerve implements Updatable, Subsystem {
      */
     public void setModuleStates(SwerveModuleState[] desiredStates, boolean isOpenLoop, boolean overrideMotion) {
         if (isOpenLoop) {
-            SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, 1.0);
+            SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.SwerveDrivetrian.MAX_VOLTAGE.magnitude());
         }
 
         for (SwerveModuleBase mod : swerveMods) {

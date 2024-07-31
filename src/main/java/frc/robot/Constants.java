@@ -43,7 +43,9 @@ public class Constants {
 
 	public class SwerveDrivetrian {
 
-		public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.0002;
+		public static final Measure<Voltage> MAX_VOLTAGE = Volts.of(12.0);
+
+		public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0;//0.0002
 
 		public static final int PIGEON_ID = 1;
 
@@ -64,15 +66,19 @@ public class Constants {
 		public static final SlewRateLimiter yLimiter = new SlewRateLimiter(3, -3.25, 0);
 
 		/** Gearing between the drive motor output shaft and the wheel. */
-		private static final double DRIVE_GEAR_RATIO = 6.7460317460317460317460317460317;
+		public static final double DRIVE_GEAR_RATIO = 6.7460317460317460317460317460317;
 		/** Gearing between the steer motor output shaft and the azimuth gear. */
 		private static final double STEER_GEAR_RATIO = 21.428571428571428571428571428571;
 
 		/** Radius of the wheel in meters. */
 		private static final Measure<Distance> wheelRadius = Meters.of(0.05);
 
+		/** Circumference of the wheel in meters. */
+		public static final Measure<Distance> wheelCircumferenceMeters = Meters
+				.of(wheelRadius.magnitude() * 2 * Math.PI);
+
 		/** The stator current at which the wheels start to slip */
-		private static final Measure<Current> slipCurrent = Amps.of(150.0);
+		private static final Measure<Current> slipCurrent = Amps.of(110.0);
 
 		public static class steerGainsClass {
 			public static final TunableNumber STEER_KP = new TunableNumber("STEER PID/kp", 120);
@@ -84,12 +90,12 @@ public class Constants {
 		}
 
 		public static class driveGainsClass {
-			public static final TunableNumber DRIVE_KP = new TunableNumber("DRIVE PID/kp", 0.03);
+			public static final TunableNumber DRIVE_KP = new TunableNumber("DRIVE PID/kp", 0.3);
 			public static final TunableNumber DRIVE_KI = new TunableNumber("DRIVE PID/ki", 0);
-			public static final TunableNumber DRIVE_KD = new TunableNumber("DRIVE PID/kd", 0);
+			public static final TunableNumber DRIVE_KD = new TunableNumber("DRIVE PID/kd", 0.0001);
 			public static final TunableNumber DRIVE_KA = new TunableNumber("DRIVE PID/ka", 0);
 			public static final TunableNumber DRIVE_KV = new TunableNumber("DRIVE PID/kv", 0.12);
-			public static final TunableNumber DRIVE_KS = new TunableNumber("DRIVE PID/ks", 0);
+			public static final TunableNumber DRIVE_KS = new TunableNumber("DRIVE PID/ks", 0.14);
 		}
 
 		/** Swerve steering gains */
@@ -238,22 +244,21 @@ public class Constants {
 		};
 
 		public static final KinematicLimits DRIVETRAIN_UNCAPPED = new KinematicLimits(
-                4.5,
+                maxSpeed.magnitude(),
                 50.0,
-                2000.0);
-        public static final KinematicLimits DRIVETRAIN_SMOOTHED = new KinematicLimits(
-                4.5,
-                30.0,
-                200.0);
-        public static final KinematicLimits DRIVETRAIN_LIMITED = new KinematicLimits(
-                2.0,
-                10.0,
-                1200.0);
-        public static final KinematicLimits DRIVETRAIN_ROBOT_ORIENTED = new KinematicLimits(
-                2.0,
-                5.0,
-                1500.0
-        );
+                5000);//maxAngularRate.magnitude()
+        // public static final KinematicLimits DRIVETRAIN_SMOOTHED = new KinematicLimits(
+        //         4.5,
+        //         30.0,
+        //         200.0);
+        // public static final KinematicLimits DRIVETRAIN_LIMITED = new KinematicLimits(
+        //         2.0,
+        //         10.0,
+        //         1200.0);
+        // public static final KinematicLimits DRIVETRAIN_ROBOT_ORIENTED = new KinematicLimits(
+        //         2.0,
+        //         5.0,
+        //         1500.0);
 
 		public static final SimpleMotorFeedforward DRIVETRAIN_FEEDFORWARD = new SimpleMotorFeedforward(
                 0.69522, 2.3623, 0.19367);
