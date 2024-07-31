@@ -98,6 +98,12 @@ public class Constants {
 			public static final TunableNumber DRIVE_KS = new TunableNumber("DRIVE PID/ks", 0.14);
 		}
 
+		public static class headingController {
+			public static final TunableNumber HEADING_KP = new TunableNumber("HEADING PID/kp", 0.1);//0.015
+			public static final TunableNumber HEADING_KI = new TunableNumber("HEADING PID/ki", 0);//0.00007
+			public static final TunableNumber HEADING_KD = new TunableNumber("HEADING PID/kd", 0);//0.002
+		}
+
 		/** Swerve steering gains */
 		private static final Slot0Configs steerGains = new Slot0Configs()
 				.withKP(120)// 120

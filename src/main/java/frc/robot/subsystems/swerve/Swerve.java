@@ -47,7 +47,7 @@ public class Swerve implements Updatable, Subsystem {
     private final Gyro gyro;
 
     // Snap Rotation Controller
-    private final ProfiledPIDController headingController;
+    private ProfiledPIDController headingController;
     private boolean isLockHeading;
     private double headingTarget = 0.0;
     @Getter @Setter
@@ -71,10 +71,6 @@ public class Swerve implements Updatable, Subsystem {
     private final MovingAverage pitchVelocity;
     private final MovingAverage rollVelocity;
     private final MovingAverage yawVelocity;
-
-    private final double headingKp = 0.015000;
-    private final double headingKi = 0.000070;
-    private final double headingKd = 0.002000;
 
     // Logging
     private final NetworkTable dataTable = NetworkTableInstance.getDefault().getTable("Swerve");
@@ -131,8 +127,10 @@ public class Swerve implements Updatable, Subsystem {
         kinematicLimits = Constants.SwerveDrivetrian.DRIVETRAIN_UNCAPPED;
 
         headingController = new ProfiledPIDController(
-                headingKp, headingKi, headingKd,
-                new TrapezoidProfile.Constraints(600, 720));
+				Constants.SwerveDrivetrian.headingController.HEADING_KP.get(),
+				Constants.SwerveDrivetrian.headingController.HEADING_KI.get(), 
+				Constants.SwerveDrivetrian.headingController.HEADING_KD.get(), 
+                new TrapezoidProfile.Constraints(6000, 7200));
         headingController.setIntegratorRange(-0.5, 0.5);
         headingController.enableContinuousInput(0, 360.0);
 
@@ -260,18 +258,25 @@ public class Swerve implements Updatable, Subsystem {
 		// 		< Constants.SwerveDrivetrian.deadband) {
 		// 	translationalVelocity = new Translation2d(0, 0);
 		// }
-		if (Math.abs(translationalVelocity.getX()) 
-				< Constants.SwerveDrivetrian.deadband) {
+		if (Math.abs(translationalVelocity.getX()) < Constants.SwerveDrivetrian.deadband) {
 			translationalVelocity = new Translation2d(0, translationalVelocity.getY());
 		}
-		if (Math.abs(translationalVelocity.getY()) 
-				< Constants.SwerveDrivetrian.deadband) {
+		if (Math.abs(translationalVelocity.getY()) < Constants.SwerveDrivetrian.deadband) {
 			translationalVelocity = new Translation2d(translationalVelocity.getX(), 0);
 		}
 		if (Math.abs(rotationalVelocity) < Constants.SwerveDrivetrian.rotationalDeadband) {
 			rotationalVelocity = 0;
 		}
 		driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented, isOpenLoop);
+	}
+	
+	public void pointWheelsAt(Rotation2d rotation2d) {
+		for (SwerveModuleBase mod : swerveMods) {
+			//System.out.println(setpoint.mModuleStates[mod.getModuleNumber()]);//add
+			setpoint.mModuleStates[mod.getModuleNumber()].angle = rotation2d;
+			setpoint.mModuleStates[mod.getModuleNumber()].speedMetersPerSecond = 0.0;	
+			mod.setDesiredState(setpoint.mModuleStates[mod.getModuleNumber()], true, false);
+		}
 	}
 
     public void brake() {
@@ -371,9 +376,16 @@ public class Swerve implements Updatable, Subsystem {
         return positions;
     }
 
-    public SwerveModuleBase[] getSwerveMods() {
-        return swerveMods;
-    }
+	public SwerveModuleBase[] getSwerveMods() {
+		return swerveMods;
+	}
+	
+	public void setHeadingControllerPID() {
+		headingController.setPID(
+				Constants.SwerveDrivetrian.headingController.HEADING_KP.get(),
+				Constants.SwerveDrivetrian.headingController.HEADING_KI.get(), 
+				Constants.SwerveDrivetrian.headingController.HEADING_KD.get());
+	}
 
     /*
      * Reset heading controller according to current drivetrain status.
@@ -490,14 +502,15 @@ public class Swerve implements Updatable, Subsystem {
     }
 
     @Override
-    public void telemetry() {
+	public void telemetry() {
         Pose2d latestPose = swerveLocalizer.getLatestPose();
         dataTable.getEntry("Pose").setDoubleArray(
                 new double[]{
                         latestPose.getX(), latestPose.getY(), latestPose.getRotation().getDegrees()
                 });
 
-        if (Constants.TUNING) {
+		if (Constants.TUNING) {
+			setHeadingControllerPID();
             for (SwerveModuleBase module : swerveMods) {
                 // SmartDashboard.putNumber("Mod" + module.getModuleNumber(), module.getState().angle.getDegrees());
                 // SmartDashboard.putNumber("Speed Mod" + module.getModuleNumber(), module.getState().speedMetersPerSecond);
@@ -513,7 +526,7 @@ public class Swerve implements Updatable, Subsystem {
 				SmartDashboard.putNumber(String.valueOf(module.getModuleNumber()) + "speedREQ",
 					setpoint.mModuleStates[module.getModuleNumber()].speedMetersPerSecond);
 				SmartDashboard.putNumber(String.valueOf(module.getModuleNumber()) + "speedACT",
-					module.getState().speedMetersPerSecond);
+						module.getState().speedMetersPerSecond);
 			//testing and printing module status
 			// if (cnt % 50 == 0) {
 			// 	System.out.println(setpoint.mModuleStates[mod.getModuleNumber()].angle);

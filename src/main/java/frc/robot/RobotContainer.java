@@ -62,30 +62,26 @@ public class RobotContainer {
 		// 				true,
 		// 				false),
 		// 				swerve));
-
-		driverController.a().whileTrue(Commands.run(() -> swerve.drive(
-			new Translation2d(
-					-0.3*Constants.SwerveDrivetrian.maxSpeed.magnitude(),
-					-0*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
-			-Constants.RobotConstants.driverController.getRightX()*Constants.SwerveDrivetrian.maxAngularRate.magnitude(),
-			true,
-			false),
-				swerve));
-		driverController.b().whileTrue(Commands.run(() -> swerve.drive(
-					new Translation2d(
-							-0.7*Constants.SwerveDrivetrian.maxSpeed.magnitude(),
-							-0*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
-					-Constants.RobotConstants.driverController.getRightX()*Constants.SwerveDrivetrian.maxAngularRate.magnitude(),
-					true,
-					false),
-				swerve));
+		//Point Wheel
+		// swerve.setDefaultCommand(Commands.runOnce(() -> swerve.pointWheelsAt(
+		// 		new edu.wpi.first.math.geometry.Rotation2d(
+		// 				driverController.getLeftX()*Math.PI/2)),
+		// 		swerve));
+		//field relative heading 
+		// driverController.a().
+		driverController.a().onTrue(Commands.runOnce(() -> {
+			swerve.setLockHeading(true);
+			swerve.setHeadingTarget(0.0);
+		}, swerve));
+		driverController.b().onTrue(Commands.runOnce(() -> swerve.setLockHeading(false),swerve));
 		driverController.start().onTrue(Commands.runOnce(() -> {
+			swerve.resetHeadingController();
 			//Pigeon2 mPigeon2 = new Pigeon2(Constants.SwerveDrivetrian.PIGEON_ID, Constants.RobotConstants.CAN_BUS_NAME);
 			edu.wpi.first.math.geometry.Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();//new edu.wpi.first.math.geometry.Rotation2d(mPigeon2.getYaw().getValueAsDouble());
 			//swerve.getGyro().getYaw().;//.getLocalizer().getLatestPose().getRotation();
 				System.out.println("A = " + a);
 				Pose2d b = new Pose2d(new Translation2d(0,0), a);
-				swerve.resetPose(b);}));
+			swerve.resetPose(b);}));
 	}
 
 	public Command getAutonomousCommand() {
