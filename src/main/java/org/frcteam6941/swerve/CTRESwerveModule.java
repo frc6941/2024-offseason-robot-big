@@ -1,5 +1,6 @@
 package org.frcteam6941.swerve;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -17,7 +18,8 @@ public class CTRESwerveModule implements SwerveModuleBase {
 	// boolean lowSpeed = false;
 	public CTRESwerveModule(int id, SwerveModuleConstants constants, String canbusName) {
         moduleNumber = id;
-        module = new SwerveModule(constants, canbusName);
+		module = new SwerveModule(constants, canbusName);
+		module.getDriveMotor().getConfigurator().apply(new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(Constants.SwerveDrivetrian.VOLTAGE_CLOSED_LOOP_RAMP_PERIOD));
     }
 
     @Override

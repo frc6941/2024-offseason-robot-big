@@ -49,17 +49,34 @@ public class RobotContainer {
 		 				false),
 		 				swerve));
 		//Drive mode 2
-		//swerve.setDefaultCommand(Commands
-		//		.runOnce(() -> swerve.drive(
-		//				new Translation2d(
-		//						- driverController.getLeftY()*Constants.SwerveDrivetrian.maxSpeed.magnitude(),
-		//						- driverController.getRightX()*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
-		//				(-Constants.RobotConstants.driverController.getRightTriggerAxis()
-		//						+ Constants.RobotConstants.driverController.getLeftTriggerAxis())
-		//						* Constants.SwerveDrivetrian.maxAngularRate.magnitude(),
-		//				true,
-		//				true),
-		//				swerve));
+		// swerve.setDefaultCommand(Commands
+		// 		.runOnce(() -> swerve.drive(
+		// 				new Translation2d(
+		// 						- driverController.getLeftY()*Constants.SwerveDrivetrian.maxSpeed.magnitude(),
+		// 						- driverController.getRightX()*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
+		// 				(-Constants.RobotConstants.driverController.getRightTriggerAxis()
+		// 						+ Constants.RobotConstants.driverController.getLeftTriggerAxis())
+		// 						* Constants.SwerveDrivetrian.maxAngularRate.magnitude(),
+		// 				true,
+		// 				false),
+		// 				swerve));
+
+		driverController.a().whileTrue(Commands.run(() -> swerve.drive(
+			new Translation2d(
+					-0.3*Constants.SwerveDrivetrian.maxSpeed.magnitude(),
+					-0*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
+			-Constants.RobotConstants.driverController.getRightX()*Constants.SwerveDrivetrian.maxAngularRate.magnitude(),
+			true,
+			false),
+				swerve));
+		driverController.b().whileTrue(Commands.run(() -> swerve.drive(
+					new Translation2d(
+							-0.7*Constants.SwerveDrivetrian.maxSpeed.magnitude(),
+							-0*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
+					-Constants.RobotConstants.driverController.getRightX()*Constants.SwerveDrivetrian.maxAngularRate.magnitude(),
+					true,
+					false),
+				swerve));
 		driverController.start().onTrue(Commands.runOnce(() -> {
 			//Pigeon2 mPigeon2 = new Pigeon2(Constants.SwerveDrivetrian.PIGEON_ID, Constants.RobotConstants.CAN_BUS_NAME);
 			edu.wpi.first.math.geometry.Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();//new edu.wpi.first.math.geometry.Rotation2d(mPigeon2.getYaw().getValueAsDouble());

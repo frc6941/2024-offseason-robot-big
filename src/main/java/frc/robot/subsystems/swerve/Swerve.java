@@ -215,11 +215,7 @@ public class Swerve implements Updatable, Subsystem {
 		for (SwerveModuleBase mod : swerveMods) {
 			//System.out.println(setpoint.mModuleStates[mod.getModuleNumber()]);//add
 			mod.setDesiredState(setpoint.mModuleStates[mod.getModuleNumber()], driveSignal.isOpenLoop(), false);
-			SmartDashboard.putNumber(String.valueOf(mod.getModuleNumber())+"testaa", setpoint.mModuleStates[mod.getModuleNumber()].speedMetersPerSecond);
-			//testing and printing module status
-			// if (cnt % 50 == 0) {
-			// 	System.out.println(setpoint.mModuleStates[mod.getModuleNumber()].angle);
-			// }
+			
 		}
 		// if (cnt % 50 == 0) {
 		// 	System.out.println("Vx = " + setpoint.mChassisSpeeds.vxMetersPerSecond + "Vy = " + setpoint.mChassisSpeeds.vyMetersPerSecond);					
@@ -499,11 +495,26 @@ public class Swerve implements Updatable, Subsystem {
 
         if (Constants.TUNING) {
             for (SwerveModuleBase module : swerveMods) {
-                SmartDashboard.putNumber("Mod" + module.getModuleNumber(), module.getState().angle.getDegrees());
-                SmartDashboard.putNumber("Speed Mod" + module.getModuleNumber(), module.getState().speedMetersPerSecond);
-                SmartDashboard.putNumber("Mod S" + module.getModuleNumber(), Math.abs(module.getState().speedMetersPerSecond));
-                SmartDashboard.putNumber("Mod SD" + module.getModuleNumber(),
-                        Math.abs(setpoint.mModuleStates[module.getModuleNumber()].speedMetersPerSecond));
+                // SmartDashboard.putNumber("Mod" + module.getModuleNumber(), module.getState().angle.getDegrees());
+                // SmartDashboard.putNumber("Speed Mod" + module.getModuleNumber(), module.getState().speedMetersPerSecond);
+                // SmartDashboard.putNumber("Mod S" + module.getModuleNumber(), Math.abs(module.getState().speedMetersPerSecond));
+                // SmartDashboard.putNumber("Mod SD" + module.getModuleNumber(),
+				//         Math.abs(setpoint.mModuleStates[module.getModuleNumber()].speedMetersPerSecond));
+				SmartDashboard.putNumber(String.valueOf(module.getModuleNumber()) + "angleREQ",
+					setpoint.mModuleStates[module.getModuleNumber()].angle.getDegrees() < 0
+							? setpoint.mModuleStates[module.getModuleNumber()].angle.getDegrees() + 180
+							: setpoint.mModuleStates[module.getModuleNumber()].angle.getDegrees());
+				SmartDashboard.putNumber(String.valueOf(module.getModuleNumber()) + "angleACT",
+					module.getPosition().angle.getDegrees() % 180);
+				SmartDashboard.putNumber(String.valueOf(module.getModuleNumber()) + "speedREQ",
+					setpoint.mModuleStates[module.getModuleNumber()].speedMetersPerSecond);
+				SmartDashboard.putNumber(String.valueOf(module.getModuleNumber()) + "speedACT",
+					module.getState().speedMetersPerSecond);
+			//testing and printing module status
+			// if (cnt % 50 == 0) {
+			// 	System.out.println(setpoint.mModuleStates[mod.getModuleNumber()].angle);
+			// }
+				
             }
 
             Pose2d velocity = swerveLocalizer.getSmoothedVelocity();

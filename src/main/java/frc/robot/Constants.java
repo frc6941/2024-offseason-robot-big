@@ -43,6 +43,8 @@ public class Constants {
 
 	public class SwerveDrivetrian {
 
+		public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.0002;
+
 		public static final int PIGEON_ID = 1;
 
 		public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
