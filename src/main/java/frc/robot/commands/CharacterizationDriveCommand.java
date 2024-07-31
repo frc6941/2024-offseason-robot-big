@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import com.team254.lib.util.PolynomialRegression;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Notifier;
@@ -9,36 +8,21 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.swerve.Swerve;
-
 import org.frcteam1678.lib.math.Conversions;
 
 import java.util.ArrayList;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class CharacterizationDriveCommand extends Command {
-    private Swerve drivetrain;
-    private double startVoltage;
-    private double deltaVoltage;
     private final double maxVoltage;
     private final double prepTime = 3.0;
-
     private final Timer prepTimer = new Timer();
     private final Timer timer = new Timer();
-
     private final ArrayList<Double> yVoltages = new ArrayList<>();
     private final ArrayList<Double> xVelocities = new ArrayList<>();
     private final ArrayList<Double> xFalconVelocities = new ArrayList<>();
-
-    private double travelTicks = 0;
-
-    public CharacterizationDriveCommand(Swerve drivetrain, double startVoltage, double deltaVoltage, double maxVoltage) {
-        this.drivetrain = drivetrain;
-        this.startVoltage = startVoltage;
-        this.deltaVoltage = deltaVoltage;
-        this.maxVoltage = maxVoltage;
-    }
-
+    private Swerve drivetrain;
+    private double startVoltage;
+    private double deltaVoltage;
     private final Runnable r = () -> {
         if (prepTimer.get() < prepTime) {
             timer.stop();
@@ -55,8 +39,8 @@ public class CharacterizationDriveCommand extends Command {
 
         SwerveModuleState individualState = new SwerveModuleState(
                 targetVoltage / 1.0, new Rotation2d()
-		);
-		System.out.println("REQ = " + individualState.toString());
+        );
+        System.out.println("REQ = " + individualState.toString());
         drivetrain.setModuleStates(new SwerveModuleState[]{
                 individualState,
                 individualState,
@@ -72,8 +56,8 @@ public class CharacterizationDriveCommand extends Command {
             averageVelocity += Math.abs(state.speedMetersPerSecond);
             averageFalconVelocity += Math.abs(Conversions.MPSToFalcon(
                     state.speedMetersPerSecond,
-                    Constants.SwerveDrivetrian.wheelCircumferenceMeters.magnitude(),
-                    Constants.SwerveDrivetrian.DRIVE_GEAR_RATIO)
+                    Constants.SwerveDrivetrain.wheelCircumferenceMeters.magnitude(),
+                    Constants.SwerveDrivetrain.DRIVE_GEAR_RATIO)
             );
         }
         averageVelocity /= moduleStates.length;
@@ -82,8 +66,15 @@ public class CharacterizationDriveCommand extends Command {
         xFalconVelocities.add(averageFalconVelocity);
 
     };
-
     private final Notifier n = new Notifier(r);
+    private double travelTicks = 0;
+
+    public CharacterizationDriveCommand(Swerve drivetrain, double startVoltage, double deltaVoltage, double maxVoltage) {
+        this.drivetrain = drivetrain;
+        this.startVoltage = startVoltage;
+        this.deltaVoltage = deltaVoltage;
+        this.maxVoltage = maxVoltage;
+    }
 
     @Override
     public void initialize() {
@@ -106,19 +97,19 @@ public class CharacterizationDriveCommand extends Command {
         prepTimer.reset();
         timer.stop();
 
-        if(xVelocities.isEmpty() || yVoltages.isEmpty() || xFalconVelocities.isEmpty()) return;
+        if (xVelocities.isEmpty() || yVoltages.isEmpty() || xFalconVelocities.isEmpty()) return;
 
         PolynomialRegression regression = new PolynomialRegression(
                 xVelocities.stream().mapToDouble(Math::abs).toArray(),
-				yVoltages.stream().mapToDouble(Math::abs).toArray(), 1);
-		//System.out.println(regression);
+                yVoltages.stream().mapToDouble(Math::abs).toArray(), 1);
+        //System.out.println(regression);
         System.out.println("Fit R2: " + regression.R2());
         System.out.println("Drivetrain KS: " + regression.beta(0) + " V");
         System.out.println("Drivetrain kV: " + regression.beta(1) + " V / ms^{-1}");
         System.out.println(
                 "Converted Module kV: "
-                        + regression.beta(1) / Constants.SwerveDrivetrian.DRIVE_GEAR_RATIO
-                        * Constants.SwerveDrivetrian.wheelCircumferenceMeters.magnitude()
+                        + regression.beta(1) / Constants.SwerveDrivetrain.DRIVE_GEAR_RATIO
+                        * Constants.SwerveDrivetrain.wheelCircumferenceMeters.magnitude()
                         + " V / rps");
 
         PolynomialRegression regressionFalcon = new PolynomialRegression(
