@@ -5,12 +5,12 @@
 package frc.robot;
 
 import org.frcteam6941.swerve.CTRESwerveModule;
+import org.littletonrobotics.junction.LoggedRobot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 //import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -18,11 +18,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.a.Timer;
 
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
 	// public static Timer timer;
 	private Command m_autonomousCommand;
-	
-	//CTRESwerveModule FL = new CTRESwerveModule(0, Constants.SwerveDrivetrian.FrontLeft, Constants.RobotConstants.CAN_BUS_NAME);
+
+	// CTRESwerveModule FL = new CTRESwerveModule(0,
+	// Constants.SwerveDrivetrian.FrontLeft, Constants.RobotConstants.CAN_BUS_NAME);
 	CommandXboxController driverController = new CommandXboxController(0);
 
 	private RobotContainer robotContainer;
@@ -30,7 +31,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		robotContainer = new RobotContainer();
-        DriverStation.silenceJoystickConnectionWarning(true);
+		DriverStation.silenceJoystickConnectionWarning(true);
 		// //robotContainer.getUpdateManager().startEnableLoop(Constants.LOOPER_DT);
 	}
 
@@ -42,32 +43,36 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void disabledInit() {}
+	public void disabledInit() {
+	}
 
 	@Override
-	public void disabledPeriodic() {}
+	public void disabledPeriodic() {
+	}
 
 	@Override
-	public void disabledExit() {}
+	public void disabledExit() {
+	}
 
 	@Override
 	public void autonomousInit() {
 		m_autonomousCommand = robotContainer.getAutonomousCommand();
 
 		if (m_autonomousCommand != null) {
-		m_autonomousCommand.schedule();
+			m_autonomousCommand.schedule();
 		}
 		robotContainer.getUpdateManager().invokeStart();
 	}
 
 	@Override
-	public void autonomousPeriodic() {}
+	public void autonomousPeriodic() {
+	}
 
 	@Override
 	public void autonomousExit() {
 		robotContainer.getUpdateManager().invokeStop();
 	}
-	
+
 	@Override
 	public void teleopInit() {
 		if (m_autonomousCommand != null) {
@@ -81,11 +86,11 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		// FL.updateSignals();
 		// FL.setDesiredState(new SwerveModuleState(
-		// 		driverController.getLeftY() * 3,
-		// 		new Rotation2d(driverController.getRightX() * 2 * Math.PI)),
-		// 		true,
-		// 		false);
-		//System.out.println(Swerve.getInstance().getLocalizer().getLatestPose().getRotation());
+		// driverController.getLeftY() * 3,
+		// new Rotation2d(driverController.getRightX() * 2 * Math.PI)),
+		// true,
+		// false);
+		// System.out.println(Swerve.getInstance().getLocalizer().getLatestPose().getRotation());
 	}
 
 	@Override
@@ -99,8 +104,10 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void testPeriodic() {}
+	public void testPeriodic() {
+	}
 
 	@Override
-	public void testExit() {}
+	public void testExit() {
+	}
 }

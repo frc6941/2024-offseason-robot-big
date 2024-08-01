@@ -1,0 +1,26 @@
+package frc.robot.commands;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
+
+import static edu.wpi.first.units.Units.Radians;
+import static frc.robot.Constants.ShooterConstants.ampDeployAngle;
+
+public class AmpAimingCommand extends Command {
+	private final ShooterSubsystem shooterSubsystem;
+
+	public AmpAimingCommand(ShooterSubsystem shooterSubsystem) {
+		this.shooterSubsystem = shooterSubsystem;
+	}
+
+	@Override
+	public void execute() {
+		shooterSubsystem.getIo()
+				.setArmPosition(Radians.of(ampDeployAngle.in(Radians)));
+	}
+
+	@Override
+	public void end(boolean interrupted) {
+		shooterSubsystem.getIo().setArmPosition(Radians.zero());
+	}
+}
