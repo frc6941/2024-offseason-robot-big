@@ -9,15 +9,31 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.ControllerDriveCommand;
+import frc.robot.commands.IndexCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.SpeakerAimingCommand;
+import frc.robot.subsystems.beambreak.BeamBreakIORev;
+import frc.robot.subsystems.indexer.IndexerIOTalonFX;
+import frc.robot.subsystems.intaker.IntakerIOTalonFX;
+import frc.robot.subsystems.limelight.LimelightHelpers;
+import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 
 public class RobotContainer {
-    Swerve swerve = Swerve.getInstance();
-    CommandXboxController driverController = new CommandXboxController(0);
-    @Getter
-    private UpdateManager updateManager;
+	Swerve swerve = Swerve.getInstance();
+	CommandXboxController driverController = new CommandXboxController(0);
+	@Getter
+	private UpdateManager updateManager;
+	
+    private IntakerIOTalonFX intakerSubsystem = new IntakerIOTalonFX();
+	private IndexerIOTalonFX indexerSubsystem = new IndexerIOTalonFX();
+	private ShooterIOTalonFX shooterSubsystem = new ShooterIOTalonFX();
+	
+    //private ShooterSubsystem shooterSubsystem;
+    private BeamBreakIORev beamBreakSubsystem = new BeamBreakIORev();
 
     public RobotContainer() {
         updateManager = new UpdateManager(swerve);
@@ -52,7 +68,12 @@ public class RobotContainer {
         // 						* Constants.SwerveDrivetrian.maxAngularRate.magnitude(),
         // 				true,
         // 				false),
-        // 				swerve));
+		// 				swerve));
+		//Drive test 1
+		// swerve.setDefaultCommand(new ControllerDriveCommand(swerve,
+		// 		() -> -driverController.getLeftY(),
+		// 		() -> -driverController.getLeftX(),
+		// 		() -> -driverController.getRightX()));
         //Point Wheel
         // swerve.setDefaultCommand(Commands.runOnce(() -> swerve.pointWheelsAt(
         // 		new edu.wpi.first.math.geometry.Rotation2d(
@@ -60,20 +81,28 @@ public class RobotContainer {
         // 		swerve));
         //field relative heading
         // driverController.a().
-        driverController.a().onTrue(Commands.runOnce(() -> {
-            swerve.setLockHeading(true);
-            swerve.setHeadingTarget(0.0);
-        }, swerve));
+        driverController.leftBumper().whileTrue(new SpeakerAimingCommand(swerve, () -> -driverController.getLeftY(),
+				() -> -driverController.getLeftX(),()->-driverController.getRightX(),shooterSubsystem));
         driverController.b().onTrue(Commands.runOnce(() -> swerve.setLockHeading(false), swerve));
         driverController.start().onTrue(Commands.runOnce(() -> {
-            swerve.resetHeadingController();
-            //Pigeon2 mPigeon2 = new Pigeon2(Constants.SwerveDrivetrian.PIGEON_ID, Constants.RobotConstants.CAN_BUS_NAME);
+			swerve.resetHeadingController();
+			ControllerDriveCommand.facingAngle = 0.0;
+            //Pigeon2 mPigeon2 = new Pigeon2(Constants.SwerveDrivetrian.PIGEON_ID, Constants.RobotConstants.RobotConstants.CAN_BUS_NAME);
             edu.wpi.first.math.geometry.Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();//new edu.wpi.first.math.geometry.Rotation2d(mPigeon2.getYaw().getValueAsDouble());
             //swerve.getGyro().getYaw().;//.getLocalizer().getLatestPose().getRotation();
             System.out.println("A = " + a);
             Pose2d b = new Pose2d(new Translation2d(0, 0), a);
             swerve.resetPose(b);
-        }));
+		}));
+		driverController.rightBumper().whileTrue(
+                // Commands.sequence(
+                        Commands.parallel(
+                                new IntakeCommand(intakerSubsystem, beamBreakSubsystem),
+                                new IndexCommand(indexerSubsystem, beamBreakSubsystem)
+                        )
+                        // new RumbleComm(Seconds.of(1), driverController.getHID(), operatorController.getHID())
+                // )
+		);
     }
 
     public Command getAutonomousCommand() {
