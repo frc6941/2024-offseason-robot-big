@@ -20,6 +20,7 @@ import static edu.wpi.first.units.Units.Microseconds;
 import static edu.wpi.first.units.Units.Radians;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.FieldConstants;
 import frc.robot.subsystems.limelight.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.swerve.Swerve;
 
@@ -34,7 +35,7 @@ public class Limelight implements Updatable {
     private static final NetworkTableEntry tid = limelightTable.getEntry("tid");
 
     private static final NetworkTableEntry botPoseWPIBlue = limelightTable.getEntry("botpose_wpiblue");
-    private static final NetworkTableEntry targetPoseCameraSpace = limelightTable.getEntry("targetpose_cameraspace");
+	private static final NetworkTableEntry targetPoseCameraSpace = limelightTable.getEntry("targetpose_cameraspace");
 
     // singleton
     private static Limelight instance;
@@ -108,12 +109,27 @@ public class Limelight implements Updatable {
     }
 
     @Override
-    public void update(double time, double dt) {
+	public void update(double time, double dt) {
+		LimelightHelpers.SetRobotOrientation("limelight",
+				Swerve.getInstance().getLocalizer().getLatestPose().getRotation().getDegrees(),
+				Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation().getDegrees(),
+				0, 0, 0, 0);
+		if (Swerve.getInstance().getLocalizer().getSmoothedVelocity().getTranslation()
+				.getNorm() > Constants.VisionConstants.REJECT_LINEAR_SPEED)
+			return;
+		if (Math.abs(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation()
+				.getDegrees()) > Constants.VisionConstants.REJECT_ANGULAR_SPEED)
+			return;
+		if (Swerve.getInstance().getLocalizer().getLatestPose().getX() < 0
+				|| Swerve.getInstance().getLocalizer().getLatestPose().getX() > FieldConstants.fieldLength
+				|| Swerve.getInstance().getLocalizer().getLatestPose().getY() < 0
+				|| Swerve.getInstance().getLocalizer().getLatestPose().getY() > FieldConstants.fieldWidth)
+			return;
         botEstimate.ifPresent((poseEstimate) -> {
             Swerve.getInstance().getLocalizer().addMeasurement(
                     botEstimate.get().timestampSeconds,
                     botEstimate.get().pose,
-                    new Pose2d(new Translation2d(0.01, 0.01), Rotation2d.fromDegrees(0.001)));
+					new Pose2d(new Translation2d(0.01, 0.01), Rotation2d.fromDegrees(0.001)));
         });
     }
 
@@ -123,10 +139,10 @@ public class Limelight implements Updatable {
 
     @Override
     public void telemetry() {
-        SmartDashboard.putBoolean("limelight/has_target", hasTarget());
+        SmartDashboard.putBoolean("has_target", hasTarget());
         if (hasTarget()) {
-            SmartDashboard.putString("limelight/limelight_pose", botEstimate.get().pose.toString());
-            SmartDashboard.putNumber("limelight/latency", botEstimate.get().latency);
+            SmartDashboard.putString("limelight_pose", botEstimate.get().pose.toString());
+            SmartDashboard.putNumber("latency", botEstimate.get().latency);
         }
         
     }

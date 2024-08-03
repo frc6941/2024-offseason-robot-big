@@ -28,17 +28,20 @@ import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.display.Display;
+import lombok.Getter;
 
 public class RobotContainer {
-
-	
 	IntakerSubsystem intakerSubsystem = new IntakerSubsystem(new IntakerIOTalonFX());
 	IndexerSubsystem indexerSubsystem = new IndexerSubsystem(new IndexerIOTalonFX());
 	ShooterSubsystem shooterSubsystem = new ShooterSubsystem(new ShooterIOTalonFX());
 	BeamBreakSubsystem beamBreakSubsystem = new BeamBreakSubsystem(new BeamBreakIORev());
 	Limelight limelight = Limelight.getInstance();
 	IndicatorSubsystem indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOARGB());
+
 	Swerve swerve = Swerve.getInstance();
+	Display display = Display.getInstance();
+	
 
 	CommandXboxController driverController = new CommandXboxController(0);
 	CommandXboxController operatorController = new CommandXboxController(1);
@@ -49,7 +52,8 @@ public class RobotContainer {
 	public RobotContainer() {
 		updateManager = new UpdateManager(
 			swerve,
-			limelight
+			limelight,
+			display
 		);
 		updateManager.registerAll();
 

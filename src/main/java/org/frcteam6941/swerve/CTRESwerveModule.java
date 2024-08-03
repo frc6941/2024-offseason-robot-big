@@ -26,7 +26,7 @@ public class CTRESwerveModule implements SwerveModuleBase {
                 .apply(new CurrentLimitsConfigs()
 						.withStatorCurrentLimit(110)
                         .withStatorCurrentLimitEnable(true)
-                        .withSupplyCurrentLimit(10)//90
+                        .withSupplyCurrentLimit(50)//90
 						.withSupplyTimeThreshold(0)
 						.withSupplyCurrentLimitEnable(true));//0.5
     }

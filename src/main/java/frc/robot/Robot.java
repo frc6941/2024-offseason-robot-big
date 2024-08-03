@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.a.Timer;
+import lombok.Getter;
+
 
 public class Robot extends LoggedRobot {
 	// public static Timer timer;

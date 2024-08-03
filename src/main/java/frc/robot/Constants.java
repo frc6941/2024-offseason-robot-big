@@ -35,10 +35,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.a.TunableNumber;
 
 public class Constants {
-	public static final LoggedDashboardNumber ArmP = new LoggedDashboardNumber("arm p", 400);
-	public static final LoggedDashboardNumber ArmI = new LoggedDashboardNumber("arm i", 200);
-	public static final LoggedDashboardNumber ArmD = new LoggedDashboardNumber("arm d", 15);
-
 	public static final boolean TUNING = true;
 	public static final double LOOPER_DT = 1 / 100.0;
 
@@ -108,7 +104,7 @@ public class Constants {
 		/**
 		 * Radius of the wheel in meters.
 		 */
-		private static final Measure<Distance> wheelRadius = Meters.of(0.05);
+		private static final Measure<Distance> wheelRadius = Inches.of(2);
 		/**
 		 * Circumference of the wheel in meters.
 		 */
@@ -301,7 +297,13 @@ public class Constants {
 			public static final TunableNumber HEADING_KI = new TunableNumber("HEADING PID/ki", 0);// 0.00007
 			public static final TunableNumber HEADING_KD = new TunableNumber("HEADING PID/kd", 0);// 0.002
 		}
+	}
 
+
+	public class ArmConstants {
+		public static final LoggedDashboardNumber ArmP = new LoggedDashboardNumber("arm p", 400);
+		public static final LoggedDashboardNumber ArmI = new LoggedDashboardNumber("arm i", 200);
+		public static final LoggedDashboardNumber ArmD = new LoggedDashboardNumber("arm d", 15);
 	}
 
 	public static class IndexerConstants {
@@ -391,6 +393,9 @@ public class Constants {
 
 	public static class VisionConstants {
 		public static final String AIM_LIMELIGHT_NAME = "limelight";
+
+		public static double REJECT_ANGULAR_SPEED = 360;//degree
+		public static double REJECT_LINEAR_SPEED = 2.5;// m/s
 	}
 
 	public static class Logger {

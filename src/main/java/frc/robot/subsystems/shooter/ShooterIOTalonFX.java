@@ -133,8 +133,10 @@ public class ShooterIOTalonFX implements ShooterIO {
 		inputs.pullerTorqueCurrent = Amps.of(pullerTorqueCurrent.getValueAsDouble());
 
 		inputs.homed = homed;
-		Slot0Configs newconfig = ShooterConstants.armGainsUp.withKP(Constants.ArmP.get()).withKI(Constants.ArmI.get())
-				.withKD(Constants.ArmD.get());
+		Slot0Configs newconfig = ShooterConstants.armGainsUp
+			.withKP(Constants.ArmConstants.ArmP.get())
+			.withKI(Constants.ArmConstants.ArmI.get())
+			.withKD(Constants.ArmConstants.ArmD.get());
 		armTalon.getConfigurator().apply(newconfig);
 	}
 
