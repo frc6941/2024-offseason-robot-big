@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import org.frcteam6941.looper.UpdateManager;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import static edu.wpi.first.units.Units.Seconds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -15,32 +18,26 @@ import frc.robot.commands.RumbleCommand;
 import frc.robot.commands.SpeakerShootCommand;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
-import frc.robot.subsystems.intaker.IntakerIOTalonFX;
-import frc.robot.subsystems.intaker.IntakerSubsystem;
 import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIOARGB;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
-import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.intaker.IntakerIOTalonFX;
+import frc.robot.subsystems.intaker.IntakerSubsystem;
+import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
-import lombok.Getter;
-import org.frcteam6941.looper.UpdateManager;
-
-import static edu.wpi.first.units.Units.Seconds;
 
 public class RobotContainer {
+
+	
 	IntakerSubsystem intakerSubsystem = new IntakerSubsystem(new IntakerIOTalonFX());
-
 	IndexerSubsystem indexerSubsystem = new IndexerSubsystem(new IndexerIOTalonFX());
-
 	ShooterSubsystem shooterSubsystem = new ShooterSubsystem(new ShooterIOTalonFX());
-
 	BeamBreakSubsystem beamBreakSubsystem = new BeamBreakSubsystem(new BeamBreakIORev());
-
+	Limelight limelight = Limelight.getInstance();
 	IndicatorSubsystem indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOARGB());
-
 	Swerve swerve = Swerve.getInstance();
 
 	CommandXboxController driverController = new CommandXboxController(0);
@@ -50,13 +47,15 @@ public class RobotContainer {
 	private UpdateManager updateManager;
 
 	public RobotContainer() {
-		updateManager = new UpdateManager(swerve);
+		updateManager = new UpdateManager(
+			swerve,
+			limelight
+		);
 		updateManager.registerAll();
 
 		configureBindings();
 		System.out.println("Init Completed!");
 	}
-
 	/**
 	 * Bind controller keys to commands
 	 */
@@ -126,6 +125,7 @@ public class RobotContainer {
 			Pose2d b = new Pose2d(new Translation2d(0, 0), a);
 			swerve.resetPose(b);
 		}));
+		driverController.povUp().whileTrue(Commands.runOnce(()->System.out.println(swerve.getLocalizer().getLatestPose()),swerve));
 
 	}
 

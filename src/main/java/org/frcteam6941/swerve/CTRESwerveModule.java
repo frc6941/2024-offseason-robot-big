@@ -24,11 +24,11 @@ public class CTRESwerveModule implements SwerveModuleBase {
                 .withVoltageClosedLoopRampPeriod(Constants.SwerveDrivetrain.VOLTAGE_CLOSED_LOOP_RAMP_PERIOD));
         module.getDriveMotor().getConfigurator()
                 .apply(new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(110)
+						.withStatorCurrentLimit(110)
                         .withStatorCurrentLimitEnable(true)
-                        .withSupplyCurrentLimit(90)
-                        .withSupplyCurrentLimitEnable(true)
-                        .withSupplyTimeThreshold(0.5));
+                        .withSupplyCurrentLimit(10)//90
+						.withSupplyTimeThreshold(0)
+						.withSupplyCurrentLimitEnable(true));//0.5
     }
 
     @Override

@@ -458,6 +458,7 @@ public class Swerve implements Updatable, Subsystem {
 			mod.updateSignals();
 		}
 		updateOdometry(time, dt);
+		SmartDashboard.putString("swerve/localizer/fused_pose", getLocalizer().getCoarseFieldPose(time).toString());
 	}
 
 	@Override
@@ -511,42 +512,8 @@ public class Swerve implements Updatable, Subsystem {
 
 		if (Constants.TUNING) {
 			setHeadingControllerPID();
-			for (SwerveModuleBase module : swerveMods) {
-				// SmartDashboard.putNumber("Mod" + module.getModuleNumber(),
-				// module.getState().angle.getDegrees());
-				// SmartDashboard.putNumber("Speed Mod" + module.getModuleNumber(),
-				// module.getState().speedMetersPerSecond);
-				// SmartDashboard.putNumber("Mod S" + module.getModuleNumber(),
-				// Math.abs(module.getState().speedMetersPerSecond));
-				// SmartDashboard.putNumber("Mod SD" + module.getModuleNumber(),
-				// Math.abs(setpoint.mModuleStates[module.getModuleNumber()].speedMetersPerSecond));
-
-				// -----------------------------------
-				// SmartDashboard.putNumber(String.valueOf(module.getModuleNumber()) +
-				// "angleREQ",
-				// setpoint.mModuleStates[module.getModuleNumber()].angle.getDegrees() < 0
-				// ? setpoint.mModuleStates[module.getModuleNumber()].angle.getDegrees() + 180
-				// : setpoint.mModuleStates[module.getModuleNumber()].angle.getDegrees());
-				// SmartDashboard.putNumber(String.valueOf(module.getModuleNumber()) +
-				// "angleACT",
-				// module.getPosition().angle.getDegrees() % 180);
-				// SmartDashboard.putNumber(String.valueOf(module.getModuleNumber()) +
-				// "speedREQ",
-				// setpoint.mModuleStates[module.getModuleNumber()].speedMetersPerSecond);
-				// SmartDashboard.putNumber(String.valueOf(module.getModuleNumber()) +
-				// "speedACT",
-				// module.getState().speedMetersPerSecond);
-				// testing and printing module status
-				// if (cnt % 50 == 0) {
-				// System.out.println(setpoint.mModuleStates[mod.getModuleNumber()].angle);
-				// }
-
-			}
-
-			Pose2d velocity = swerveLocalizer.getSmoothedVelocity();
-			SmartDashboard.putNumberArray("Velocity", new double[] {
-					velocity.getX(), velocity.getY(), velocity.getRotation().getDegrees()
-			});
+			SmartDashboard.putString("swerve/localizer/latest_pose", getLocalizer().getLatestPose().toString());
+			SmartDashboard.putString("swerve/localizer/velocity", getLocalizer().getSmoothedVelocity().toString());
 		}
 	}
 

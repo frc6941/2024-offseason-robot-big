@@ -1,5 +1,8 @@
 package frc.robot;
 
+import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
+import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
+
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -15,13 +18,21 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.*;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Current;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.a.TunableNumber;
-import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
-
-import static edu.wpi.first.units.Units.*;
 
 public class Constants {
 	public static final LoggedDashboardNumber ArmP = new LoggedDashboardNumber("arm p", 400);
@@ -63,8 +74,8 @@ public class Constants {
 		 */
 		public static final Measure<Velocity<Angle>> maxAngularRate = RotationsPerSecond.of(1.5 * Math.PI);
 
-		public static final double deadband = maxSpeed.magnitude() * 0.1;
-		public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.1;
+		public static final double deadband = maxSpeed.magnitude() * 0.05;
+		public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.05;
 
 		public static final SlewRateLimiter xLimiter = new SlewRateLimiter(3, -3.25, 0);
 		public static final SlewRateLimiter yLimiter = new SlewRateLimiter(3, -3.25, 0);
@@ -376,6 +387,10 @@ public class Constants {
 	public static class IndicatorConstants {
 		public static final int LED_PORT = 0;
 		public static final int LED_BUFFER_LENGTH = 17;
+	}
+
+	public static class VisionConstants {
+		public static final String AIM_LIMELIGHT_NAME = "limelight";
 	}
 
 	public static class Logger {
