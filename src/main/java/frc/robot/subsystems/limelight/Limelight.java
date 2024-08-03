@@ -37,6 +37,9 @@ public class Limelight implements Updatable {
     private static final NetworkTableEntry botPoseWPIBlue = limelightTable.getEntry("botpose_wpiblue");
 	private static final NetworkTableEntry targetPoseCameraSpace = limelightTable.getEntry("targetpose_cameraspace");
 
+	private static final Swerve swerve = Swerve.getInstance();
+	private double time = 0.0;
+
     // singleton
     private static Limelight instance;
 
@@ -114,24 +117,41 @@ public class Limelight implements Updatable {
 				Swerve.getInstance().getLocalizer().getLatestPose().getRotation().getDegrees(),
 				Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation().getDegrees(),
 				0, 0, 0, 0);
-		if (Swerve.getInstance().getLocalizer().getSmoothedVelocity().getTranslation()
-				.getNorm() > Constants.VisionConstants.REJECT_LINEAR_SPEED)
-			return;
-		if (Math.abs(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation()
-				.getDegrees()) > Constants.VisionConstants.REJECT_ANGULAR_SPEED)
-			return;
-		if (Swerve.getInstance().getLocalizer().getLatestPose().getX() < 0
-				|| Swerve.getInstance().getLocalizer().getLatestPose().getX() > FieldConstants.fieldLength
-				|| Swerve.getInstance().getLocalizer().getLatestPose().getY() < 0
-				|| Swerve.getInstance().getLocalizer().getLatestPose().getY() > FieldConstants.fieldWidth)
-			return;
-        botEstimate.ifPresent((poseEstimate) -> {
-            Swerve.getInstance().getLocalizer().addMeasurement(
-                    botEstimate.get().timestampSeconds,
-                    botEstimate.get().pose,
+		//rejection
+		// if (Swerve.getInstance().getLocalizer().getSmoothedVelocity().getTranslation()
+		// 		.getNorm() > Constants.VisionConstants.REJECT_LINEAR_SPEED)
+		// 	return;
+		// if (Math.abs(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation()
+		// 		.getDegrees()) > Constants.VisionConstants.REJECT_ANGULAR_SPEED)
+		// 	return;
+		// if (Swerve.getInstance().getLocalizer().getLatestPose().getX() < 0
+		// 		|| Swerve.getInstance().getLocalizer().getLatestPose().getX() > FieldConstants.fieldLength
+		// 		|| Swerve.getInstance().getLocalizer().getLatestPose().getY() < 0
+		// 		|| Swerve.getInstance().getLocalizer().getLatestPose().getY() > FieldConstants.fieldWidth)
+		// 	return;
+		botEstimate.ifPresent((poseEstimate) -> {
+			Swerve.getInstance().getLocalizer().addMeasurement(
+					botEstimate.get().timestampSeconds,
+					botEstimate.get().pose,
 					new Pose2d(new Translation2d(0.01, 0.01), Rotation2d.fromDegrees(0.001)));
-        });
-    }
+		});
+		this.time = time;
+	}
+	
+	public double getSpeakerRelativePosition() {
+		Pose2d robotPos = swerve.getLocalizer().getCoarseFieldPose(time);
+		SmartDashboard.putString("robotPos", robotPos.toString());
+		// Pose2d SpeakerPos = new Pose2d(new Translation2d(FieldConstants.Speaker.centerSpeakerOpening.getX(),
+		// 		FieldConstants.Speaker.centerSpeakerOpening.getY()), new Rotation2d(0));
+		Pose2d SpeakerPos = new Pose2d(new Translation2d(16.312,5.545), new Rotation2d(0));
+		SmartDashboard.putString("SpeakerPos", SpeakerPos.toString());
+		Translation2d relativePos = new Translation2d(
+				robotPos.getTranslation().getX() - SpeakerPos.getTranslation().getX(),
+				robotPos.getTranslation().getY() - SpeakerPos.getTranslation().getY());
+		SmartDashboard.putNumber("relativePos", relativePos.getAngle().getDegrees());
+		return -relativePos.getAngle().getDegrees();
+		
+	}
 
     @Override
     public void write(double time, double dt) {
@@ -140,11 +160,11 @@ public class Limelight implements Updatable {
     @Override
     public void telemetry() {
         SmartDashboard.putBoolean("has_target", hasTarget());
-        if (hasTarget()) {
-            SmartDashboard.putString("limelight_pose", botEstimate.get().pose.toString());
-            SmartDashboard.putNumber("latency", botEstimate.get().latency);
-        }
-        
+		if (hasTarget()) {
+			SmartDashboard.putString("limelight_pose", botEstimate.get().pose.toString());
+			SmartDashboard.putNumber("latency", botEstimate.get().latency);
+		}
+		SmartDashboard.putNumber("relativePos2",  getSpeakerRelativePosition());
     }
 
     @Override

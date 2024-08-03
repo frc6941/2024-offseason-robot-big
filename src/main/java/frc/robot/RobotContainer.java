@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.IndexCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.RumbleCommand;
+import frc.robot.commands.SpeakerAimingCommand;
 import frc.robot.commands.SpeakerShootCommand;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
@@ -96,18 +97,34 @@ public class RobotContainer {
 		// swerve));
 		// field relative heading
 		// driverController.a().
-		driverController.rightTrigger().whileTrue(
-				Commands.sequence(
-						new SpeakerShootCommand(
-								shooterSubsystem,
-								indexerSubsystem,
-								beamBreakSubsystem,
-								indicatorSubsystem,
-								swerve,
-								driverController,
-								() -> driverController.getHID().getRightBumper()),
-						new RumbleCommand(Seconds.of(1), driverController.getHID(),
-								operatorController.getHID())));
+
+		// driverController.rightTrigger().whileTrue(
+		// 		Commands.sequence(
+		// 				new SpeakerShootCommand(
+		// 						shooterSubsystem,
+		// 						indexerSubsystem,
+		// 						beamBreakSubsystem,
+		// 						indicatorSubsystem,
+		// 						swerve,
+		// 						driverController,
+		// 						() -> driverController.getHID().getRightBumper()),
+		// 				new RumbleCommand(Seconds.of(1), driverController.getHID(),
+		// 						operatorController.getHID())));
+		driverController.rightBumper()
+				.whileTrue(new SpeakerAimingCommand(shooterSubsystem, indicatorSubsystem, swerve, driverController));
+
+		// driverController.rightTrigger().whileTrue(Commands.run(() -> {
+		// 	swerve.setHeadingTarget(Limelight.getInstance().getSpeakerRelativePosition());
+		// 	System.out.println(Limelight.getInstance().getSpeakerRelativePosition());
+		// }, swerve));
+
+		// driverController.a().onTrue(Commands.runOnce(()->swerve.setLockHeading(true), swerve));
+		// driverController.b().onTrue(Commands.runOnce(() -> swerve.setLockHeading(false), swerve));
+		// driverController.povLeft().onTrue(Commands.runOnce(() -> {
+		// 	swerve.setLockHeading(true);
+		// 	swerve.setHeadingTarget(90);
+		// 	//swerve.setLockHeading(false);
+		// 	System.out.println("aaaaa");}, swerve));
 
 		driverController.leftBumper().whileTrue(
 				Commands.sequence(

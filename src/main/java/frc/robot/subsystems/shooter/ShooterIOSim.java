@@ -81,7 +81,7 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
-    public void setShooterVoltage(Measure<Voltage> volts) {
+    public void setFlyWheelVoltage(Measure<Voltage> volts) {
         leftShooterAppliedVoltage = volts;
         rightShooterAppliedVoltage = leftShooterAppliedVoltage.mutableCopy().negate();
 

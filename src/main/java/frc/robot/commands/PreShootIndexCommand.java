@@ -27,12 +27,12 @@ public class PreShootIndexCommand extends Command {
 	@Override
 	public void execute() {
 		indexerSubsystem.getIo().setIndexVoltage(trapIndexVoltage);
-		shooterSubsystem.getIo().setShooterVoltage(trapIndexVoltage.mutableCopy().negate());
+		shooterSubsystem.getIo().setFlyWheelVoltage(trapIndexVoltage.mutableCopy().negate());
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		shooterSubsystem.getIo().setShooterVoltage(Volts.zero());
+		shooterSubsystem.getIo().setFlyWheelVoltage(Volts.zero());
 		indexerSubsystem.getIo().setIndexVoltage(indexShootVoltage);
 	}
 

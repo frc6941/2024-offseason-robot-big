@@ -33,7 +33,7 @@ public class PreShootCommand extends Command {
 
 		var targetOptional = Limelight.getTarget();
 		if (targetOptional.isEmpty()) {
-			shooterSubsystem.getIo().setShooterVoltage(defaultVoltage);
+			shooterSubsystem.getIo().setFlyWheelVoltage(defaultVoltage);
 			return;
 		}
 
@@ -47,10 +47,10 @@ public class PreShootCommand extends Command {
 		SmartDashboard.putNumber("shooter desired angle", Units.degreesToRadians(
 				shooterSubsystem.getInputs().leftShooterVelocity.magnitude()));
 
-		shooterSubsystem.getIo().setShooterVoltage(Volts.of(parameter.getVoltage()));
+		shooterSubsystem.getIo().setFlyWheelVoltage(Volts.of(parameter.getVoltage()));
 		// if (distance >= shortShootMaxDistance.magnitude() + 0.5) {
 		// defaultVoltage = farShootVoltage;
-		// shooterSubsystem.getIo().setShooterVoltage(farShootVoltage);
+		// shooterSubsystem.getIo().setFlyWheelVoltage(farShootVoltage);
 		// return;
 		// }
 		// if (shortShootMaxDistance.magnitude() - 0.1 < distance && distance <
@@ -62,7 +62,7 @@ public class PreShootCommand extends Command {
 		// defaultVoltage = Volts.of(tempd + shortShootVoltage.magnitude());
 		// ShootingParameters parameter =
 		// ShootingParametersTable.getInstance().getParameters(distance);
-		// shooterSubsystem.getIo().setShooterVoltage(Volts.of(parameter.getVoltage()));
+		// shooterSubsystem.getIo().setFlyWheelVoltage(Volts.of(parameter.getVoltage()));
 
 		// // Basic math, Watson.
 		// // Method to derive:
@@ -71,18 +71,18 @@ public class PreShootCommand extends Command {
 		// // defaultVoltage = Volts.of(
 		// // 15 * distance - 29.5
 		// // ).negate();
-		// // shooterSubsystem.getIo().setShooterVoltage(Volts.of(
+		// // shooterSubsystem.getIo().setFlyWheelVoltage(Volts.of(
 		// // 15 * distance - 29.5
 		// // ).negate());
 		// return;
 		// }
 		// defaultVoltage = shortShootVoltage;
-		// shooterSubsystem.getIo().setShooterVoltage(shortShootVoltage);
+		// shooterSubsystem.getIo().setFlyWheelVoltage(shortShootVoltage);
 	}
 
 	@Override
 	public void end(boolean interrupted) {
 		shooterSubsystem.getIo()
-				.setShooterVoltage(Constants.ShooterConstants.shooterConstantVoltage);
+				.setFlyWheelVoltage(Constants.ShooterConstants.shooterConstantVoltage);
 	}
 }

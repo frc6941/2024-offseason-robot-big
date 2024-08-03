@@ -38,7 +38,7 @@ public class IntakeCommand extends Command {
 			intakerSubsystem.getIo().setIntakeVoltage(Constants.IntakerConstants.intakeVoltage);
 		}
 
-		shooterSubsystem.getIo().setShooterVoltage(Volts.of(1));
+		shooterSubsystem.getIo().setFlyWheelVoltage(Volts.of(1));
 
 		// debug(" " + shooterSubsystem.getInputs().armPosition.magnitude());
 	}
@@ -48,7 +48,7 @@ public class IntakeCommand extends Command {
 		intakerSubsystem.getIo()
 				.setIntakeVoltage(Volts.zero());
 		shooterSubsystem.getIo()
-				.setShooterVoltage(Constants.ShooterConstants.shooterConstantVoltage);
+				.setFlyWheelVoltage(Constants.ShooterConstants.shooterConstantVoltage);
 		if (interrupted)
 			return;
 		indicatorSubsystem

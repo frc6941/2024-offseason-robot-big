@@ -141,7 +141,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 	}
 
 	@Override
-	public void setShooterVoltage(Measure<Voltage> volts) {
+	public void setFlyWheelVoltage(Measure<Voltage> volts) {
 		leftShooterTalon.setControl(new VoltageOut(volts.magnitude()));
 		rightShooterTalon.setControl(new Follower(leftShooterTalon.getDeviceID(),
 				true));

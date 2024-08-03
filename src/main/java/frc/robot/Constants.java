@@ -70,7 +70,7 @@ public class Constants {
 		 */
 		public static final Measure<Velocity<Angle>> maxAngularRate = RotationsPerSecond.of(1.5 * Math.PI);
 
-		public static final double deadband = maxSpeed.magnitude() * 0.05;
+		public static final double deadband = maxSpeed.magnitude() * 0.07;
 		public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.05;
 
 		public static final SlewRateLimiter xLimiter = new SlewRateLimiter(3, -3.25, 0);
@@ -80,7 +80,7 @@ public class Constants {
 		 * Gearing between the drive motor output shaft and the wheel.
 		 */
 		public static final double DRIVE_GEAR_RATIO = 6.7460317460317460317460317460317;
-		/**
+		/**	
 		 * Theoretical free speed (m/s) at 12v applied output;
 		 */
 		public static final Measure<Velocity<Distance>> speedAt12Volts = MetersPerSecond.of(6.0);

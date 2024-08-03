@@ -23,19 +23,19 @@ public class DeliverNoteIndexCommand extends Command {
 
 	@Override
 	public void initialize() {
-		shooterSubsystem.getIo().setShooterVoltage(Volts.zero());
+		shooterSubsystem.getIo().setFlyWheelVoltage(Volts.zero());
 		timer.restart();
 	}
 
 	@Override
 	public void execute() {
 		// Yes, it's weird. Not my idea.
-		shooterSubsystem.getIo().setShooterVoltage(shooterIndexVoltage);
+		shooterSubsystem.getIo().setFlyWheelVoltage(shooterIndexVoltage);
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		shooterSubsystem.getIo().setShooterVoltage(Constants.ShooterConstants.shooterConstantVoltage);
+		shooterSubsystem.getIo().setFlyWheelVoltage(Constants.ShooterConstants.shooterConstantVoltage);
 		indexerSubsystem.getIo().setIndexVoltage(Volts.zero());
 	}
 

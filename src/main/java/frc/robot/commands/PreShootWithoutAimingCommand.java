@@ -18,12 +18,12 @@ public class PreShootWithoutAimingCommand extends Command {
 
 	@Override
 	public void execute() {
-		shooterSubsystem.getIo().setShooterVoltage(volts);
+		shooterSubsystem.getIo().setFlyWheelVoltage(volts);
 	}
 
 	@Override
 	public void end(boolean interrupted) {
 		shooterSubsystem.getIo()
-				.setShooterVoltage(Constants.ShooterConstants.shooterConstantVoltage);
+				.setFlyWheelVoltage(Constants.ShooterConstants.shooterConstantVoltage);
 	}
 }

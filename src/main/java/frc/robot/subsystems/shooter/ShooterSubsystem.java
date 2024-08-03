@@ -16,7 +16,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
-        this.io.setShooterVoltage(shooterConstantVoltage);
+        this.io.setFlyWheelVoltage(shooterConstantVoltage);
     }
 
     @Override

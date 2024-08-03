@@ -1,11 +1,8 @@
 package frc.robot.display;
 
-import frc.robot.Constants;
-import frc.robot.subsystems.swerve.Swerve;
-
 import org.frcteam6941.looper.Updatable;
 
-import java.util.Optional;
+import frc.robot.subsystems.swerve.Swerve;
 
 public class Display implements Updatable {
     FieldView fieldView;
@@ -30,6 +27,6 @@ public class Display implements Updatable {
         fieldView.update(
             swerve.getLocalizer().getCoarseFieldPose(time), 
             swerve.getLocalizer().getPredictedPose(0.1)
-        );;
+        );
     }
 }

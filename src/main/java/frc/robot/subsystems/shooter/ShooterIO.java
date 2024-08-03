@@ -35,7 +35,7 @@ public interface ShooterIO {
 
     void updateInputs(ShooterIOInputs inputs);
 
-    void setShooterVoltage(Measure<Voltage> volts);
+    void setFlyWheelVoltage(Measure<Voltage> volts);
 
     void setArmVoltage(Measure<Voltage> volts);
 
