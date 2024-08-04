@@ -3,11 +3,35 @@ package frc.robot.subsystems.shooter;
 import edu.wpi.first.units.*;
 import org.littletonrobotics.junction.AutoLog;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-
 import static edu.wpi.first.units.Units.*;
 
 public interface ShooterIO {
+    void updateInputs(ShooterIOInputs inputs);
+
+    void setFlyWheelVoltage(Measure<Voltage> volts);
+
+    void setFlyWheelVelocity(double velocityRPM, double ffVoltage);
+
+    void setFlyWheelVelocity(double velocityRPM);
+
+    void setArmVoltage(Measure<Voltage> volts);
+
+    void setPullerVoltage(Measure<Voltage> volts);
+
+    void setArmHome(Measure<Angle> rad);
+
+    void setHomed(boolean homed);
+
+    void setArmPosition(Measure<Angle> rad);
+
+    void setArmBrakeMode(boolean isCoast);
+
+    void setPullerBrakeMode(boolean isCoast);
+
+    boolean setArmConfig(double p, double i, double d);
+
+    void runVolts(double volts);
+
     @AutoLog
     class ShooterIOInputs {
         public boolean homed = false;
@@ -32,24 +56,4 @@ public interface ShooterIO {
         public Measure<Current> pullerSupplyCurrent = Amps.zero();
         public Measure<Current> pullerTorqueCurrent = Amps.zero();
     }
-
-    void updateInputs(ShooterIOInputs inputs);
-
-    void setFlyWheelVoltage(Measure<Voltage> volts);
-
-    void setArmVoltage(Measure<Voltage> volts);
-
-    void setPullerVoltage(Measure<Voltage> volts);
-
-    void setArmHome(Measure<Angle> rad);
-
-    void setHomed(boolean homed);
-
-    void setArmPosition(Measure<Angle> rad);
-
-    void setArmBrakeMode(boolean isCoast);
-
-    void setPullerBrakeMode(boolean isCoast);
-
-    boolean setArmConfig(double p, double i, double d);
 }

@@ -90,6 +90,15 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
+    public void setFlyWheelVelocity(double velocityRPM, double ffVoltage) {
+    }
+
+    @Override
+    public void setFlyWheelVelocity(double velocityRPM) {
+
+    }
+
+    @Override
     public void setArmVoltage(Measure<Voltage> volts) {
         armAppliedVoltage = volts;
         armTalonSim.setInputVoltage(volts.magnitude());
@@ -122,8 +131,13 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
-    public boolean setArmConfig(double p,double i,double d){
+    public boolean setArmConfig(double p, double i, double d) {
         return true;
+    }
+
+    @Override
+    public void runVolts(double volts) {
+
     }
 
     @Override

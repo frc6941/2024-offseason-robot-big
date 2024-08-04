@@ -3,11 +3,6 @@ package org.frcteam6941.localization;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import frc.robot.Constants;
-import lombok.Synchronized;
-import org.frcteam6941.utils.InterpolatingTreeMap;
-import org.frcteam6941.utils.MovingAveragePose2d;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -15,33 +10,31 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants;
+import lombok.Synchronized;
+import org.frcteam6941.utils.InterpolatingTreeMap;
+import org.frcteam6941.utils.MovingAveragePose2d;
 
 public class SwerveDeltaCoarseLocalizer implements Localizer {
+    private final Object statusLock = new Object();
     private SwerveDriveOdometry swerveOdometry;
     private SwerveDrivePoseEstimator poseEstimator;
-
     private Pose2d previousPose = null;
     private Pose2d previousVelocity = new Pose2d();
     private double distanceDriven = 0.0;
-
     private InterpolatingTreeMap<Double, Pose2d> fieldToVehicle;
     private int poseBufferSize;
     private int velocityBufferSize;
     private int accelerationBufferSize;
-
     private Pose2d vehicleVelocityMeasured;
     private MovingAveragePose2d vehicleVelocityMeasuredFilter;
-
     private Pose2d vehicleAccelerationMeasured;
     private MovingAveragePose2d vehicleAccelerationMeasuredFilter;
-
     private Pose2d vehicleVelocityPredicted;
     private MovingAveragePose2d vehicleVelocityPredictedFilter;
 
-    private final Object statusLock = new Object();
-
     public SwerveDeltaCoarseLocalizer(SwerveDriveKinematics kinematics, int poseBufferSize, int velocityBufferSize,
-                                int accelerationBufferSize, SwerveModulePosition[] initPosition) {
+                                      int accelerationBufferSize, SwerveModulePosition[] initPosition) {
         this.poseBufferSize = poseBufferSize;
         this.velocityBufferSize = velocityBufferSize;
         this.accelerationBufferSize = accelerationBufferSize;
@@ -200,6 +193,7 @@ public class SwerveDeltaCoarseLocalizer implements Localizer {
             poseEstimator.addVisionMeasurement(
                     measuredPose,
                     time,
+                    // FIXME
                     new MatBuilder<>(Nat.N3(), Nat.N1()).fill(stdDeviation.getX(), stdDeviation.getY(), stdDeviation.getRotation().getDegrees())
             );
         }
