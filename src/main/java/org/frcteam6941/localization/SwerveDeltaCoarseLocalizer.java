@@ -193,8 +193,7 @@ public class SwerveDeltaCoarseLocalizer implements Localizer {
             poseEstimator.addVisionMeasurement(
                     measuredPose,
                     time,
-                    // FIXME
-                    new MatBuilder<>(Nat.N3(), Nat.N1()).fill(stdDeviation.getX(), stdDeviation.getY(), stdDeviation.getRotation().getDegrees())
+                    MatBuilder.fill(Nat.N3(), Nat.N1(), stdDeviation.getX(), stdDeviation.getY(), stdDeviation.getRotation().getDegrees())
             );
         }
     }
