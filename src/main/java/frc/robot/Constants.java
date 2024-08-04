@@ -32,7 +32,7 @@ import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.a.TunableNumber;
+import frc.robot.utils.TunableNumber;
 
 public class Constants {
 	public static final boolean TUNING = true;

@@ -85,7 +85,6 @@ public class SpeakerAimingCommand extends Command {
 		// 					Radians.of(
 		// 							Units.degreesToRadians(parameter.getAngle())));
 		// }
-
 		Swerve.drive(
 				new Translation2d(
 						-driverController.getLeftX() * Constants.SwerveDrivetrain.maxSpeed.magnitude(),
@@ -100,7 +99,7 @@ public class SpeakerAimingCommand extends Command {
 	@Override
 	public void end(boolean interrupted) {
 		Swerve.setLockHeading(false);
-		// shooterSubsystem.getIo().setArmPosition(Radians.zero());
+		shooterSubsystem.getIo().setArmPosition(Radians.zero());
 	}
 
 	@Override

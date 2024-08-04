@@ -562,7 +562,11 @@ public class Swerve implements Updatable, Subsystem {
         this.state = state;
     }
 
-    public enum State {
-        BRAKE, DRIVE, PATH_FOLLOWING, EMPTY
-    }
+	public enum State {
+		BRAKE, DRIVE, PATH_FOLLOWING, EMPTY
+	}
+
+	public boolean aimingReady(){
+		return Math.abs(gyro.getYaw().getDegrees() - headingTarget) < 5;
+	}
 }

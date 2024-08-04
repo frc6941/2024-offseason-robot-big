@@ -158,6 +158,29 @@ public class RobotContainer {
         driverController.povDownLeft().whileTrue(new SetFacingCommand(swerve, 135));
         driverController.povLeft().whileTrue(new SetFacingCommand(swerve, 90));
         driverController.povUpLeft().whileTrue(new SetFacingCommand(swerve, 45));
+		driverController.leftBumper().whileTrue(
+				Commands.sequence(
+						Commands.parallel(
+								new IntakeCommand(intakerSubsystem, beamBreakSubsystem,
+										indicatorSubsystem, shooterSubsystem),
+								new IndexCommand(indexerSubsystem, beamBreakSubsystem)),
+						new RumbleCommand(Seconds.of(1), driverController.getHID(),
+								operatorController.getHID())));
+		driverController.start().onTrue(Commands.runOnce(() -> {
+			swerve.resetHeadingController();
+			edu.wpi.first.math.geometry.Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();
+			System.out.println("A = " + a);
+			Pose2d b = new Pose2d(new Translation2d(3,7.841), a);
+			swerve.resetPose(b);
+		}));
+		driverController.povUp().whileTrue(new SetFacingCommand(swerve, 0));
+		driverController.povUpRight().whileTrue(new SetFacingCommand(swerve, 315));
+		driverController.povRight().whileTrue(new SetFacingCommand(swerve,270));
+		driverController.povDownRight().whileTrue(new SetFacingCommand(swerve, 225));
+		driverController.povDown().whileTrue(new SetFacingCommand(swerve, 180));
+		driverController.povDownLeft().whileTrue(new SetFacingCommand(swerve, 135));
+		driverController.povLeft().whileTrue(new SetFacingCommand(swerve, 90));
+		driverController.povUpLeft().whileTrue(new SetFacingCommand(swerve, 45));
 
         // driverController.x()
         // 		.onTrue(Commands.runOnce(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL),
