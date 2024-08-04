@@ -141,7 +141,7 @@ public class RobotContainer {
 			swerve.resetHeadingController();
 			edu.wpi.first.math.geometry.Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();
 			System.out.println("A = " + a);
-			Pose2d b = new Pose2d(new Translation2d(0, 0), a);
+			Pose2d b = new Pose2d(new Translation2d(3,7.841), a);
 			swerve.resetPose(b);
 		}));
 		driverController.povUp().whileTrue(new SetFacingCommand(swerve, 0));

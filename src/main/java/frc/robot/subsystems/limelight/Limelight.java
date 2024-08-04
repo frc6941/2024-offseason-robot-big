@@ -1,6 +1,7 @@
 package frc.robot.subsystems.limelight;
 
 import java.util.Optional;
+import java.util.Timer;
 
 import org.frcteam6941.looper.Updatable;
 
@@ -107,21 +108,20 @@ public class Limelight implements Updatable {
 			botEstimate = Optional.of(
 				LimelightHelpers
 						.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.AIM_LIMELIGHT_NAME));
-			if (lastPose != null) {
-				SmartDashboard.putNumber("degree speed", Math
-					.abs((botEstimate.get().pose.getRotation().getDegrees() - lastPose.pose.getRotation().getDegrees())
-								/ (botEstimate.get().timestampSeconds - lastPose.timestampSeconds)));
-				if(Math
-				.abs((botEstimate.get().pose.getRotation().getDegrees() - lastPose.pose.getRotation().getDegrees())
-								/ (botEstimate.get().timestampSeconds - lastPose.timestampSeconds)) > 30)
-					botEstimate = Optional.empty();
-			}
-			if(!botEstimate.isEmpty()) lastPose = botEstimate.get();
+			// if (lastPose != null) {
+			// 	SmartDashboard.putNumber("degree speed", Math
+			// 		.abs((botEstimate.get().pose.getRotation().getDegrees() - lastPose.pose.getRotation().getDegrees())
+			// 					/ (botEstimate.get().timestampSeconds - lastPose.timestampSeconds)));
+			// 	if(Math
+			// 	.abs((botEstimate.get().pose.getRotation().getDegrees() - lastPose.pose.getRotation().getDegrees())
+			// 					/ (botEstimate.get().timestampSeconds - lastPose.timestampSeconds)) > 30)
+			// 		botEstimate = Optional.empty();
+			// }
+			//if(!botEstimate.isEmpty()) lastPose = botEstimate.get();
         } else {
             botEstimate = Optional.empty();
         }
     }
-
     @Override
 	public void update(double time, double dt) {
 		LimelightHelpers.SetRobotOrientation("limelight",
@@ -150,7 +150,7 @@ public class Limelight implements Updatable {
 	}
 	
 	public Translation2d getSpeakerRelativePosition() {
-		Pose2d robotPos = swerve.getLocalizer().getCoarseFieldPose(time);
+		Pose2d robotPos = swerve.getLocalizer().getCoarseFieldPose(edu.wpi.first.wpilibj.Timer.getFPGATimestamp());
 		SmartDashboard.putString("robotPos", robotPos.toString());
 		// Pose2d SpeakerPos = new Pose2d(new Translation2d(FieldConstants.Speaker.centerSpeakerOpening.getX(),
 		// 		FieldConstants.Speaker.centerSpeakerOpening.getY()), new Rotation2d(0));
@@ -159,7 +159,7 @@ public class Limelight implements Updatable {
 		Translation2d relativePos = new Translation2d(
 				robotPos.getTranslation().getX() - SpeakerPos.getTranslation().getX(),
 				robotPos.getTranslation().getY() - SpeakerPos.getTranslation().getY());
-		SmartDashboard.putNumber("relativePos", relativePos.getAngle().getDegrees());
+		SmartDashboard.putNumber("headingtarget", relativePos.getAngle().getDegrees()-swerve.getGyro().getYaw().getDegrees());
 		return relativePos;
 		
 	}
