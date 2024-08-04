@@ -5,28 +5,28 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class ArmAimingSpeakerCommand extends Command {
 
-	private ShooterSubsystem shooterSubsystem;
-	
-	public ArmAimingSpeakerCommand(
-		ShooterSubsystem shooterSubsystem
-	) {
-		this.shooterSubsystem = shooterSubsystem;
-	}
+    private ShooterSubsystem shooterSubsystem;
 
-	@Override
-	public void initialize() {
+    public ArmAimingSpeakerCommand(
+            ShooterSubsystem shooterSubsystem
+    ) {
+        this.shooterSubsystem = shooterSubsystem;
+    }
 
-	}
+    @Override
+    public void initialize() {
 
-	@Override
-	public void execute() {
+    }
 
-	}
+    @Override
+    public void execute() {
 
-	@Override
-	public void end() {
+    }
 
-	}
+    @Override
+    public void end(boolean interrupted) {
+
+    }
 }
 
 //	while(		return (beamBreakSubsystem.getInputs().isIndexerBeamBreakOn &&
