@@ -3,11 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.limelight.Limelight;
@@ -23,23 +22,23 @@ import static edu.wpi.first.units.Units.Radians;
 public class SpeakerAimingCommand extends Command {
     private final ShooterSubsystem shooterSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
+    private final BeamBreakSubsystem beamBreakSubsystem;
     private final Swerve Swerve;
     private final CommandXboxController driverController;
     LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
-    private Measure<Angle> defaultAngle = Degrees.of(20);
     private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("Distance");
 
     public SpeakerAimingCommand(
             ShooterSubsystem shooterSubsystem,
             IndicatorSubsystem indicatorSubsystem,
+            BeamBreakSubsystem beamBreakSubsystem,
             Swerve Swerve,
             CommandXboxController driverController) {
         this.shooterSubsystem = shooterSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
+        this.beamBreakSubsystem = beamBreakSubsystem;
         this.Swerve = Swerve;
         this.driverController = driverController;
-        // drive.HeadingController.s;
-        // drive.HeadingController.set
     }
 
     @Override
@@ -49,41 +48,19 @@ public class SpeakerAimingCommand extends Command {
 
     @Override
     public void execute() {
+        if (!beamBreakSubsystem.isIntakeReady()) {
+            shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
+            return;
+        }
         this.indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMED);
-        var offset = Constants.ShooterConstants.speakerArmOffset.magnitude();
 
-        //Pose3d target = LimelightHelpers.getTargetPose3d_CameraSpace("limelight");
         var distance = Limelight.getInstance().getSpeakerRelativePosition().getNorm();
-        //var angle = -Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees();
 
         ShootingParameters parameter = ShootingParametersTable.getInstance().getParameters(distance);
-
-        // Calculated using highly-sophisticated software.
-        // Do not touch unless you (really) know what you're doing!
-        // double A = -317.1;
-        // double B = 631.7;
-        // double C = -489.2;
-        // double D = 200.1;
-        // double E = -40.88;
-        // double F = 3.268;
-        // offset = A + B * distance + C * Math.pow(distance, 2) + D *
-        // Math.pow(distance, 3) + E * Math.pow(distance, 4) + F * Math.pow(distance,
-        // 5);
-        double A1 = 18.43145;
-        double A2 = 67.62172;
-        double x0 = 2.07751;
-        double p = 5.16297;
-        offset = A2 + (A1 - A2) / (1 + Math.pow(distance / x0, p));
-        // double A1 = 69.6287;
-        // double A2 = 11.4576;
-        // double x0 = 1.99428;
-        // double p = -4.33742;
-        // offset = A2 + (A1 - A2) / (1 + Math.pow(distance / x0, p)) + 1. ;
 
         if (Math.abs(
                 parameter.getAngle() -
                         shooterSubsystem.getInputs().armPosition.in(Degrees)) >= 0.5) {
-            defaultAngle = Degrees.of(parameter.getAngle());
             shooterSubsystem
                     .getIo()
                     .setArmPosition(
@@ -99,7 +76,7 @@ public class SpeakerAimingCommand extends Command {
                 true,
                 false);
         filter.calculate(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees());
-        Swerve.setHeadingTarget(filter.lastValue());//.getRotation().getDegrees()
+        Swerve.setHeadingTarget(filter.lastValue());
     }
 
     @Override

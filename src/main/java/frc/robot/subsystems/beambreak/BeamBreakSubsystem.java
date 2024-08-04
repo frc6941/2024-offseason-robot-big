@@ -18,4 +18,9 @@ public class BeamBreakSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Beam Break", inputs);
     }
+
+    public boolean isIntakeReady() {
+        return inputs.isIndexerBeamBreakOn &&
+                !inputs.isIntakerBeamBreakOn;
+    }
 }

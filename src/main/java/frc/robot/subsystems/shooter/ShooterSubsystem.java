@@ -36,7 +36,6 @@ public class ShooterSubsystem extends SubsystemBase {
                                 null,
                                 (state) -> Logger.recordOutput("Flywheel/SysIdState", state.toString())),
                         new SysIdRoutine.Mechanism((voltage) -> io.runVolts(voltage.in(Volts)), null, this));
-
     }
 
     @Override
@@ -51,6 +50,13 @@ public class ShooterSubsystem extends SubsystemBase {
             return;
         }
         io.setArmVoltage(armZeroVoltage);
+    }
+
+    public boolean aimingReady() {
+        // FIXME Tune magic numbers
+        var velocityReady = Math.abs(inputs.leftShooterVelocity.magnitude() - inputs.targetShooterVelocity.magnitude()) < 1;
+        var positionReady = Math.abs(inputs.armPosition.magnitude() - inputs.targetArmPosition.magnitude()) < 0.007;
+        return velocityReady && positionReady;
     }
 
     /**

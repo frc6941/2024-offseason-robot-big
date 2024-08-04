@@ -22,10 +22,14 @@ public class SpeakerShootCommand extends ParallelCommandGroup {
             CommandXboxController driverController,
             BooleanSupplier confirmation) {
         addCommands(
-                new SpeakerAimingCommand(shooterSubsystem, indicatorSubsystem, Swerve, driverController),
+                new SpeakerAimingCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem, Swerve, driverController),
                 new PreShootCommand(shooterSubsystem),
                 Commands.sequence(
-                        new WaitUntilCommand(() -> (confirmation.getAsBoolean() && Swerve.aimingReady())),
+                        new WaitUntilCommand(() -> (
+                                confirmation.getAsBoolean() &&
+                                        Swerve.aimingReady() &&
+                                        shooterSubsystem.aimingReady()
+                        )),
                         new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)));
     }
 }

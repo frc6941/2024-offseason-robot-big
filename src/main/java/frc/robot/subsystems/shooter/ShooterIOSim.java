@@ -121,6 +121,11 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
+    public void setArmPosition(Measure<Angle> rad, boolean update) {
+        setArmPosition(rad);
+    }
+
+    @Override
     public void setArmBrakeMode(boolean isCoast) {
 
     }

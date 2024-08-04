@@ -42,8 +42,10 @@ public class ShooterIOTalonFX implements ShooterIO {
     private final StatusSignal<Double> pullerAppliedVoltage = pullerTalon.getMotorVoltage();
     private final StatusSignal<Double> pullerSupplyCurrent = pullerTalon.getSupplyCurrent();
     private final StatusSignal<Double> pullerTorqueCurrent = pullerTalon.getTorqueCurrent();
-    private SimpleMotorFeedforward ffFlywheel;
+    private final SimpleMotorFeedforward ffFlywheel;
     private boolean homed = false;
+    private double targetShooterVelocity = 0;
+    private double targetArmPosition = 0;
 
     public ShooterIOTalonFX() {
         ffFlywheel = new SimpleMotorFeedforward(0.15355, 0.018634, 0.0013567);
@@ -149,6 +151,9 @@ public class ShooterIOTalonFX implements ShooterIO {
                 .withKI(Constants.ArmConstants.ArmI.get())
                 .withKD(Constants.ArmConstants.ArmD.get());
         armTalon.getConfigurator().apply(newconfig);
+
+        inputs.targetShooterVelocity = RadiansPerSecond.of(targetShooterVelocity);
+        inputs.targetArmPosition = Radians.of(targetArmPosition);
     }
 
     @Override
@@ -172,6 +177,7 @@ public class ShooterIOTalonFX implements ShooterIO {
                 false,
                 false
         ));
+        targetShooterVelocity = velocityRadPerSec;
     }
 
     @Override
@@ -187,6 +193,7 @@ public class ShooterIOTalonFX implements ShooterIO {
                 false,
                 false
         ));
+        targetShooterVelocity = velocityRadPerSec;
     }
 
     @Override
@@ -206,6 +213,15 @@ public class ShooterIOTalonFX implements ShooterIO {
 
     @Override
     public void setArmPosition(Measure<Angle> rad) {
+        armTalon.setControl(new MotionMagicVoltage(rad.in(Rotations)));
+        targetArmPosition = rad.in(Radians);
+    }
+
+    @Override
+    public void setArmPosition(Measure<Angle> rad, boolean update) {
+        if (update) {
+            targetArmPosition = rad.in(Radians);
+        }
         armTalon.setControl(new MotionMagicVoltage(rad.in(Rotations)));
     }
 

@@ -24,6 +24,8 @@ public interface ShooterIO {
 
     void setArmPosition(Measure<Angle> rad);
 
+    void setArmPosition(Measure<Angle> rad, boolean update);
+
     void setArmBrakeMode(boolean isCoast);
 
     void setPullerBrakeMode(boolean isCoast);
@@ -55,5 +57,8 @@ public interface ShooterIO {
         public Measure<Voltage> pullerAppliedVoltage = Volts.zero();
         public Measure<Current> pullerSupplyCurrent = Amps.zero();
         public Measure<Current> pullerTorqueCurrent = Amps.zero();
+
+        public Measure<Velocity<Angle>> targetShooterVelocity = RadiansPerSecond.zero();
+        public Measure<Angle> targetArmPosition = Radians.zero();
     }
 }
