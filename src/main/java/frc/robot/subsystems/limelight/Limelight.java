@@ -20,7 +20,6 @@ import static edu.wpi.first.units.Units.Microseconds;
 import static edu.wpi.first.units.Units.Radians;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.FieldConstants;
 import frc.robot.subsystems.limelight.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.swerve.Swerve;
 
@@ -38,7 +37,8 @@ public class Limelight implements Updatable {
 	private static final NetworkTableEntry targetPoseCameraSpace = limelightTable.getEntry("targetpose_cameraspace");
 
 	private static final Swerve swerve = Swerve.getInstance();
-	private double time = 0.0;
+	private double time = 0.0, dt = 0.0;
+	private PoseEstimate lastPose;
 
     // singleton
     private static Limelight instance;
@@ -103,9 +103,20 @@ public class Limelight implements Updatable {
 
     @Override
     public void read(double time, double dt) {
-        if (hasTarget()) {
-            botEstimate = Optional.of(
-                    LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.AIM_LIMELIGHT_NAME));
+		if (hasTarget()) {
+			botEstimate = Optional.of(
+				LimelightHelpers
+						.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.AIM_LIMELIGHT_NAME));
+			if (lastPose != null) {
+				SmartDashboard.putNumber("degree speed", Math
+					.abs((botEstimate.get().pose.getRotation().getDegrees() - lastPose.pose.getRotation().getDegrees())
+								/ (botEstimate.get().timestampSeconds - lastPose.timestampSeconds)));
+				if(Math
+				.abs((botEstimate.get().pose.getRotation().getDegrees() - lastPose.pose.getRotation().getDegrees())
+								/ (botEstimate.get().timestampSeconds - lastPose.timestampSeconds)) > 30)
+					botEstimate = Optional.empty();
+			}
+			if(!botEstimate.isEmpty()) lastPose = botEstimate.get();
         } else {
             botEstimate = Optional.empty();
         }
@@ -118,12 +129,11 @@ public class Limelight implements Updatable {
 				Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation().getDegrees(),
 				0, 0, 0, 0);
 		//rejection
-		// if (Swerve.getInstance().getLocalizer().getSmoothedVelocity().getTranslation()
-		// 		.getNorm() > Constants.VisionConstants.REJECT_LINEAR_SPEED)
-		// 	return;
-		// if (Math.abs(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation()
-		// 		.getDegrees()) > Constants.VisionConstants.REJECT_ANGULAR_SPEED)
-		// 	return;
+		if (Swerve.getInstance().getLocalizer().getSmoothedVelocity().getTranslation().getNorm() > Constants.SwerveDrivetrain.maxSpeed.magnitude())
+			return;
+		if (Math.abs(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation()
+				.getDegrees()) > Math.toDegrees(Constants.SwerveDrivetrain.maxAngularRate.magnitude()))
+			return;
 		// if (Swerve.getInstance().getLocalizer().getLatestPose().getX() < 0
 		// 		|| Swerve.getInstance().getLocalizer().getLatestPose().getX() > FieldConstants.fieldLength
 		// 		|| Swerve.getInstance().getLocalizer().getLatestPose().getY() < 0
@@ -136,20 +146,21 @@ public class Limelight implements Updatable {
 					new Pose2d(new Translation2d(0.01, 0.01), Rotation2d.fromDegrees(0.001)));
 		});
 		this.time = time;
+		this.dt = dt;
 	}
 	
-	public double getSpeakerRelativePosition() {
+	public Translation2d getSpeakerRelativePosition() {
 		Pose2d robotPos = swerve.getLocalizer().getCoarseFieldPose(time);
 		SmartDashboard.putString("robotPos", robotPos.toString());
 		// Pose2d SpeakerPos = new Pose2d(new Translation2d(FieldConstants.Speaker.centerSpeakerOpening.getX(),
 		// 		FieldConstants.Speaker.centerSpeakerOpening.getY()), new Rotation2d(0));
-		Pose2d SpeakerPos = new Pose2d(new Translation2d(16.312,5.545), new Rotation2d(0));
+		Pose2d SpeakerPos = new Pose2d(new Translation2d(0.229,5.545), new Rotation2d(0));//0.229BLUE 16.312RED
 		SmartDashboard.putString("SpeakerPos", SpeakerPos.toString());
 		Translation2d relativePos = new Translation2d(
 				robotPos.getTranslation().getX() - SpeakerPos.getTranslation().getX(),
 				robotPos.getTranslation().getY() - SpeakerPos.getTranslation().getY());
 		SmartDashboard.putNumber("relativePos", relativePos.getAngle().getDegrees());
-		return -relativePos.getAngle().getDegrees();
+		return relativePos;
 		
 	}
 
@@ -158,13 +169,17 @@ public class Limelight implements Updatable {
     }
 
     @Override
-    public void telemetry() {
-        SmartDashboard.putBoolean("has_target", hasTarget());
+	public void telemetry() {
+		//SmartDashboard.putBoolean("has_target", hasTarget());
 		if (hasTarget()) {
-			SmartDashboard.putString("limelight_pose", botEstimate.get().pose.toString());
-			SmartDashboard.putNumber("latency", botEstimate.get().latency);
+			SmartDashboard.putString("metaTag2blue",
+					LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.AIM_LIMELIGHT_NAME).pose.toString());
+			if (!botEstimate.isEmpty()) {
+				SmartDashboard.putString("limelight_pose", botEstimate.get().pose.toString());
+				SmartDashboard.putNumber("latency", botEstimate.get().latency);
+			} 
 		}
-		SmartDashboard.putNumber("relativePos2",  getSpeakerRelativePosition());
+		// SmartDashboard.putNumber("relativePos2",  getSpeakerRelativePosition());
     }
 
     @Override

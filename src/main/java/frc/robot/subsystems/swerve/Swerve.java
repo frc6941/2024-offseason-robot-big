@@ -513,7 +513,9 @@ public class Swerve implements Updatable, Subsystem {
 		if (Constants.TUNING) {
 			setHeadingControllerPID();
 			SmartDashboard.putString("swerve/localizer/latest_pose", getLocalizer().getLatestPose().toString());
+			SmartDashboard.putString("swerve/localizer/accel", getLocalizer().getMeasuredAcceleration().toString());
 			SmartDashboard.putString("swerve/localizer/velocity", getLocalizer().getSmoothedVelocity().toString());
+
 		}
 	}
 

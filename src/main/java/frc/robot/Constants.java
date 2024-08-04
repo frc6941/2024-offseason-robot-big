@@ -71,7 +71,7 @@ public class Constants {
 		public static final Measure<Velocity<Angle>> maxAngularRate = RotationsPerSecond.of(1.5 * Math.PI);
 
 		public static final double deadband = maxSpeed.magnitude() * 0.07;
-		public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.05;
+		public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.07;
 
 		public static final SlewRateLimiter xLimiter = new SlewRateLimiter(3, -3.25, 0);
 		public static final SlewRateLimiter yLimiter = new SlewRateLimiter(3, -3.25, 0);
@@ -371,7 +371,7 @@ public class Constants {
 		public static final Measure<Voltage> pullVoltage = Volts.of(-8);
 
 		public static Measure<Angle> speakerArmOffsetNear = Degrees.of(17);
-		public static Measure<Angle> speakerArmOffset = Degrees.of(44);
+		public static Measure<Angle> speakerArmOffset = Degrees.of(44);//44
 		public static Measure<Angle> speakerArmOffsetFar = Degrees.of(58.5);
 		public static Measure<Angle> speakerArmOffsetMax = Degrees.of(64);
 

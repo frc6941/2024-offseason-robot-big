@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.IndexCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ResetArmCommand;
 import frc.robot.commands.RumbleCommand;
+import frc.robot.commands.SetFacingCommand;
 import frc.robot.commands.SpeakerAimingCommand;
 import frc.robot.commands.SpeakerShootCommand;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
@@ -31,6 +33,8 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.display.Display;
 import lombok.Getter;
+import frc.robot.drivers.led.patterns.RainbowPattern;
+import frc.robot.subsystems.indicator.IndicatorIO;
 
 public class RobotContainer {
 	IntakerSubsystem intakerSubsystem = new IntakerSubsystem(new IntakerIOTalonFX());
@@ -98,20 +102,19 @@ public class RobotContainer {
 		// field relative heading
 		// driverController.a().
 
-		// driverController.rightTrigger().whileTrue(
-		// 		Commands.sequence(
-		// 				new SpeakerShootCommand(
-		// 						shooterSubsystem,
-		// 						indexerSubsystem,
-		// 						beamBreakSubsystem,
-		// 						indicatorSubsystem,
-		// 						swerve,
-		// 						driverController,
-		// 						() -> driverController.getHID().getRightBumper()),
-		// 				new RumbleCommand(Seconds.of(1), driverController.getHID(),
-		// 						operatorController.getHID())));
-		driverController.rightBumper()
-				.whileTrue(new SpeakerAimingCommand(shooterSubsystem, indicatorSubsystem, swerve, driverController));
+		driverController.rightTrigger().whileTrue(
+				Commands.sequence(
+						new SpeakerShootCommand(
+								shooterSubsystem,
+								indexerSubsystem,
+								beamBreakSubsystem,
+								indicatorSubsystem,
+								swerve,
+								driverController,
+								() -> driverController.getHID().getRightBumper()),
+						new RumbleCommand(Seconds.of(1), driverController.getHID(),
+								operatorController.getHID())));
+		//driverController.rightTrigger().onFalse(new ResetArmCommand(shooterSubsystem));
 
 		// driverController.rightTrigger().whileTrue(Commands.run(() -> {
 		// 	swerve.setHeadingTarget(Limelight.getInstance().getSpeakerRelativePosition());
@@ -136,17 +139,26 @@ public class RobotContainer {
 								operatorController.getHID())));
 		driverController.start().onTrue(Commands.runOnce(() -> {
 			swerve.resetHeadingController();
-			// ControllerDriveCommand.facingAngle = 0.0;
-			// Pigeon2 mPigeon2 = new Pigeon2(Constants.SwerveDrivetrian.PIGEON_ID,
-			// Constants.RobotConstants.RobotConstants.CAN_BUS_NAME);
-			edu.wpi.first.math.geometry.Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();// new
-																											// edu.wpi.first.math.geometry.Rotation2d(mPigeon2.getYaw().getValueAsDouble());
-			// swerve.getGyro().getYaw().;//.getLocalizer().getLatestPose().getRotation();
+			edu.wpi.first.math.geometry.Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();
 			System.out.println("A = " + a);
 			Pose2d b = new Pose2d(new Translation2d(0, 0), a);
 			swerve.resetPose(b);
 		}));
-		driverController.povUp().whileTrue(Commands.runOnce(()->System.out.println(swerve.getLocalizer().getLatestPose()),swerve));
+		driverController.povUp().whileTrue(new SetFacingCommand(swerve, 0));
+		driverController.povUpRight().whileTrue(new SetFacingCommand(swerve, 315));
+		driverController.povRight().whileTrue(new SetFacingCommand(swerve,270));
+		driverController.povDownRight().whileTrue(new SetFacingCommand(swerve, 225));
+		driverController.povDown().whileTrue(new SetFacingCommand(swerve, 180));
+		driverController.povDownLeft().whileTrue(new SetFacingCommand(swerve, 135));
+		driverController.povLeft().whileTrue(new SetFacingCommand(swerve, 90));
+		driverController.povUpLeft().whileTrue(new SetFacingCommand(swerve, 45));
+
+		// driverController.x()
+		// 		.onTrue(Commands.runOnce(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL),
+		// 				indicatorSubsystem));
+		indicatorSubsystem.setDefaultCommand(Commands.run(()->indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL), indicatorSubsystem));
+				
+		driverController.y().onTrue(new ResetArmCommand(shooterSubsystem));
 
 	}
 
