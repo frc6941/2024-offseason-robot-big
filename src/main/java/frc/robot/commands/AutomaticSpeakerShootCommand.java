@@ -23,7 +23,7 @@ public class AutomaticSpeakerShootCommand extends ParallelCommandGroup {
                 new PreShootCommand(shooterSubsystem),
                 Commands.sequence(
                         new WaitUntilCommand(() -> (
-                                        Swerve.aimingReady() &&
+                                        Swerve.aimingReady(5) &&
                                         shooterSubsystem.aimingReady()
                         )),
                         new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)));

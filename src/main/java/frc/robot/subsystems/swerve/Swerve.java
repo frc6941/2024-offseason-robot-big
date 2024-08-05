@@ -525,4 +525,10 @@ public class Swerve implements Updatable, Subsystem {
     public enum State {
         BRAKE, DRIVE, PATH_FOLLOWING, EMPTY
     }
+
+	public boolean aimingReady(double offset) {
+		SmartDashboard.putBoolean("SwerveReady", Math.abs(gyro.getYaw().getDegrees() - headingTarget) < offset);
+		return Math.abs(gyro.getYaw().getDegrees() - headingTarget) < offset;
+	}
+
 }

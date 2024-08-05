@@ -121,21 +121,6 @@ public class RobotContainer {
         //                         () -> driverController.getHID().getRightBumper()),
         //                 new RumbleCommand(Seconds.of(1), driverController.getHID(),
 		//                         operatorController.getHID())));
-		
-        //driverController.rightTrigger().onFalse(new ResetArmCommand(shooterSubsystem));
-
-        // driverController.rightTrigger().whileTrue(Commands.run(() -> {
-        // 	swerve.setHeadingTarget(Limelight.getInstance().getSpeakerRelativePosition());
-        // 	System.out.println(Limelight.getInstance().getSpeakerRelativePosition());
-        // }, swerve));
-
-        // driverController.a().onTrue(Commands.runOnce(()->swerve.setLockHeading(true), swerve));
-        // driverController.b().onTrue(Commands.runOnce(() -> swerve.setLockHeading(false), swerve));
-        // driverController.povLeft().onTrue(Commands.runOnce(() -> {
-        // 	swerve.setLockHeading(true);
-        // 	swerve.setHeadingTarget(90);
-        // 	//swerve.setLockHeading(false);
-        // 	System.out.println("aaaaa");}, swerve));
 
         driverController.leftBumper().whileTrue(
                 Commands.sequence(
@@ -151,25 +136,27 @@ public class RobotContainer {
             System.out.println("A = " + a);
             Pose2d b = new Pose2d(new Translation2d(0, 0), a);
             swerve.resetPose(b);
-        }));
-        driverController.povUp().whileTrue(new SetFacingCommand(swerve, 0));
-        driverController.povUpRight().whileTrue(new SetFacingCommand(swerve, 315));
-        driverController.povRight().whileTrue(new SetFacingCommand(swerve, 270));
-        driverController.povDownRight().whileTrue(new SetFacingCommand(swerve, 225));
-        driverController.povDown().whileTrue(new SetFacingCommand(swerve, 180));
-        driverController.povDownLeft().whileTrue(new SetFacingCommand(swerve, 135));
-        driverController.povLeft().whileTrue(new SetFacingCommand(swerve, 90));
-        driverController.povUpLeft().whileTrue(new SetFacingCommand(swerve, 45));
+		}));
+        driverController.povUp().onTrue(new SetFacingCommand(swerve, 0));
+        driverController.povUpRight().onTrue(new SetFacingCommand(swerve, 315));
+        driverController.povRight().onTrue(new SetFacingCommand(swerve, 270));
+        driverController.povDownRight().onTrue(new SetFacingCommand(swerve, 225));
+        driverController.povDown().onTrue(new SetFacingCommand(swerve, 180));
+        driverController.povDownLeft().onTrue(new SetFacingCommand(swerve, 135));
+        driverController.povLeft().onTrue(new SetFacingCommand(swerve, 90));
+        driverController.povUpLeft().onTrue(new SetFacingCommand(swerve, 45));
         // driverController.x()
         // 		.onTrue(Commands.runOnce(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL),
         // 				indicatorSubsystem));
-        indicatorSubsystem.setDefaultCommand(Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL), indicatorSubsystem));
+		indicatorSubsystem.setDefaultCommand(
+				Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL), indicatorSubsystem));
 
-        driverController.b().onTrue(new ResetArmCommand(shooterSubsystem));
-        driverController.y().whileTrue(new ShooterUpCommand(shooterSubsystem));
-		driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
-		driverController.x().whileTrue(new DeliverNoteCommand(indexerSubsystem,beamBreakSubsystem,indicatorSubsystem));
-		shooterSubsystem.setDefaultCommand(new PreShootTestCommand(shooterSubsystem));
+		// parameter 
+        // driverController.b().onTrue(new ResetArmCommand(shooterSubsystem));
+        // driverController.y().whileTrue(new ShooterUpCommand(shooterSubsystem));
+		// driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
+		// driverController.x().whileTrue(new DeliverNoteCommand(indexerSubsystem,beamBreakSubsystem,indicatorSubsystem));
+		// shooterSubsystem.setDefaultCommand(new PreShootTestCommand(shooterSubsystem));
 		
 		driverController.rightBumper().whileTrue( Commands.sequence(
 			new AutomaticSpeakerShootCommand(

@@ -199,7 +199,7 @@ public class Constants {
         /**
          * The stator current at which the wheels start to slip
          */
-        private static final Measure<Current> slipCurrent = Amps.of(110.0);
+        private static final Measure<Current> slipCurrent = Amps.of(90.0);
         /**
          * Swerve steering gains
          */
@@ -269,8 +269,8 @@ public class Constants {
                 .withSteerFrictionVoltage(steerFrictionVoltage.magnitude())
                 .withDriveFrictionVoltage(driveFrictionVoltage.magnitude())
                 .withFeedbackSource(SwerveModuleConstants.SteerFeedbackType.SyncCANcoder)
-                .withCouplingGearRatio(COUPLE_RATIO)
-                .withSteerMotorInverted(STEER_MOTOR_REVERSED);
+				.withCouplingGearRatio(COUPLE_RATIO)
+				.withSteerMotorInverted(STEER_MOTOR_REVERSED);
 
         // Front Left
         private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 15;
