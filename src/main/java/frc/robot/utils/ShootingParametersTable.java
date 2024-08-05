@@ -14,8 +14,10 @@ public class ShootingParametersTable {
     private ShootingParametersTable() {
         loadParameter(1.07, -6, 17.8);
         loadParameter(1.66, -6, 33.8);
-        loadParameter(2.33, -8, 38.8);
-        loadParameter(2.72, -8, 51.8);
+		loadParameter(2.33, -8, 38.8);
+		loadParameter(2.44, -8, 51.6);
+		//loadParameter(2.72, -8, 51.8);
+		loadParameter(2.90, -8, 56.8);
         loadParameter(3.17, -8, 57.7);
         loadParameter(3.41, -9, 60.9);
         loadParameter(3.74, -9, 63.9);
@@ -52,23 +54,27 @@ public class ShootingParametersTable {
         }
     }
 
-    public ShootingParameters getParameters(double distance) {
-        if (distance <= interpolatingTable.firstKey()) {
-            return interpolatingTable.firstEntry().getValue();
-        }
+	public ShootingParameters getParameters(double distance) {
+		if (distance <= interpolatingTable.firstKey()) {
+			return interpolatingTable.firstEntry().getValue();
+		}
 
-        if (distance >= interpolatingTable.lastKey()) {
-            return interpolatingTable.lastEntry().getValue();
-        }
+		if (distance >= interpolatingTable.lastKey()) {
+			return interpolatingTable.lastEntry().getValue();
+		}
 
-        Entry<Double, ShootingParameters> floor = interpolatingTable.floorEntry(distance);
-        Entry<Double, ShootingParameters> ceiling = interpolatingTable.ceilingEntry(distance);
+		Entry<Double, ShootingParameters> floor = interpolatingTable.floorEntry(distance);
+		Entry<Double, ShootingParameters> ceiling = interpolatingTable.ceilingEntry(distance);
 
-        double k = (distance - floor.getKey()) / (ceiling.getKey() - floor.getKey());
-        return new ShootingParameters(
-                floor.getValue().getVoltage() + (ceiling.getValue().getVoltage() - floor.getValue().getVoltage()) * k,
-                floor.getValue().getAngle() + (ceiling.getValue().getAngle() - floor.getValue().getAngle()) * k);
-    }
+		double k = (distance - floor.getKey()) / (ceiling.getKey() - floor.getKey());
+		return new ShootingParameters(
+				floor.getValue().getVoltage() + (ceiling.getValue().getVoltage() - floor.getValue().getVoltage()) * k,
+				floor.getValue().getAngle() + (ceiling.getValue().getAngle() - floor.getValue().getAngle()) * k);
+	}
+	
+	public double getFarthestDistance() {
+		return interpolatingTable.lastKey();
+	}
 
     private class ParametersBinding implements Comparable<ParametersBinding> {
         public TunableNumber distance;
