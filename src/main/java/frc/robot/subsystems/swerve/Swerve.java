@@ -566,7 +566,8 @@ public class Swerve implements Updatable, Subsystem {
 		BRAKE, DRIVE, PATH_FOLLOWING, EMPTY
 	}
 
-	public boolean aimingReady(){
+	public boolean aimingReady() {
+		SmartDashboard.putBoolean("SwerveReady", Math.abs(gyro.getYaw().getDegrees() - headingTarget) < 5);
 		return Math.abs(gyro.getYaw().getDegrees() - headingTarget) < 5;
 	}
 }

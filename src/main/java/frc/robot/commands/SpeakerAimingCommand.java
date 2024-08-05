@@ -48,10 +48,16 @@ public class SpeakerAimingCommand extends Command {
 
     @Override
     public void execute() {
-        if (!beamBreakSubsystem.isIntakeReady()) {
-            shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
-            return;
-        }
+		if (!beamBreakSubsystem.isIntakeReady()) {
+			shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
+			return;
+		}
+		if (Limelight.getInstance().getSpeakerRelativePosition().getNorm() > 3) {
+			shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
+			filter.calculate(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees());
+			Swerve.setHeadingTarget(filter.lastValue());
+			return;
+		}
         this.indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMED);
 
         var distance = Limelight.getInstance().getSpeakerRelativePosition().getNorm();

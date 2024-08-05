@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
+import frc.robot.commands.test.PreShootTestCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
@@ -108,18 +109,19 @@ public class RobotContainer {
         // field relative heading
         // driverController.a().
 
-        driverController.rightTrigger().whileTrue(
-                Commands.sequence(
-                        new SpeakerShootCommand(
-                                shooterSubsystem,
-                                indexerSubsystem,
-                                beamBreakSubsystem,
-                                indicatorSubsystem,
-                                swerve,
-                                driverController,
-                                () -> driverController.getHID().getRightBumper()),
-                        new RumbleCommand(Seconds.of(1), driverController.getHID(),
-                                operatorController.getHID())));
+        // driverController.rightTrigger().whileTrue(
+        //         Commands.sequence(
+        //                 new SpeakerShootCommand(
+        //                         shooterSubsystem,
+        //                         indexerSubsystem,
+        //                         beamBreakSubsystem,
+        //                         indicatorSubsystem,
+        //                         swerve,
+        //                         driverController,
+        //                         () -> driverController.getHID().getRightBumper()),
+        //                 new RumbleCommand(Seconds.of(1), driverController.getHID(),
+		//                         operatorController.getHID())));
+		
         //driverController.rightTrigger().onFalse(new ResetArmCommand(shooterSubsystem));
 
         // driverController.rightTrigger().whileTrue(Commands.run(() -> {
@@ -165,7 +167,19 @@ public class RobotContainer {
 
         driverController.b().onTrue(new ResetArmCommand(shooterSubsystem));
         driverController.y().whileTrue(new ShooterUpCommand(shooterSubsystem));
-        driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
+		driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
+		driverController.x().whileTrue(new DeliverNoteCommand(indexerSubsystem,beamBreakSubsystem,indicatorSubsystem));
+		shooterSubsystem.setDefaultCommand(new PreShootTestCommand(shooterSubsystem));
+		
+		driverController.rightBumper().whileTrue( Commands.sequence(
+			new AutomaticSpeakerShootCommand(
+					shooterSubsystem,
+					indexerSubsystem,
+					beamBreakSubsystem,
+					indicatorSubsystem,
+					swerve,
+					driverController),
+				new RumbleCommand(Seconds.of(1), driverController.getHID())));
 
     }
 
