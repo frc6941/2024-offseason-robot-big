@@ -3,34 +3,31 @@ package frc.robot.drivers;
 import edu.wpi.first.wpilibj.AnalogInput;
 
 public class BeamBreak {
-	private boolean lastStatus;
+    private final AnalogInput analogInput;
+    private boolean lastStatus;
+    private boolean tripped;
+    private boolean cleared;
 
-	private boolean tripped;
+    public BeamBreak(int channel) {
+        analogInput = new AnalogInput(channel);
+    }
 
-	private boolean cleared;
+    public void update() {
+        boolean value = get();
+        tripped = value && !lastStatus;
+        cleared = !value && lastStatus;
+        lastStatus = value;
+    }
 
-	private final AnalogInput analogInput;
+    public boolean get() {
+        return analogInput.getVoltage() > 1.5;
+    }
 
-	public BeamBreak(int channel) {
-		analogInput = new AnalogInput(channel);
-	}
+    public boolean wasTripped() {
+        return tripped;
+    }
 
-	public void update() {
-		boolean value = get();
-		tripped = value && !lastStatus;
-		cleared = !value && lastStatus;
-		lastStatus = value;
-	}
-
-	public boolean get() {
-		return analogInput.getVoltage() > 1.5;
-	}
-
-	public boolean wasTripped() {
-		return tripped;
-	}
-
-	public boolean wasCleared() {
-		return cleared;
-	}
+    public boolean wasCleared() {
+        return cleared;
+    }
 }

@@ -6,6 +6,10 @@ import org.littletonrobotics.junction.AutoLog;
 import static edu.wpi.first.units.Units.*;
 
 public interface IndexerIO {
+    void updateInputs(IndexerIOInputs inputs);
+
+    void setIndexVoltage(Measure<Voltage> volts);
+
     @AutoLog
     class IndexerIOInputs {
         public Measure<Velocity<Angle>> indexVelocity = RadiansPerSecond.zero();
@@ -13,8 +17,4 @@ public interface IndexerIO {
         public Measure<Voltage> indexAppliedVoltage = Volts.zero();
         public Measure<Current> indexSupplyCurrent = Amps.zero();
     }
-
-    void updateInputs(IndexerIOInputs inputs);
-
-    void setIndexVoltage(Measure<Voltage> volts);
 }

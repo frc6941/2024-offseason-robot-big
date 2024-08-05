@@ -15,40 +15,40 @@ import static frc.robot.Constants.IndexerConstants.INDEX_MOTOR_ID;
 import static frc.robot.Constants.IndexerConstants.motorOutputConfigs;
 
 public class IndexerIOTalonFX implements IndexerIO {
-	private final TalonFX indexTalon = new TalonFX(INDEX_MOTOR_ID, Constants.RobotConstants.CAN_BUS_NAME);
+    private final TalonFX indexTalon = new TalonFX(INDEX_MOTOR_ID, Constants.RobotConstants.CAN_BUS_NAME);
 
-	private final StatusSignal<Double> indexVelocity = indexTalon.getVelocity();
-	private final StatusSignal<Double> indexPosition = indexTalon.getPosition();
-	private final StatusSignal<Double> indexAppliedVoltage = indexTalon.getMotorVoltage();
-	private final StatusSignal<Double> indexSupplyCurrent = indexTalon.getSupplyCurrent();
+    private final StatusSignal<Double> indexVelocity = indexTalon.getVelocity();
+    private final StatusSignal<Double> indexPosition = indexTalon.getPosition();
+    private final StatusSignal<Double> indexAppliedVoltage = indexTalon.getMotorVoltage();
+    private final StatusSignal<Double> indexSupplyCurrent = indexTalon.getSupplyCurrent();
 
-	public IndexerIOTalonFX() {
-		var indexerMotorConfigs = new TalonFXConfiguration()
-				.withMotorOutput(motorOutputConfigs);
-		var response = indexTalon.getConfigurator().apply(indexerMotorConfigs);
-		if (response.isError())
-			System.out.println("Indexer TalonFX failed config with error" + response);
-		response = indexTalon.clearStickyFaults();
-		if (response.isError())
-			System.out.println("Indexer TalonFX failed sticky fault clearing with error" + response);
-	}
+    public IndexerIOTalonFX() {
+        var indexerMotorConfigs = new TalonFXConfiguration()
+                .withMotorOutput(motorOutputConfigs);
+        var response = indexTalon.getConfigurator().apply(indexerMotorConfigs);
+        if (response.isError())
+            System.out.println("Indexer TalonFX failed config with error" + response);
+        response = indexTalon.clearStickyFaults();
+        if (response.isError())
+            System.out.println("Indexer TalonFX failed sticky fault clearing with error" + response);
+    }
 
-	@Override
-	public void updateInputs(IndexerIOInputs inputs) {
-		BaseStatusSignal.refreshAll(
-				indexVelocity,
-				indexPosition,
-				indexAppliedVoltage,
-				indexSupplyCurrent);
+    @Override
+    public void updateInputs(IndexerIOInputs inputs) {
+        BaseStatusSignal.refreshAll(
+                indexVelocity,
+                indexPosition,
+                indexAppliedVoltage,
+                indexSupplyCurrent);
 
-		inputs.indexVelocity = RadiansPerSecond.of(Units.rotationsToRadians(indexVelocity.getValueAsDouble()));
-		inputs.indexPosition = Radians.of(Units.rotationsToRadians(indexPosition.getValueAsDouble()));
-		inputs.indexAppliedVoltage = Volts.of(indexAppliedVoltage.getValueAsDouble());
-		inputs.indexSupplyCurrent = Amps.of(indexSupplyCurrent.getValueAsDouble());
-	}
+        inputs.indexVelocity = RadiansPerSecond.of(Units.rotationsToRadians(indexVelocity.getValueAsDouble()));
+        inputs.indexPosition = Radians.of(Units.rotationsToRadians(indexPosition.getValueAsDouble()));
+        inputs.indexAppliedVoltage = Volts.of(indexAppliedVoltage.getValueAsDouble());
+        inputs.indexSupplyCurrent = Amps.of(indexSupplyCurrent.getValueAsDouble());
+    }
 
-	@Override
-	public void setIndexVoltage(Measure<Voltage> volts) {
-		indexTalon.setControl(new VoltageOut(volts.magnitude()));
-	}
+    @Override
+    public void setIndexVoltage(Measure<Voltage> volts) {
+        indexTalon.setControl(new VoltageOut(volts.magnitude()));
+    }
 }

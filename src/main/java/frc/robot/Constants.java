@@ -79,7 +79,7 @@ public class Constants {
                 .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
                 .withSensorToMechanismRatio(8d / 64 * 16 / 64);
 
-        public static final Measure<Voltage> shooterConstantVoltage = Volts.of(-2);
+        public static final Measure<Voltage> shooterConstantVoltage = Volts.of(2);
         public static final Measure<Voltage> defaultShootVoltage = Volts.of(-9);
         public static final Measure<Voltage> ampShootingVoltage = Volts.of(-8);
         public static final Measure<Voltage> shortShootVoltage = Volts.of(-8);
