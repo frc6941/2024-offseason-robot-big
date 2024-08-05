@@ -40,6 +40,8 @@ import org.frcteam6941.utils.AngleNormalization;
 
 import static frc.robot.Constants.SwerveDrivetrain.speedAt12Volts;
 
+// FIXME: do odometry even when disabled
+
 /**
  * Rectangular Swerve Drivetrain.
  */
@@ -134,21 +136,38 @@ public class Swerve implements Updatable, Subsystem {
         headingController.setIntegratorRange(-0.5, 0.5);
         headingController.enableContinuousInput(0, 360.0);
 
-        // FIXME
+        var driveBaseRadius = getDriveBaseRadius();
+
         AutoBuilder.configureHolonomic(
-                Pose2d::new,
+                swerveLocalizer::getLatestPose,
                 this::resetPose,
-                ChassisSpeeds::new,
-                speeds -> {
-                    return;
-                },
+                this::getChassisSpeeds,
+                this::driveSpeed,
                 new HolonomicPathFollowerConfig(
                         speedAt12Volts.magnitude(),
-                        0,
+                        driveBaseRadius,
                         new ReplanningConfig()),
                 Utils::flip,
                 this
         );
+    }
+
+    private static double getDriveBaseRadius() {
+        var moduleLocations = new Translation2d[]{
+                new Translation2d(Constants.SwerveDrivetrain.FrontLeft.LocationX,
+                        Constants.SwerveDrivetrain.FrontLeft.LocationY),
+                new Translation2d(Constants.SwerveDrivetrain.FrontRight.LocationX,
+                        Constants.SwerveDrivetrain.FrontRight.LocationY),
+                new Translation2d(Constants.SwerveDrivetrain.BackLeft.LocationX,
+                        Constants.SwerveDrivetrain.BackLeft.LocationY),
+                new Translation2d(Constants.SwerveDrivetrain.BackRight.LocationX,
+                        Constants.SwerveDrivetrain.BackRight.LocationY)
+        };
+
+        var driveBaseRadius = 0.0;
+        for (var moduleLocation : moduleLocations)
+            driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+        return driveBaseRadius;
     }
 
     public static Swerve getInstance() {
@@ -156,6 +175,17 @@ public class Swerve implements Updatable, Subsystem {
             instance = new Swerve();
         }
         return instance;
+    }
+
+    private void driveSpeed(ChassisSpeeds speeds) {
+        drive(new Translation2d(
+                speeds.vxMetersPerSecond,
+                speeds.vyMetersPerSecond
+        ), speeds.omegaRadiansPerSecond, false, false);
+    }
+
+    public ChassisSpeeds getChassisSpeeds() {
+        return swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
     /**
