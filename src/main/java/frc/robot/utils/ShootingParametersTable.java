@@ -12,11 +12,13 @@ public class ShootingParametersTable {
     private final NavigableMap<Double, ShootingParameters> interpolatingTable = new TreeMap<>();
 
     private ShootingParametersTable() {
-        loadParameter(1.1, -8, 23);
-        loadParameter(1.75, -8, 42);
-        loadParameter(2.23, -8, 54);
-        loadParameter(2.54, -11, 55);
-        loadParameter(2.76, -11, 59);
+        loadParameter(1.07, -6, 17.8);
+        loadParameter(1.66, -6, 33.8);
+        loadParameter(2.33, -8, 38.8);
+        loadParameter(2.72, -8, 51.8);
+        loadParameter(3.17, -8, 57.7);
+        loadParameter(3.41, -9, 60.9);
+        loadParameter(3.74, -9, 63.9);
         readyTuning();
     }
 
