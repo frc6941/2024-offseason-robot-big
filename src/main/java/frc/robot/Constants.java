@@ -1,22 +1,39 @@
 package frc.robot;
 
-import com.ctre.phoenix6.configs.*;
+import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
+import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
+
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.*;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Current;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.utils.TunableNumber;
-import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
-
-import static edu.wpi.first.units.Units.*;
 
 public class Constants {
     public static final boolean TUNING = true;
@@ -199,7 +216,7 @@ public class Constants {
         /**
          * The stator current at which the wheels start to slip
          */
-        private static final Measure<Current> slipCurrent = Amps.of(90.0);
+        private static final Measure<Current> slipCurrent = Amps.of(110.0);
         /**
          * Swerve steering gains
          */
@@ -276,7 +293,7 @@ public class Constants {
         private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 15;
         private static final int FRONT_LEFT_STEER_MOTOR_ID = 14;
         private static final int FRONT_LEFT_ENCODER_ID = 20;
-        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.053734;// 0.052955;//0.127686//0.5329550781
+        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.096679/*+0.042*/;// 0.052955;//0.127686//0.5329550781
         private static final Measure<Distance> frontLeftXPos = Meters.of(0.5);
         private static final Measure<Distance> frontLeftYPos = Meters.of(0.5);
         public static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
@@ -379,9 +396,10 @@ public class Constants {
         }
 
         public static class headingController {
-            public static final TunableNumber HEADING_KP = new TunableNumber("HEADING PID/kp", 0.1);// 0.015
-            public static final TunableNumber HEADING_KI = new TunableNumber("HEADING PID/ki", 0);// 0.00007
-            public static final TunableNumber HEADING_KD = new TunableNumber("HEADING PID/kd", 0);// 0.002
+            public static final TunableNumber HEADING_KP = new TunableNumber("HEADING PID/kp", 0.08);
+            public static final TunableNumber HEADING_KI = new TunableNumber("HEADING PID/ki", 0.0002);
+			public static final TunableNumber HEADING_KD = new TunableNumber("HEADING PID/kd", 0.002);
+			//TODO:Fixme
         }
     }
 

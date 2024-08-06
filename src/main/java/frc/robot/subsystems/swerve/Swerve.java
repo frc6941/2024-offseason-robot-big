@@ -494,14 +494,23 @@ public class Swerve implements Updatable, Subsystem {
                 new double[]{
                         latestPose.getX(), latestPose.getY(), latestPose.getRotation().getDegrees()
                 });
-
-        if (Constants.TUNING) {
-            setHeadingControllerPID();
-            SmartDashboard.putString("swerve/localizer/latest_pose", getLocalizer().getLatestPose().toString());
-            SmartDashboard.putString("swerve/localizer/accel", getLocalizer().getMeasuredAcceleration().toString());
-            SmartDashboard.putString("swerve/localizer/velocity", getLocalizer().getSmoothedVelocity().toString());
-
-        }
+		for (SwerveModuleBase mod : swerveMods) {
+			SmartDashboard.putNumber("Swerve/SPEED REQ" + mod.getModuleNumber(),
+					setpoint.mModuleStates[mod.getModuleNumber()].speedMetersPerSecond);
+			SmartDashboard.putNumber("Swerve/SPEED ACT" + mod.getModuleNumber(),
+					mod.getState().speedMetersPerSecond);
+			SmartDashboard.putNumber("Swerve/ANGLE REQ" + mod.getModuleNumber(),
+					setpoint.mModuleStates[mod.getModuleNumber()].angle.getDegrees());
+			SmartDashboard.putNumber("Swerve/ANGLE ACT" + mod.getModuleNumber(),
+					mod.getState().angle.getDegrees());
+		}
+		SmartDashboard.putNumber("Swerve/headingTarget", headingTarget);
+		if (Constants.TUNING) {
+			setHeadingControllerPID();
+			SmartDashboard.putString("swerve/localizer/latest_pose", getLocalizer().getLatestPose().toString());
+			SmartDashboard.putString("swerve/localizer/accel", getLocalizer().getMeasuredAcceleration().toString());
+			SmartDashboard.putString("swerve/localizer/velocity", getLocalizer().getSmoothedVelocity().toString());
+		}
     }
 
     @Override
@@ -515,11 +524,6 @@ public class Swerve implements Updatable, Subsystem {
         read(time, dt);
         gyro.setYaw(gyro.getYaw().rotateBy(new Rotation2d(dt * setpoint.mChassisSpeeds.omegaRadiansPerSecond))
                 .getDegrees());
-    }
-
-    public boolean aimingReady() {
-        SmartDashboard.putBoolean("SwerveReady", Math.abs(gyro.getYaw().getDegrees() - headingTarget) < 5);
-        return Math.abs(gyro.getYaw().getDegrees() - headingTarget) < 5;
     }
 
     public enum State {
