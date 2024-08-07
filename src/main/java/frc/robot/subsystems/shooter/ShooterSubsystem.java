@@ -1,16 +1,15 @@
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.utils.TunableNumber;
 import lombok.Getter;
-
 import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static frc.robot.Constants.ShooterConstants.*;
 
 @Getter
@@ -27,7 +26,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
-        this.io.setFlyWheelVoltage(shooterConstantVoltage);
+        this.io.setFlyWheelDirectVoltage(shooterConstantVoltage);
 
         // Configure SysId
         sysId =
@@ -56,10 +55,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public boolean aimingReady() {
         // FIXME Tune magic numbers
-		var velocityReady = Math.abs(inputs.leftShooterVelocity.magnitude() - inputs.targetShooterVelocity.magnitude()) < 13.14;//1
-		var positionReady = Math.abs(inputs.armPosition.magnitude() - inputs.targetArmPosition.magnitude()) < 0.007 && Math.abs(inputs.armPosition.magnitude())>0.007;//0.007
-		SmartDashboard.putBoolean("velocityReady", velocityReady);
-		SmartDashboard.putBoolean("positionReady", positionReady);
+        var velocityReady = Math.abs(inputs.leftShooterVelocity.magnitude() - inputs.targetShooterVelocity.magnitude()) < 13.14;//1
+        var positionReady = Math.abs(inputs.armPosition.magnitude() - inputs.targetArmPosition.magnitude()) < 0.007 && Math.abs(inputs.armPosition.magnitude()) > 0.007;//0.007
+        SmartDashboard.putBoolean("velocityReady", velocityReady);
+        SmartDashboard.putBoolean("positionReady", positionReady);
         return velocityReady && positionReady;//TODO:fixme
     }
 

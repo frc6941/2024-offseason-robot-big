@@ -10,6 +10,8 @@ public interface ShooterIO {
 
     void setFlyWheelVoltage(Measure<Voltage> volts);
 
+    void setFlyWheelDirectVoltage(Measure<Voltage> volts);
+
     void setFlyWheelVelocity(double velocityRPM, double ffVoltage);
 
     void setFlyWheelVelocity(double velocityRPM);

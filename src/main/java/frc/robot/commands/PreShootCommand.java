@@ -53,6 +53,6 @@ public class PreShootCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         shooterSubsystem.getIo()
-                .setFlyWheelVoltage(Constants.ShooterConstants.shooterConstantVoltage);
+                .setFlyWheelDirectVoltage(Constants.ShooterConstants.shooterConstantVoltage);
     }
 }

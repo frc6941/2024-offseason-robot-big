@@ -10,37 +10,37 @@ import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.ShooterConstants.shooterIndexVoltage;
 
 public class DeliverNoteIndexCommand extends Command {
-	private final ShooterSubsystem shooterSubsystem;
-	private final Timer timer = new Timer();
-	private final IndexerSubsystem indexerSubsystem;
+    private final ShooterSubsystem shooterSubsystem;
+    private final Timer timer = new Timer();
+    private final IndexerSubsystem indexerSubsystem;
 
-	public DeliverNoteIndexCommand(
-			ShooterSubsystem shooterSubsystem,
-			IndexerSubsystem indexerSubsystem) {
-		this.shooterSubsystem = shooterSubsystem;
-		this.indexerSubsystem = indexerSubsystem;
-	}
+    public DeliverNoteIndexCommand(
+            ShooterSubsystem shooterSubsystem,
+            IndexerSubsystem indexerSubsystem) {
+        this.shooterSubsystem = shooterSubsystem;
+        this.indexerSubsystem = indexerSubsystem;
+    }
 
-	@Override
-	public void initialize() {
-		shooterSubsystem.getIo().setFlyWheelVoltage(Volts.zero());
-		timer.restart();
-	}
+    @Override
+    public void initialize() {
+        shooterSubsystem.getIo().setFlyWheelVoltage(Volts.zero());
+        timer.restart();
+    }
 
-	@Override
-	public void execute() {
-		// Yes, it's weird. Not my idea.
-		shooterSubsystem.getIo().setFlyWheelVoltage(shooterIndexVoltage);
-	}
+    @Override
+    public void execute() {
+        // Yes, it's weird. Not my idea.
+        shooterSubsystem.getIo().setFlyWheelVoltage(shooterIndexVoltage);
+    }
 
-	@Override
-	public void end(boolean interrupted) {
-		shooterSubsystem.getIo().setFlyWheelVoltage(Constants.ShooterConstants.shooterConstantVoltage);
-		indexerSubsystem.getIo().setIndexVoltage(Volts.zero());
-	}
+    @Override
+    public void end(boolean interrupted) {
+        shooterSubsystem.getIo().setFlyWheelDirectVoltage(Constants.ShooterConstants.shooterConstantVoltage);
+        indexerSubsystem.getIo().setIndexVoltage(Volts.zero());
+    }
 
-	@Override
-	public boolean isFinished() {
-		return timer.hasElapsed(1.0);
-	}
+    @Override
+    public boolean isFinished() {
+        return timer.hasElapsed(1.0);
+    }
 }

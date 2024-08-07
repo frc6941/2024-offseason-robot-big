@@ -7,23 +7,23 @@ import frc.robot.Constants;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class PreShootWithoutAimingCommand extends Command {
-	private final ShooterSubsystem shooterSubsystem;
-	private final Measure<Voltage> volts;
+    private final ShooterSubsystem shooterSubsystem;
+    private final Measure<Voltage> volts;
 
-	public PreShootWithoutAimingCommand(ShooterSubsystem shooterSubsystem, Measure<Voltage> volts) {
-		this.shooterSubsystem = shooterSubsystem;
-		this.volts = volts;
+    public PreShootWithoutAimingCommand(ShooterSubsystem shooterSubsystem, Measure<Voltage> volts) {
+        this.shooterSubsystem = shooterSubsystem;
+        this.volts = volts;
 
-	}
+    }
 
-	@Override
-	public void execute() {
-		shooterSubsystem.getIo().setFlyWheelVoltage(volts);
-	}
+    @Override
+    public void execute() {
+        shooterSubsystem.getIo().setFlyWheelVoltage(volts);
+    }
 
-	@Override
-	public void end(boolean interrupted) {
-		shooterSubsystem.getIo()
-				.setFlyWheelVoltage(Constants.ShooterConstants.shooterConstantVoltage);
-	}
+    @Override
+    public void end(boolean interrupted) {
+        shooterSubsystem.getIo()
+                .setFlyWheelDirectVoltage(Constants.ShooterConstants.shooterConstantVoltage);
+    }
 }

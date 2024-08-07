@@ -165,6 +165,11 @@ public class ShooterIOTalonFX implements ShooterIO {
     }
 
     @Override
+    public void setFlyWheelDirectVoltage(Measure<Voltage> volts) {
+        leftShooterTalon.setControl(new VoltageOut(volts.magnitude()));
+    }
+
+    @Override
     public void setFlyWheelVelocity(double velocityRPM) {
         var velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(velocityRPM);
         leftShooterTalon.setControl(new VelocityVoltage(

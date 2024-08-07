@@ -90,6 +90,11 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
+    public void setFlyWheelDirectVoltage(Measure<Voltage> volts) {
+
+    }
+
+    @Override
     public void setFlyWheelVelocity(double velocityRPM, double ffVoltage) {
     }
 
