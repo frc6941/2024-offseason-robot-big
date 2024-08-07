@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.utils.TunableNumber;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
@@ -14,12 +13,6 @@ import static frc.robot.Constants.ShooterConstants.*;
 
 @Getter
 public class ShooterSubsystem extends SubsystemBase {
-    public static final TunableNumber DRIVE_KA = new TunableNumber("SHOOTER PID/ka", 0.0011679);
-    public static final TunableNumber DRIVE_KV = new TunableNumber("SHOOTER PID/kv", 0.018764);
-    public static final TunableNumber DRIVE_KS = new TunableNumber("SHOOTER PID/ks", 0.16172);
-    public static final TunableNumber DRIVE_KP = new TunableNumber("SHOOTER PID/kp", 0.0076849);
-    public static final TunableNumber DRIVE_KI = new TunableNumber("SHOOTER PID/ki", 0);
-    public static final TunableNumber DRIVE_KD = new TunableNumber("SHOOTER PID/kd", 0);
     private final ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
     private final SysIdRoutine sysId;
@@ -55,7 +48,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public boolean aimingReady() {
         // FIXME Tune magic numbers
-        var velocityReady = Math.abs(inputs.leftShooterVelocity.magnitude() - inputs.targetShooterVelocity.magnitude()) < 13.14;//1
+        var velocityReady = Math.abs(inputs.leftShooterVelocity.magnitude() - inputs.targetShooterVelocity.magnitude()) < 6.28;//1
         var positionReady = Math.abs(inputs.armPosition.magnitude() - inputs.targetArmPosition.magnitude()) < 0.007 && Math.abs(inputs.armPosition.magnitude()) > 0.007;//0.007
         SmartDashboard.putBoolean("velocityReady", velocityReady);
         SmartDashboard.putBoolean("positionReady", positionReady);

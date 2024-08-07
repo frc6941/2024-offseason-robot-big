@@ -35,6 +35,9 @@ public interface ShooterIO {
     boolean setArmConfig(double p, double i, double d);
 
     void runVolts(double volts);
+    
+    double getVelocity();
+
 
     @AutoLog
     class ShooterIOInputs {

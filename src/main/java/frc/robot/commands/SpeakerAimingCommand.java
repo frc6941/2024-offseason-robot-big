@@ -15,6 +15,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShootingParameters;
 import frc.robot.utils.ShootingParametersTable;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
+import frc.robot.utils.ShootingPolynomialParameters;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
@@ -25,7 +26,7 @@ public class SpeakerAimingCommand extends Command {
     private final BeamBreakSubsystem beamBreakSubsystem;
     private final Swerve Swerve;
     private final CommandXboxController driverController;
-    LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
+    LinearFilter filter = LinearFilter.singlePoleIIR(0.2, 0.02);
     private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("Distance");
 
     public SpeakerAimingCommand(
@@ -48,17 +49,17 @@ public class SpeakerAimingCommand extends Command {
 
     @Override
     public void execute() {
-		if (!beamBreakSubsystem.isIntakeReady()) {
-			shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
-			return;
-		}
-		if (Limelight.getInstance().getSpeakerRelativePosition().getNorm() > 
-				ShootingParametersTable.getInstance().getFarthestDistance()/*+0.5*/) {
-			shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
-			filter.calculate(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees());
-			Swerve.setHeadingTarget(filter.lastValue());
-			return;
-		}
+        if (!beamBreakSubsystem.isIntakeReady()) {
+            shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
+            return;
+        }
+        if (Limelight.getInstance().getSpeakerRelativePosition().getNorm() >
+                ShootingParametersTable.getInstance().getFarthestDistance()/*+0.5*/) {
+            shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
+            filter.calculate(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees());
+            Swerve.setHeadingTarget(filter.lastValue());
+            return;
+        }
         this.indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMED);
 
         var distance = Limelight.getInstance().getSpeakerRelativePosition().getNorm();

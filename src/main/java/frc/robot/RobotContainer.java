@@ -4,14 +4,13 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
+import frc.robot.commands.test.PreShootTestCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
@@ -28,12 +27,11 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import static edu.wpi.first.units.Units.Seconds;
 
 public class RobotContainer {
-    private final LoggedDashboardChooser<Command> autoChooser;
+    //private final LoggedDashboardChooser<Command> autoChooser;
     IntakerSubsystem intakerSubsystem = new IntakerSubsystem(new IntakerIOTalonFX());
     IndexerSubsystem indexerSubsystem = new IndexerSubsystem(new IndexerIOTalonFX());
     ShooterSubsystem shooterSubsystem = new ShooterSubsystem(new ShooterIOTalonFX());
@@ -44,6 +42,7 @@ public class RobotContainer {
     Display display = Display.getInstance();
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
+    ShooterIOTalonFX shooterIOTalonFX = new ShooterIOTalonFX();
     @Getter
     private UpdateManager updateManager;
 
@@ -51,21 +50,22 @@ public class RobotContainer {
         updateManager = new UpdateManager(
                 swerve,
                 limelight,
-                display
+                display,
+                shooterIOTalonFX
         );
         updateManager.registerAll();
-
-        autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
-        autoChooser.addOption(
-                "Flywheel SysId (Quasistatic Forward)",
-                shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Flywheel SysId (Quasistatic Reverse)",
-                shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption(
-                "Flywheel SysId (Dynamic Forward)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Flywheel SysId (Dynamic Reverse)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+//        TODO: fix command register
+//        autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
+//        autoChooser.addOption(
+//                "Flywheel SysId (Quasistatic Forward)",
+//                shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+//        autoChooser.addOption(
+//                "Flywheel SysId (Quasistatic Reverse)",
+//                shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+//        autoChooser.addOption(
+//                "Flywheel SysId (Dynamic Forward)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+//        autoChooser.addOption(
+//                "Flywheel SysId (Dynamic Reverse)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
         configureBindings();
         System.out.println("Init Completed!");
@@ -153,10 +153,10 @@ public class RobotContainer {
 
         // parameter
         driverController.b().onTrue(new ResetArmCommand(shooterSubsystem));
-        // driverController.y().whileTrue(new ShooterUpCommand(shooterSubsystem));
-        // driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
-        // driverController.x().whileTrue(new DeliverNoteCommand(indexerSubsystem,beamBreakSubsystem,indicatorSubsystem));
-        // shooterSubsystem.setDefaultCommand(new PreShootTestCommand(shooterSubsystem));
+//        driverController.y().whileTrue(new ShooterUpCommand(shooterSubsystem));
+//        driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
+//        driverController.x().whileTrue(new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem));
+//        shooterSubsystem.setDefaultCommand(new PreShootTestCommand(shooterSubsystem));
 
         driverController.leftTrigger().whileTrue(new IntakeOutCommand(intakerSubsystem));
 
@@ -174,6 +174,8 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // return new CharacterizationDriveCommand(swerve, 3, 1.5, 6);
-        return autoChooser.get();
+        // return new CharacterizationShooterCommand(shooterSubsystem, 1, 1, 10);
+        // return autoChooser.get();
+        return null;
     }
 }

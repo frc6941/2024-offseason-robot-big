@@ -2,8 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -12,12 +10,11 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.utils.ShootingParameters;
 import frc.robot.utils.ShootingParametersTable;
 
-import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Constants.ShooterConstants.shortShootVoltage;
+import static frc.robot.Constants.ShooterConstants.defaultShootRPM;
 
 public class PreShootCommand extends Command {
     private final ShooterSubsystem shooterSubsystem;
-    private Measure<Voltage> defaultVoltage = shortShootVoltage;
+    private double defaltRPM = defaultShootRPM;
 
     public PreShootCommand(ShooterSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
@@ -25,7 +22,7 @@ public class PreShootCommand extends Command {
 
     @Override
     public void initialize() {
-        defaultVoltage = shortShootVoltage;
+        defaltRPM = defaultShootRPM;
     }
 
     @Override
@@ -33,7 +30,7 @@ public class PreShootCommand extends Command {
 
         var targetOptional = Limelight.getTarget();
         if (targetOptional.isEmpty()) {
-            shooterSubsystem.getIo().setFlyWheelVoltage(defaultVoltage);
+            shooterSubsystem.getIo().setFlyWheelVelocity(defaultShootRPM);
             return;
         }
 
@@ -47,7 +44,7 @@ public class PreShootCommand extends Command {
         SmartDashboard.putNumber("shooter desired angle", Units.degreesToRadians(
                 shooterSubsystem.getInputs().leftShooterVelocity.magnitude()));
 
-        shooterSubsystem.getIo().setFlyWheelVoltage(Volts.of(parameter.getVoltage()));
+        shooterSubsystem.getIo().setFlyWheelVelocity(parameter.getVoltage());
     }
 
     @Override

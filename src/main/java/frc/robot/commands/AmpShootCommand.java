@@ -13,17 +13,17 @@ import java.util.function.BooleanSupplier;
 import static frc.robot.Constants.ShooterConstants.ampShootingVoltage;
 
 public class AmpShootCommand extends ParallelCommandGroup {
-	public AmpShootCommand(
-			ShooterSubsystem shooterSubsystem,
-			IndexerSubsystem indexerSubsystem,
-			BeamBreakSubsystem beamBreakSubsystem,
-			IndicatorSubsystem indicatorSubsystem,
-			BooleanSupplier confirmation) {
-		addCommands(
-				new AmpAimingCommand(shooterSubsystem),
-				new PreShootWithoutAimingCommand(shooterSubsystem, ampShootingVoltage),
-				Commands.sequence(
-						new WaitUntilCommand(confirmation),
-						new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)));
-	}
+    public AmpShootCommand(
+            ShooterSubsystem shooterSubsystem,
+            IndexerSubsystem indexerSubsystem,
+            BeamBreakSubsystem beamBreakSubsystem,
+            IndicatorSubsystem indicatorSubsystem,
+            BooleanSupplier confirmation) {
+        addCommands(
+                new AmpAimingCommand(shooterSubsystem),
+                new PreShootWithoutAimingCommand(shooterSubsystem, ampShootingVoltage.magnitude() / 12 * 6380),
+                Commands.sequence(
+                        new WaitUntilCommand(confirmation),
+                        new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)));
+    }
 }

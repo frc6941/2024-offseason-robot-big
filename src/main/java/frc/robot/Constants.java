@@ -80,20 +80,29 @@ public class Constants {
                 .withSensorToMechanismRatio(8d / 64 * 16 / 64);
 
         public static final Measure<Voltage> shooterConstantVoltage = Volts.of(2);
-        public static final Measure<Voltage> defaultShootVoltage = Volts.of(-9);
+        public static final double defaultShootRPM = -9.0 / 12 * 6380;
         public static final Measure<Voltage> ampShootingVoltage = Volts.of(-8);
-        public static final Measure<Voltage> shortShootVoltage = Volts.of(-8);
+        public static final double shortShootVoltage = -8.0 / 12 * 6380;
         public static final Measure<Distance> shortShootMaxDistance = Meters.of(2.7);
         public static final Measure<Distance> shootMaxDistance = Meters.of(3.7);
-        public static final Measure<Voltage> farShootVoltage = Volts.of(-11);
-        public static final Measure<Voltage> pullVoltage = Volts.of(-8);
+        public static final double farShootVoltage = -11.0 / 12 * 6380;
+        public static final double pullVoltage = -8.0 / 12 * 6380;
         public final static Measure<Angle> ampDeployAngle = Degrees.of(165);
-        public static final Measure<Voltage> shooterUpDownVoltage = Volts.of(-2);
-        public static final Measure<Voltage> shooterIndexVoltage = Volts.of(13);
+        public static final double shooterUpDownVoltage = -2.0 / 12 * 6380;
+        public static final double shooterIndexVoltage = 13.0 / 12 * 6380;
         public static Measure<Angle> speakerArmOffsetNear = Degrees.of(17);
         public static Measure<Angle> speakerArmOffset = Degrees.of(44);//44
         public static Measure<Angle> speakerArmOffsetFar = Degrees.of(58.5);
         public static Measure<Angle> speakerArmOffsetMax = Degrees.of(64);
+
+        public static class shooterGainsClass {
+            public static final TunableNumber SHOOTER_KP = new TunableNumber("SHOOTER PID/kp", 0.1);
+            public static final TunableNumber SHOOTER_KI = new TunableNumber("SHOOTER PID/ki", 0);
+            public static final TunableNumber SHOOTER_KD = new TunableNumber("SHOOTER PID/kd", 0.01);
+            public static final TunableNumber SHOOTER_KA = new TunableNumber("SHOOTER PID/ka", 0.0037512677);
+            public static final TunableNumber SHOOTER_KV = new TunableNumber("SHOOTER PID/kv", 0.107853495);
+            public static final TunableNumber SHOOTER_KS = new TunableNumber("SHOOTER PID/ks", 0.28475008);
+        }
     }
 
     public static class BeamBreakConstants {

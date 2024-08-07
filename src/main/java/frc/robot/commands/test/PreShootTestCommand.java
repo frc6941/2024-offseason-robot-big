@@ -1,7 +1,5 @@
 package frc.robot.commands.test;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.limelight.Limelight;
@@ -9,12 +7,9 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.utils.TunableNumber;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
-import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Constants.ShooterConstants.shortShootVoltage;
-
 public class PreShootTestCommand extends Command {
     private final ShooterSubsystem shooterSubsystem;
-    private Measure<Voltage> defaultVoltage = shortShootVoltage;
+    private double RPM;
     private TunableNumber flyWheelVoltage = new TunableNumber("flyWheelVoltage", 0.0);
     private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("Distance");
 
@@ -25,13 +20,13 @@ public class PreShootTestCommand extends Command {
 
     @Override
     public void initialize() {
-        defaultVoltage = shortShootVoltage;
+
     }
 
     @Override
     public void execute() {
         distanceLogged.set(Limelight.getInstance().getSpeakerRelativePosition().getNorm());
-        shooterSubsystem.getIo().setFlyWheelVoltage(Volts.of(flyWheelVoltage.get()));
+        shooterSubsystem.getIo().setFlyWheelVelocity(flyWheelVoltage.get());
     }
 
     @Override

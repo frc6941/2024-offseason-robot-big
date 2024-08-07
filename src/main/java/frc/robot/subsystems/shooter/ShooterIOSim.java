@@ -154,4 +154,10 @@ public class ShooterIOSim implements ShooterIO {
     public void setHomed(boolean homed) {
         this.homed = homed;
     }
+    
+    @Override
+    public double getVelocity() {
+        return rightShooterTalonSim.getAngularVelocityRadPerSec() / 6.28 * 60;
+    }
+
 }
