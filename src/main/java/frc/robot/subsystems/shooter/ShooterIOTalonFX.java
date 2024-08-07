@@ -9,7 +9,6 @@ import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
@@ -42,13 +41,11 @@ public class ShooterIOTalonFX implements ShooterIO {
     private final StatusSignal<Double> pullerAppliedVoltage = pullerTalon.getMotorVoltage();
     private final StatusSignal<Double> pullerSupplyCurrent = pullerTalon.getSupplyCurrent();
     private final StatusSignal<Double> pullerTorqueCurrent = pullerTalon.getTorqueCurrent();
-    private final SimpleMotorFeedforward ffFlywheel;
     private boolean homed = false;
     private double targetShooterVelocity = 0;
     private double targetArmPosition = 0;
 
     public ShooterIOTalonFX() {
-        ffFlywheel = new SimpleMotorFeedforward(0.15355, 0.018634, 0.0013567);
         var armMotorConfig = new TalonFXConfiguration()
                 .withSlot0(armGainsUp)
                 .withMotionMagic(motionMagicConfigs)
@@ -93,9 +90,12 @@ public class ShooterIOTalonFX implements ShooterIO {
         rightShooterTalon.setControl(new Follower(leftShooterTalon.getDeviceID(),
                 true));
         var config = new Slot0Configs();
-        config.kP = 0.0076849;
+        config.kP = 0.0031869;
         config.kI = 0;
         config.kD = 0;
+        config.kS = 0.14926 * 6.28 * 2;
+        config.kV = 0.0029813 * 6.28 * 2;
+        config.kA = 0.0002347 * 6.28 * 2;
         leftShooterTalon.getConfigurator().apply(config);
     }
 
@@ -176,7 +176,7 @@ public class ShooterIOTalonFX implements ShooterIO {
                 Units.radiansToRotations(velocityRadPerSec),
                 0.0,
                 true,
-                ffFlywheel.calculate(velocityRadPerSec),
+                0,
                 0,
                 false,
                 false,
