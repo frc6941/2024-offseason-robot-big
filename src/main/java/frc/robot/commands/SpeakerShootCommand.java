@@ -27,7 +27,7 @@ public class SpeakerShootCommand extends ParallelCommandGroup {
                 Commands.sequence(
                         new WaitUntilCommand(() -> (
                                 confirmation.getAsBoolean() &&
-                                        Swerve.aimingReady(5) &&
+                                        Swerve.aimingReady(2.5) &&
                                         shooterSubsystem.aimingReady()
                         )),
                         new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)));

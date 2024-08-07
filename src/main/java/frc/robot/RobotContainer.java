@@ -152,7 +152,7 @@ public class RobotContainer {
 				Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL), indicatorSubsystem));
 
 		// parameter 
-        // driverController.b().onTrue(new ResetArmCommand(shooterSubsystem));
+        driverController.b().onTrue(new ResetArmCommand(shooterSubsystem));
         // driverController.y().whileTrue(new ShooterUpCommand(shooterSubsystem));
 		// driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
 		// driverController.x().whileTrue(new DeliverNoteCommand(indexerSubsystem,beamBreakSubsystem,indicatorSubsystem));

@@ -56,11 +56,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public boolean aimingReady() {
         // FIXME Tune magic numbers
-		var velocityReady = Math.abs(inputs.leftShooterVelocity.magnitude() - inputs.targetShooterVelocity.magnitude()) < 6.28;//1
+		var velocityReady = Math.abs(inputs.leftShooterVelocity.magnitude() - inputs.targetShooterVelocity.magnitude()) < 13.14;//1
 		var positionReady = Math.abs(inputs.armPosition.magnitude() - inputs.targetArmPosition.magnitude()) < 0.007 && Math.abs(inputs.armPosition.magnitude())>0.007;//0.007
 		SmartDashboard.putBoolean("velocityReady", velocityReady);
 		SmartDashboard.putBoolean("positionReady", positionReady);
-        return velocityReady && positionReady;
+        return velocityReady && positionReady;//TODO:fixme
     }
 
     /**

@@ -53,7 +53,7 @@ public class SpeakerAimingCommand extends Command {
 			return;
 		}
 		if (Limelight.getInstance().getSpeakerRelativePosition().getNorm() > 
-				ShootingParametersTable.getInstance().getFarthestDistance()+0.5) {
+				ShootingParametersTable.getInstance().getFarthestDistance()/*+0.5*/) {
 			shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
 			filter.calculate(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees());
 			Swerve.setHeadingTarget(filter.lastValue());

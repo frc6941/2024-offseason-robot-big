@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -23,9 +24,10 @@ public class AutomaticSpeakerShootCommand extends ParallelCommandGroup {
                 new PreShootCommand(shooterSubsystem),
                 Commands.sequence(
                         new WaitUntilCommand(() -> (
-                                        Swerve.aimingReady(5) &&
+                                        Swerve.aimingReady(2.5) &&
                                         shooterSubsystem.aimingReady()
-                        )),
-                        new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)));
+						)),
+				Commands.runOnce(()->Timer.delay(0.02),indicatorSubsystem),
+				new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)));
     }
 }
