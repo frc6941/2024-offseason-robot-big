@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
-import frc.robot.commands.test.PreShootTestCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
@@ -92,12 +91,12 @@ public class RobotContainer {
         // .runOnce(() -> swerve.drive(
         // new Translation2d(
         // -
-        // driverController.getLeftY()*Constants.SwerveDrivetrian.maxSpeed.magnitude(),
+        // driverController.getLeftY()*Constants.SwerveDrivetrain.maxSpeed.magnitude(),
         // -
-        // driverController.getRightX()*Constants.SwerveDrivetrian.maxSpeed.magnitude()),
+        // driverController.getRightX()*Constants.SwerveDrivetrain.maxSpeed.magnitude()),
         // (-Constants.RobotConstants.driverController.getRightTriggerAxis()
         // + Constants.RobotConstants.driverController.getLeftTriggerAxis())
-        // * Constants.SwerveDrivetrian.maxAngularRate.magnitude(),
+        // * Constants.SwerveDrivetrain.maxAngularRate.magnitude(),
         // true,
         // false),
         // swerve));
@@ -120,7 +119,7 @@ public class RobotContainer {
         //                         driverController,
         //                         () -> driverController.getHID().getRightBumper()),
         //                 new RumbleCommand(Seconds.of(1), driverController.getHID(),
-		//                         operatorController.getHID())));
+        //                         operatorController.getHID())));
 
         driverController.leftBumper().whileTrue(
                 Commands.sequence(
@@ -136,7 +135,8 @@ public class RobotContainer {
             System.out.println("A = " + a);
             Pose2d b = new Pose2d(new Translation2d(0, 0), a);
             swerve.resetPose(b);
-		}));
+        }));
+        driverController.leftStick().onTrue(new SetFacingCommand(swerve, 0));
         driverController.povUp().onTrue(new SetFacingCommand(swerve, 0));
         driverController.povUpRight().onTrue(new SetFacingCommand(swerve, 315));
         driverController.povRight().onTrue(new SetFacingCommand(swerve, 270));
@@ -148,25 +148,27 @@ public class RobotContainer {
         // driverController.x()
         // 		.onTrue(Commands.runOnce(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL),
         // 				indicatorSubsystem));
-		indicatorSubsystem.setDefaultCommand(
-				Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL), indicatorSubsystem));
+        indicatorSubsystem.setDefaultCommand(
+                Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL), indicatorSubsystem));
 
-		// parameter 
+        // parameter
         driverController.b().onTrue(new ResetArmCommand(shooterSubsystem));
         // driverController.y().whileTrue(new ShooterUpCommand(shooterSubsystem));
-		// driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
-		// driverController.x().whileTrue(new DeliverNoteCommand(indexerSubsystem,beamBreakSubsystem,indicatorSubsystem));
-		// shooterSubsystem.setDefaultCommand(new PreShootTestCommand(shooterSubsystem));
-		
-		driverController.rightBumper().whileTrue( Commands.sequence(
-			new AutomaticSpeakerShootCommand(
-					shooterSubsystem,
-					indexerSubsystem,
-					beamBreakSubsystem,
-					indicatorSubsystem,
-					swerve,
-					driverController),
-				new RumbleCommand(Seconds.of(1), driverController.getHID())));
+        // driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
+        // driverController.x().whileTrue(new DeliverNoteCommand(indexerSubsystem,beamBreakSubsystem,indicatorSubsystem));
+        // shooterSubsystem.setDefaultCommand(new PreShootTestCommand(shooterSubsystem));
+
+        driverController.leftTrigger().whileTrue(new IntakeOutCommand(intakerSubsystem));
+
+        driverController.rightBumper().whileTrue(Commands.sequence(
+                new AutomaticSpeakerShootCommand(
+                        shooterSubsystem,
+                        indexerSubsystem,
+                        beamBreakSubsystem,
+                        indicatorSubsystem,
+                        swerve,
+                        driverController),
+                new RumbleCommand(Seconds.of(1), driverController.getHID())));
 
     }
 

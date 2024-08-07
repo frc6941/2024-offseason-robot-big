@@ -273,7 +273,7 @@ public class Swerve implements Updatable, Subsystem {
     public void drive(Translation2d translationalVelocity, double rotationalVelocity,
                       boolean isFieldOriented, boolean isOpenLoop) {
         // if (Math.hypot(translationalVelocity.getX(), translationalVelocity.getY())
-        // < Constants.SwerveDrivetrian.deadband) {
+        // < Constants.SwerveDrivetrain.deadband) {
         // translationalVelocity = new Translation2d(0, 0);
         // }
         if (Math.abs(translationalVelocity.getX()) < Constants.SwerveDrivetrain.deadband) {
@@ -494,23 +494,23 @@ public class Swerve implements Updatable, Subsystem {
                 new double[]{
                         latestPose.getX(), latestPose.getY(), latestPose.getRotation().getDegrees()
                 });
-		for (SwerveModuleBase mod : swerveMods) {
-			SmartDashboard.putNumber("Swerve/SPEED REQ" + mod.getModuleNumber(),
-					setpoint.mModuleStates[mod.getModuleNumber()].speedMetersPerSecond);
-			SmartDashboard.putNumber("Swerve/SPEED ACT" + mod.getModuleNumber(),
-					mod.getState().speedMetersPerSecond);
-			SmartDashboard.putNumber("Swerve/ANGLE REQ" + mod.getModuleNumber(),
-					setpoint.mModuleStates[mod.getModuleNumber()].angle.getDegrees());
-			SmartDashboard.putNumber("Swerve/ANGLE ACT" + mod.getModuleNumber(),
-					mod.getState().angle.getDegrees());
-		}
-		SmartDashboard.putNumber("Swerve/headingTarget", headingTarget);
-		if (Constants.TUNING) {
-			setHeadingControllerPID();
-			SmartDashboard.putString("swerve/localizer/latest_pose", getLocalizer().getLatestPose().toString());
-			SmartDashboard.putString("swerve/localizer/accel", getLocalizer().getMeasuredAcceleration().toString());
-			SmartDashboard.putString("swerve/localizer/velocity", getLocalizer().getSmoothedVelocity().toString());
-		}
+        for (SwerveModuleBase mod : swerveMods) {
+            SmartDashboard.putNumber("Swerve/SPEED REQ" + mod.getModuleNumber(),
+                    setpoint.mModuleStates[mod.getModuleNumber()].speedMetersPerSecond);
+            SmartDashboard.putNumber("Swerve/SPEED ACT" + mod.getModuleNumber(),
+                    mod.getState().speedMetersPerSecond);
+            SmartDashboard.putNumber("Swerve/ANGLE REQ" + mod.getModuleNumber(),
+                    setpoint.mModuleStates[mod.getModuleNumber()].angle.getDegrees());
+            SmartDashboard.putNumber("Swerve/ANGLE ACT" + mod.getModuleNumber(),
+                    mod.getState().angle.getDegrees());
+        }
+        SmartDashboard.putNumber("Swerve/headingTarget", headingTarget);
+        if (Constants.TUNING) {
+            setHeadingControllerPID();
+            SmartDashboard.putString("swerve/localizer/latest_pose", getLocalizer().getLatestPose().toString());
+            SmartDashboard.putString("swerve/localizer/accel", getLocalizer().getMeasuredAcceleration().toString());
+            SmartDashboard.putString("swerve/localizer/velocity", getLocalizer().getSmoothedVelocity().toString());
+        }
     }
 
     @Override
@@ -526,13 +526,13 @@ public class Swerve implements Updatable, Subsystem {
                 .getDegrees());
     }
 
+    public boolean aimingReady(double offset) {
+        SmartDashboard.putBoolean("SwerveReady", Math.abs(gyro.getYaw().getDegrees() - headingTarget) < offset);
+        return Math.abs(gyro.getYaw().getDegrees() - headingTarget) < offset;
+    }
+
     public enum State {
         BRAKE, DRIVE, PATH_FOLLOWING, EMPTY
     }
-
-	public boolean aimingReady(double offset) {
-		SmartDashboard.putBoolean("SwerveReady", Math.abs(gyro.getYaw().getDegrees() - headingTarget) < offset);
-		return Math.abs(gyro.getYaw().getDegrees() - headingTarget) < offset;
-	}
 
 }

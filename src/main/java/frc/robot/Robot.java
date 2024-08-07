@@ -15,7 +15,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
     // CTRESwerveModule FL = new CTRESwerveModule(0,
-    // Constants.SwerveDrivetrian.FrontLeft, Constants.RobotConstants.CAN_BUS_NAME);
+    // Constants.SwerveDrivetrain.FrontLeft, Constants.RobotConstants.CAN_BUS_NAME);
     CommandXboxController driverController = new CommandXboxController(0);
     // public static Timer timer;
     private Command m_autonomousCommand;
@@ -43,6 +43,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
+        robotContainer.getUpdateManager().runEnableSingle();
     }
 
     @Override
@@ -51,6 +52,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
+        robotContainer.getUpdateManager().runEnableSingle();
         m_autonomousCommand = robotContainer.getAutonomousCommand();
 
         if (m_autonomousCommand != null) {
@@ -61,6 +63,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousPeriodic() {
+        robotContainer.getUpdateManager().runEnableSingle();
     }
 
     @Override

@@ -138,7 +138,7 @@ public class Constants {
 
         public static final Measure<Voltage> MAX_VOLTAGE = Volts.of(12.0);
 
-        public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0;// 0.0002
+        public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.0002;// 0.0002
 
         public static final int PIGEON_ID = 1;
 
@@ -199,7 +199,7 @@ public class Constants {
         /**
          * The stator current at which the wheels start to slip
          */
-        private static final Measure<Current> slipCurrent = Amps.of(110.0);
+        private static final Measure<Current> slipCurrent = Amps.of(90.0);
         /**
          * Swerve steering gains
          */
@@ -276,7 +276,7 @@ public class Constants {
         private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 15;
         private static final int FRONT_LEFT_STEER_MOTOR_ID = 14;
         private static final int FRONT_LEFT_ENCODER_ID = 20;
-        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.096679/*+0.042*/;// 0.052955;//0.127686//0.5329550781
+        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.065435;// 0.052955;//0.127686//0.5329550781
         private static final Measure<Distance> frontLeftXPos = Meters.of(0.5);
         private static final Measure<Distance> frontLeftYPos = Meters.of(0.5);
         public static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(

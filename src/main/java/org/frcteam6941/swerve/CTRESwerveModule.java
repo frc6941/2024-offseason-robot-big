@@ -24,11 +24,11 @@ public class CTRESwerveModule implements SwerveModuleBase {
                 .withVoltageClosedLoopRampPeriod(Constants.SwerveDrivetrain.VOLTAGE_CLOSED_LOOP_RAMP_PERIOD));
         module.getDriveMotor().getConfigurator()
                 .apply(new CurrentLimitsConfigs()
-						.withStatorCurrentLimit(110)
+                        .withStatorCurrentLimit(110)
                         .withStatorCurrentLimitEnable(true)
                         .withSupplyCurrentLimit(50)//90
-						.withSupplyTimeThreshold(0)
-						.withSupplyCurrentLimitEnable(true));//0.5
+                        .withSupplyTimeThreshold(0)
+                        .withSupplyCurrentLimitEnable(true));//0.5
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CTRESwerveModule implements SwerveModuleBase {
                 .withKA(Constants.SwerveDrivetrain.driveGainsClass.DRIVE_KA.get())
                 .withKV(Constants.SwerveDrivetrain.driveGainsClass.DRIVE_KV.get())
                 .withKS(Constants.SwerveDrivetrain.driveGainsClass.DRIVE_KS.get()));
-        // if (Math.abs(desiredState.speedMetersPerSecond) <= 0.15 * Constants.SwerveDrivetrian.maxSpeed.magnitude()) {
+        // if (Math.abs(desiredState.speedMetersPerSecond) <= 0.15 * Constants.SwerveDrivetrain.maxSpeed.magnitude()) {
         // 	if (!lowSpeed) {
         // 		angleLowSpeed = desiredState.angle;
         // 		lowSpeed = true;
