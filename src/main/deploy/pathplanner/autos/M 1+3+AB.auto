@@ -1,0 +1,227 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.35,
+      "y": 5.55802417487188
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoPreShoot"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoShoot"
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "Copy of M-N3"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Intake"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "Copy of N3-S"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Intake"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoShoot"
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "Copy of Copy of S-N2"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Intake"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoShoot"
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "Copy of N2-N1"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Intake"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoShoot"
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "Copy of N1-NA"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Intake"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "NA-SA"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Intake"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoShoot"
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "SA-NB mid"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Intake"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "NB-SB mid"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Intake"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoShoot"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Middle",
+  "choreoAuto": false
+}
