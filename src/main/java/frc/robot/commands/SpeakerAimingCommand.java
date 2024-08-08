@@ -4,7 +4,6 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO;
@@ -15,7 +14,8 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShootingParameters;
 import frc.robot.utils.ShootingParametersTable;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
-import frc.robot.utils.ShootingPolynomialParameters;
+
+import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
@@ -25,7 +25,8 @@ public class SpeakerAimingCommand extends Command {
     private final IndicatorSubsystem indicatorSubsystem;
     private final BeamBreakSubsystem beamBreakSubsystem;
     private final Swerve Swerve;
-    private final CommandXboxController driverController;
+    private final DoubleSupplier driverX;
+    private final DoubleSupplier driverY;
     LinearFilter filter = LinearFilter.singlePoleIIR(0.2, 0.02);
     private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("Distance");
 
@@ -34,12 +35,14 @@ public class SpeakerAimingCommand extends Command {
             IndicatorSubsystem indicatorSubsystem,
             BeamBreakSubsystem beamBreakSubsystem,
             Swerve Swerve,
-            CommandXboxController driverController) {
+            DoubleSupplier driverX,
+            DoubleSupplier driverY) {
         this.shooterSubsystem = shooterSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
         this.beamBreakSubsystem = beamBreakSubsystem;
         this.Swerve = Swerve;
-        this.driverController = driverController;
+        this.driverX = driverX;
+        this.driverY = driverY;
     }
 
     @Override
@@ -78,8 +81,8 @@ public class SpeakerAimingCommand extends Command {
         distanceLogged.set(distance);
         Swerve.drive(
                 new Translation2d(
-                        -driverController.getLeftX() * Constants.SwerveDrivetrain.maxSpeed.magnitude(),
-                        -driverController.getLeftY() * Constants.SwerveDrivetrain.maxSpeed.magnitude()),
+                        -driverX.getAsDouble() * Constants.SwerveDrivetrain.maxSpeed.magnitude(),
+                        -driverY.getAsDouble() * Constants.SwerveDrivetrain.maxSpeed.magnitude()),
                 0,
                 true,
                 false);

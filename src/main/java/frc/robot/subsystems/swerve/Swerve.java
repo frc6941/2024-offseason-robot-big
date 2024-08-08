@@ -31,10 +31,7 @@ import org.frcteam6941.drivers.Pigeon2Gyro;
 import org.frcteam6941.localization.Localizer;
 import org.frcteam6941.localization.SwerveDeltaCoarseLocalizer;
 import org.frcteam6941.looper.Updatable;
-import org.frcteam6941.swerve.CTRESwerveModule;
-import org.frcteam6941.swerve.SwerveModuleBase;
-import org.frcteam6941.swerve.SwerveSetpoint;
-import org.frcteam6941.swerve.SwerveSetpointGenerator;
+import org.frcteam6941.swerve.*;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 import org.frcteam6941.utils.AngleNormalization;
 
@@ -100,13 +97,13 @@ public class Swerve implements Updatable, Subsystem {
             gyro = new Pigeon2Gyro(Constants.SwerveDrivetrain.PIGEON_ID, Constants.RobotConstants.CAN_BUS_NAME);
         } else {
             swerveMods = new SwerveModuleBase[]{
-                    new CTRESwerveModule(0, Constants.SwerveDrivetrain.FrontLeft,
+                    new SimSwerveModule(0, Constants.SwerveDrivetrain.FrontLeft,
                             Constants.RobotConstants.CAN_BUS_NAME),
-                    new CTRESwerveModule(1, Constants.SwerveDrivetrain.FrontRight,
+                    new SimSwerveModule(1, Constants.SwerveDrivetrain.FrontRight,
                             Constants.RobotConstants.CAN_BUS_NAME),
-                    new CTRESwerveModule(2, Constants.SwerveDrivetrain.BackLeft,
+                    new SimSwerveModule(2, Constants.SwerveDrivetrain.BackLeft,
                             Constants.RobotConstants.CAN_BUS_NAME),
-                    new CTRESwerveModule(3, Constants.SwerveDrivetrain.BackRight,
+                    new SimSwerveModule(3, Constants.SwerveDrivetrain.BackRight,
                             Constants.RobotConstants.CAN_BUS_NAME),
             };
             gyro = new DummyGyro(Constants.LOOPER_DT);
@@ -137,6 +134,19 @@ public class Swerve implements Updatable, Subsystem {
         headingController.enableContinuousInput(0, 360.0);
 
         var driveBaseRadius = getDriveBaseRadius();
+
+        AutoBuilder.configureHolonomic(
+                swerveLocalizer::getLatestPose,
+                this::resetPose,
+                this::getChassisSpeeds,
+                this::driveSpeed,
+                new HolonomicPathFollowerConfig(
+                        speedAt12Volts.magnitude(),
+                        driveBaseRadius,
+                        new ReplanningConfig()),
+                Utils::flip,
+                this
+        );
     }
 
     private static double getDriveBaseRadius() {

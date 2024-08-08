@@ -4,12 +4,13 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+
+import java.util.function.DoubleSupplier;
 
 public class AutomaticSpeakerShootCommand extends ParallelCommandGroup {
     public AutomaticSpeakerShootCommand(
@@ -18,16 +19,17 @@ public class AutomaticSpeakerShootCommand extends ParallelCommandGroup {
             BeamBreakSubsystem beamBreakSubsystem,
             IndicatorSubsystem indicatorSubsystem,
             Swerve Swerve,
-            CommandXboxController driverController) {
+            DoubleSupplier driverX,
+            DoubleSupplier driverY) {
         addCommands(
-                new SpeakerAimingCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem, Swerve, driverController),
+                new SpeakerAimingCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem, Swerve, driverX, driverY),
                 new PreShootCommand(shooterSubsystem),
                 Commands.sequence(
                         new WaitUntilCommand(() -> (
-                                        Swerve.aimingReady(2.5) &&
+                                Swerve.aimingReady(2.5) &&
                                         shooterSubsystem.aimingReady()
-						)),
-				Commands.runOnce(()->Timer.delay(0.02),indicatorSubsystem),
-				new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)));
+                        )),
+                        Commands.runOnce(() -> Timer.delay(0.02), indicatorSubsystem),
+                        new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)));
     }
 }
