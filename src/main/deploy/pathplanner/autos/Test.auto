@@ -2,22 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.69697649003839,
-      "y": 6.0
+      "x": 1.380403113747404,
+      "y": 5.5397809619148655
     },
     "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
-      "commands": [
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Test"
-          }
-        }
-      ]
+      "commands": []
     }
   },
   "folder": null,

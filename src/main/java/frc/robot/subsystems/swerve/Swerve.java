@@ -137,19 +137,6 @@ public class Swerve implements Updatable, Subsystem {
         headingController.enableContinuousInput(0, 360.0);
 
         var driveBaseRadius = getDriveBaseRadius();
-
-        AutoBuilder.configureHolonomic(
-                swerveLocalizer::getLatestPose,
-                this::resetPose,
-                this::getChassisSpeeds,
-                this::driveSpeed,
-                new HolonomicPathFollowerConfig(
-                        speedAt12Volts.magnitude(),
-                        driveBaseRadius,
-                        new ReplanningConfig()),
-                Utils::flip,
-                this
-        );
     }
 
     private static double getDriveBaseRadius() {

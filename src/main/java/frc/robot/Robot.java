@@ -14,10 +14,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 
 public class Robot extends LoggedRobot {
-    // CTRESwerveModule FL = new CTRESwerveModule(0,
-    // Constants.SwerveDrivetrain.FrontLeft, Constants.RobotConstants.CAN_BUS_NAME);
     CommandXboxController driverController = new CommandXboxController(0);
-    // public static Timer timer;
     private Command m_autonomousCommand;
     private RobotContainer robotContainer;
 
@@ -25,7 +22,7 @@ public class Robot extends LoggedRobot {
     public void robotInit() {
         robotContainer = new RobotContainer();
         DriverStation.silenceJoystickConnectionWarning(true);
-        // //robotContainer.getUpdateManager().startEnableLoop(Constants.LOOPER_DT);
+        // robotContainer.getUpdateManager().startEnableLoop(Constants.LOOPER_DT);
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
     }
@@ -82,13 +79,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopPeriodic() {
-        // FL.updateSignals();
-        // FL.setDesiredState(new SwerveModuleState(
-        // driverController.getLeftY() * 3,
-        // new Rotation2d(driverController.getRightX() * 2 * Math.PI)),
-        // true,
-        // false);
-        // System.out.println(Swerve.getInstance().getLocalizer().getLatestPose().getRotation());
     }
 
     @Override
