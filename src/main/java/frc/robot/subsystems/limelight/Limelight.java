@@ -92,7 +92,7 @@ public class Limelight implements Updatable {
         if (hasTarget()) {
             botEstimate = Optional.of(
                     LimelightHelpers
-                            .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.AIM_LIMELIGHT_NAME));
+                            .getBotPoseEstimate_wpiBlue(Constants.VisionConstants.AIM_LIMELIGHT_NAME));
             // if (lastPose != null) {
             // 	SmartDashboard.putNumber("degree speed", Math
             // 		.abs((botEstimate.get().pose.getRotation().getDegrees() - lastPose.pose.getRotation().getDegrees())
@@ -181,6 +181,7 @@ public class Limelight implements Updatable {
                 SmartDashboard.putNumber("latency", botEstimate.get().latency);
             }
         }
+        //System.out.println(tx.getDouble(0));
         // SmartDashboard.putNumber("relativePos2",  getSpeakerRelativePosition());
     }
 

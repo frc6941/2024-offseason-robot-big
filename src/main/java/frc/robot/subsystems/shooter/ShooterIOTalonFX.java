@@ -158,14 +158,6 @@ public class ShooterIOTalonFX implements ShooterIO, Updatable {
     }
 
     @Override
-    public void setFlyWheelVoltage(Measure<Voltage> volts) {
-//        double rpm = volts.magnitude() / 12 * 6380;
-//        setFlyWheelVelocity(
-//                rpm
-//        );
-    }
-
-    @Override
     public void setFlyWheelDirectVoltage(Measure<Voltage> volts) {
         leftShooterTalon.setControl(new VoltageOut(volts.magnitude()));
     }

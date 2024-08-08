@@ -14,7 +14,7 @@ import static frc.robot.Constants.ShooterConstants.defaultShootRPM;
 
 public class PreShootCommand extends Command {
     private final ShooterSubsystem shooterSubsystem;
-    private double defaltRPM = defaultShootRPM;
+    private double defaultRPM = defaultShootRPM;
 
     public PreShootCommand(ShooterSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
@@ -22,7 +22,7 @@ public class PreShootCommand extends Command {
 
     @Override
     public void initialize() {
-        defaltRPM = defaultShootRPM;
+        defaultRPM = defaultShootRPM;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class PreShootCommand extends Command {
 
         var targetOptional = Limelight.getTarget();
         if (targetOptional.isEmpty()) {
-            shooterSubsystem.getIo().setFlyWheelVelocity(defaultShootRPM);
+            shooterSubsystem.getIo().setFlyWheelVelocity(defaultRPM);
             return;
         }
 
@@ -44,7 +44,7 @@ public class PreShootCommand extends Command {
         SmartDashboard.putNumber("shooter desired angle", Units.degreesToRadians(
                 shooterSubsystem.getInputs().leftShooterVelocity.magnitude()));
 
-        shooterSubsystem.getIo().setFlyWheelVelocity(parameter.getVoltage());
+        shooterSubsystem.getIo().setFlyWheelVelocity(parameter.getVelocity());
     }
 
     @Override

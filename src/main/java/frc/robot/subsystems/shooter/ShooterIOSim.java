@@ -81,15 +81,6 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
-    public void setFlyWheelVoltage(Measure<Voltage> volts) {
-        leftShooterAppliedVoltage = volts;
-        rightShooterAppliedVoltage = leftShooterAppliedVoltage.mutableCopy().negate();
-
-        leftShooterTalonSim.setInputVoltage(leftShooterAppliedVoltage.magnitude());
-        rightShooterTalonSim.setInputVoltage(rightShooterAppliedVoltage.magnitude());
-    }
-
-    @Override
     public void setFlyWheelDirectVoltage(Measure<Voltage> volts) {
 
     }
@@ -154,7 +145,7 @@ public class ShooterIOSim implements ShooterIO {
     public void setHomed(boolean homed) {
         this.homed = homed;
     }
-    
+
     @Override
     public double getVelocity() {
         return rightShooterTalonSim.getAngularVelocityRadPerSec() / 6.28 * 60;

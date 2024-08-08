@@ -10,7 +10,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 public class PreShootTestCommand extends Command {
     private final ShooterSubsystem shooterSubsystem;
     private double RPM;
-    private TunableNumber flyWheelVoltage = new TunableNumber("flyWheelVoltage", 0.0);
+    private TunableNumber flyWheelVelocity = new TunableNumber("flyWheelVelocity", 0.0);
     private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("Distance");
 
     public PreShootTestCommand(ShooterSubsystem shooterSubsystem) {
@@ -26,7 +26,7 @@ public class PreShootTestCommand extends Command {
     @Override
     public void execute() {
         distanceLogged.set(Limelight.getInstance().getSpeakerRelativePosition().getNorm());
-        shooterSubsystem.getIo().setFlyWheelVelocity(flyWheelVoltage.get());
+        shooterSubsystem.getIo().setFlyWheelVelocity(flyWheelVelocity.get());
     }
 
     @Override

@@ -8,8 +8,6 @@ import static edu.wpi.first.units.Units.*;
 public interface ShooterIO {
     void updateInputs(ShooterIOInputs inputs);
 
-    void setFlyWheelVoltage(Measure<Voltage> volts);
-
     void setFlyWheelDirectVoltage(Measure<Voltage> volts);
 
     void setFlyWheelVelocity(double velocityRPM, double ffVoltage);
@@ -35,7 +33,7 @@ public interface ShooterIO {
     boolean setArmConfig(double p, double i, double d);
 
     void runVolts(double volts);
-    
+
     double getVelocity();
 
 

@@ -12,29 +12,9 @@ public class ShootingParametersTable {
     private final NavigableMap<Double, ShootingParameters> interpolatingTable = new TreeMap<>();
 
     private ShootingParametersTable() {
-        // loadParameter(1.1, -8, 23);//20240804
-        // loadParameter(1.75, -8, 42);//20240804
-        // loadParameter(2.23, -8, 54);//20240804
-        // loadParameter(2.54, -11, 55);//20240804
-        // loadParameter(2.76, -11, 59);//20240804
-//        loadParameter(1.07, -6, 17.8);//20240805
-//        loadParameter(1.66, -6, 33.8);//20240805
-//		loadParameter(2.33, -8, 38.8);//20240805
-//		loadParameter(2.44, -8, 51.6);//20240805
-//		//loadParameter(2.72, -8, 51.8);//20240805//not acc
-//		loadParameter(2.90, -8, 56.8);//20240805
-//        loadParameter(3.17, -8, 57.7);//20240805
-//        loadParameter(3.41, -9, 60.9);//20240805
-//		loadParameter(3.74, -9, 63.9);//20240805
-//		// loadParameter(1.01, -6, 15.9);//20240806
-        // loadParameter(1.84, -6, 36.8);//20240806
-        // loadParameter(2.57, -9, 52.8);//20240806
-        // loadParameter(3.28, -10, 57.7);//20240806
-        // loadParameter(3.65, -11, 64.7);//20240806
         loadParameter(1.10, -4500, 0.4494 / 3.14 * 180);//20240807
         loadParameter(1.68, -4500, 0.6427 / 3.14 * 180);//20240807
-        loadParameter(2.01, -4500, 0.70
-                00 / 3.14 * 180);//20240807
+        loadParameter(2.01, -4500, 0.7000 / 3.14 * 180);//20240807
         loadParameter(2.36, -4500, 0.8513 / 3.14 * 180);//20240807
         loadParameter(2.60, -4500, 0.9556 / 3.14 * 180);//20240807
         loadParameter(2.92, -4500, 0.9924 / 3.14 * 180);//20240807
@@ -51,8 +31,8 @@ public class ShootingParametersTable {
         return instance;
     }
 
-    private void loadParameter(double distance, double voltage, double angle) {
-        interpolatingTable.put(distance, new ShootingParameters(voltage, angle));
+    private void loadParameter(double distance, double velocity, double angle) {
+        interpolatingTable.put(distance, new ShootingParameters(velocity, angle));
     }
 
     private void readyTuning() {
@@ -60,7 +40,7 @@ public class ShootingParametersTable {
         for (Double key : interpolatingTable.keySet()) {
             parameters.add(new ParametersBinding(
                     new TunableNumber("P" + counter + " Distance", key),
-                    new TunableNumber("P" + counter + " Voltage", interpolatingTable.get(key).getVoltage()),
+                    new TunableNumber("P" + counter + " Velocity", interpolatingTable.get(key).getVelocity()),
                     new TunableNumber("P" + counter + " Angle", interpolatingTable.get(key).getAngle())));
             counter++;
         }
@@ -70,7 +50,7 @@ public class ShootingParametersTable {
         interpolatingTable.clear();
         for (ParametersBinding bind : parameters) {
             interpolatingTable.put(bind.distance.get(),
-                    new ShootingParameters(bind.shootingVoltage.get(), bind.shootingAngle.get()));
+                    new ShootingParameters(bind.shootingVelocity.get(), bind.shootingAngle.get()));
         }
     }
 
@@ -88,7 +68,7 @@ public class ShootingParametersTable {
 
         double k = (distance - floor.getKey()) / (ceiling.getKey() - floor.getKey());
         return new ShootingParameters(
-                floor.getValue().getVoltage() + (ceiling.getValue().getVoltage() - floor.getValue().getVoltage()) * k,
+                floor.getValue().getVelocity() + (ceiling.getValue().getVelocity() - floor.getValue().getVelocity()) * k,
                 floor.getValue().getAngle() + (ceiling.getValue().getAngle() - floor.getValue().getAngle()) * k);
     }
 
@@ -99,12 +79,12 @@ public class ShootingParametersTable {
     private class ParametersBinding implements Comparable<ParametersBinding> {
         public TunableNumber distance;
         public TunableNumber shootingAngle;
-        public TunableNumber shootingVoltage;
+        public TunableNumber shootingVelocity;
 
-        public ParametersBinding(TunableNumber distance, TunableNumber voltage, TunableNumber angle) {
+        public ParametersBinding(TunableNumber distance, TunableNumber velocity, TunableNumber angle) {
             this.distance = distance;
             this.shootingAngle = angle;
-            this.shootingVoltage = voltage;
+            this.shootingVelocity = velocity;
         }
 
         @Override
