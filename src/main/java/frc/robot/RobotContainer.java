@@ -7,6 +7,7 @@ package frc.robot;
 import com.choreo.lib.ChoreoTrajectory;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,6 +16,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
@@ -59,7 +61,7 @@ public class RobotContainer {
     CommandXboxController operatorController = new CommandXboxController(1);
     ShooterIOTalonFX shooterIOTalonFX = new ShooterIOTalonFX();
     IndexerIOTalonFX indexerIOTalonFX = new IndexerIOTalonFX();
-     ChoreoTrajectory traj = Choreo.getTrajectory("NewPathCircle");
+    ChoreoTrajectory traj = Choreo.getTrajectory("NewPathCircle");
     @Getter
     private UpdateManager updateManager;
     private LoggedDashboardChooser<Command> autoChooser;
@@ -81,31 +83,61 @@ public class RobotContainer {
 
     private void configureAuto() {
         final LoggedDashboardChooser<Command> autoChooser;
-        Choreo.choreoSwerveCommand(
-                traj,
+//        Choreo.choreoSwerveCommand(
+//                traj,
+//                () -> swerve.getLocalizer().getCoarseFieldPose(0),
+//                new PIDController(
+//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
+//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
+//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()),
+//                new PIDController(
+//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KP.get(),
+//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KI.get(),
+//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KD.get()),
+//                new PIDController(
+//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
+//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
+//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()),
+//                (ChassisSpeeds speeds) ->
+//                        swerve.drive(
+//                                new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),
+//                                speeds.omegaRadiansPerSecond,
+//                                false,
+//                                false),
+//                () -> {
+//                    Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+//                    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+//                });
+
+        AutoBuilder.configureHolonomic(
                 () -> swerve.getLocalizer().getCoarseFieldPose(0),
-                new PIDController(
-                        Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
-                        Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
-                        Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()),
-                new PIDController(
-                        Constants.AutoConstants.swerveYGainsClass.swerveY_KP.get(),
-                        Constants.AutoConstants.swerveYGainsClass.swerveY_KI.get(),
-                        Constants.AutoConstants.swerveYGainsClass.swerveY_KD.get()),
-                new PIDController(
-                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
-                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
-                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()),
+                (Pose2d pose2d) -> swerve.resetPose(pose2d),
+                () -> new ChassisSpeeds(swerve.getLocalizer().getSmoothedVelocity().getX(),
+                        swerve.getLocalizer().getSmoothedVelocity().getY(),
+                        swerve.getLocalizer().getSmoothedVelocity().getRotation().getDegrees()),
                 (ChassisSpeeds speeds) ->
-                        swerve.drive(
+                        swerve.autoDrive(
                                 new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),
                                 speeds.omegaRadiansPerSecond,
-                                false,
+                                true,
                                 false),
+                new HolonomicPathFollowerConfig(
+                        new PIDConstants(
+                                Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
+                                Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
+                                Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()),
+                        new PIDConstants(
+                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
+                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
+                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()),
+                        Constants.SwerveDrivetrain.maxSpeed.magnitude(),
+                        0.4,
+                        new ReplanningConfig()
+                ),
                 () -> {
                     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
                     return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
-                });
+                }, swerve);
 
         // FIXME Adapt to autonomous commands! Current adaptation is preliminary.
         NamedCommands.registerCommand("AutoShoot",
@@ -122,18 +154,18 @@ public class RobotContainer {
         NamedCommands.registerCommand("ResetArm",
                 new ResetArmCommand(shooterSubsystem));
 
-        // autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
+        //autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser("123"));
 
-        // autoChooser.addOption(
-        //         "Flywheel SysId (Quasistatic Forward)",
-        //         shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        // autoChooser.addOption(
-        //         "Flywheel SysId (Quasistatic Reverse)",
-        //         shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        // autoChooser.addOption(
-        //         "Flywheel SysId (Dynamic Forward)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        // autoChooser.addOption(
-        //         "Flywheel SysId (Dynamic Reverse)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+//        autoChooser.addOption(
+//                "Flywheel SysId (Quasistatic Forward)",
+//                shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+//        autoChooser.addOption(
+//                "Flywheel SysId (Quasistatic Reverse)",
+//                shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+//        autoChooser.addOption(
+//                "Flywheel SysId (Dynamic Forward)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+//        autoChooser.addOption(
+//                "Flywheel SysId (Dynamic Reverse)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
 
     /**
@@ -215,7 +247,7 @@ public class RobotContainer {
                 Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL), indicatorSubsystem));
 
         // parameter
-//         driverController.b().onTrue(new ResetArmCommand(shooterSubsystem));
+        driverController.b().onTrue(new ResetArmCommand(shooterSubsystem));
 //        driverController.y().whileTrue(new ShooterUpCommand(shooterSubsystem));
 //        driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
 //        driverController.x().whileTrue(new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem));
@@ -242,31 +274,32 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // return new CharacterizationDriveCommand(swerve, 3, 1.5, 6);
         // return new CharacterizationShooterCommand(shooterSubsystem, 1, 1, 10);
-        return Choreo.choreoSwerveCommand(
-                traj,
-                () -> swerve.getLocalizer().getCoarseFieldPose(0),
-                new PIDController(
-                        Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
-                        Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
-                        Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()),
-                new PIDController(
-                        Constants.AutoConstants.swerveYGainsClass.swerveY_KP.get(),
-                        Constants.AutoConstants.swerveYGainsClass.swerveY_KI.get(),
-                        Constants.AutoConstants.swerveYGainsClass.swerveY_KD.get()),
-                new PIDController(
-                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
-                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
-                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()),
-                (ChassisSpeeds speeds) ->
-                        swerve.autoDrive(
-                                new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),
-                                speeds.omegaRadiansPerSecond,
-                                true,
-                                false),
-                () -> {
-                    Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
-                    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
-                });
-        // return null;
+//        return Choreo.choreoSwerveCommand(
+//                traj,
+//                () -> swerve.getLocalizer().getCoarseFieldPose(0),
+//                new PIDController(
+//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
+//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
+//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()),
+//                new PIDController(
+//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KP.get(),
+//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KI.get(),
+//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KD.get()),
+//                new PIDController(
+//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
+//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
+//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()),
+//                (ChassisSpeeds speeds) ->
+//                        swerve.autoDrive(
+//                                new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),
+//                                speeds.omegaRadiansPerSecond,
+//                                true,
+//                                false),
+//                () -> {
+//                    Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+//                    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+//                });
+        //return autoChooser.get();
+        return AutoBuilder.buildAuto("123");
     }
 }

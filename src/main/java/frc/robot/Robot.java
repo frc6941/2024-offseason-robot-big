@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -28,6 +29,7 @@ public class Robot extends LoggedRobot {
         robotContainer = new RobotContainer();
         DriverStation.silenceJoystickConnectionWarning(true);
         // robotContainer.getUpdateManager().startEnableLoop(Constants.LOOPER_DT);
+        FollowPathCommand.warmupCommand().schedule();
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
     }
