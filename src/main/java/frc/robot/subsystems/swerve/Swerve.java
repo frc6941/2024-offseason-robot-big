@@ -289,11 +289,6 @@ public class Swerve implements Updatable, Subsystem {
 
     public void autoDrive(Translation2d translationalVelocity, double rotationalVelocity,
                           boolean isFieldOriented, boolean isOpenLoop) {
-//        System.out.println(translationalVelocity.toString());
-//        System.out.println(translationalVelocity.toString());
-//        System.out.println(translationalVelocity.toString());
-//        System.out.println(translationalVelocity.toString());
-//        System.out.println(translationalVelocity.toString());
         autoDriveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented, isOpenLoop);
     }
 
