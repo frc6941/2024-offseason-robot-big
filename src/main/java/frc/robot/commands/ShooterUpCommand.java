@@ -21,7 +21,7 @@ public class ShooterUpCommand extends Command {
 
     @Override
     public void execute() {
-        Constants.armPosition = Constants.armPosition.plus(Degrees.of(1));
+        Constants.armPosition = Constants.armPosition.plus(Degrees.of(0.1));
         shooterSubsystem.getIo()
                 .setArmPosition(Constants.armPosition);
     }

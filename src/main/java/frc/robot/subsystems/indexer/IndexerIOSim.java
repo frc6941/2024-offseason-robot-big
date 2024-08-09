@@ -14,7 +14,7 @@ public class IndexerIOSim implements IndexerIO {
             DCMotor.getFalcon500Foc(1), 6.75, 0.025
     );
 
-    private Measure<Voltage> indexAppliedVoltage = Volts.zero();
+    private double indexAppliedRPM;
 
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
@@ -24,15 +24,14 @@ public class IndexerIOSim implements IndexerIO {
                 RadiansPerSecond.of(indexTalonSim.getAngularVelocityRadPerSec());
         inputs.indexPosition =
                 Radians.of(MathUtil.inputModulus(indexTalonSim.getAngularPositionRad(), -2 * Math.PI, 2 * Math.PI));
-        inputs.indexAppliedVoltage =
-                indexAppliedVoltage;
+        inputs.indexAppliedRPM =
+                indexAppliedRPM;
         inputs.indexSupplyCurrent =
                 Amps.of(indexTalonSim.getCurrentDrawAmps());
     }
 
     @Override
-    public void setIndexVoltage(Measure<Voltage> volts) {
-        indexAppliedVoltage = volts;
-        indexTalonSim.setInputVoltage(indexAppliedVoltage.magnitude());
+    public void setIndexRPM(double velocityRPM) {
+        indexAppliedRPM = velocityRPM;
     }
 }

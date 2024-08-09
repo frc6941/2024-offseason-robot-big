@@ -132,8 +132,8 @@ public class Limelight implements Updatable {
                 deviationY = 0.01;
                 deviationOmega = 0.001;
             } else {
-                deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 2;
-                deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 2;
+                deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 150;
+                deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 150;
                 deviationOmega = 0.001;
             }
             botEstimate.ifPresent((poseEstimate) -> {

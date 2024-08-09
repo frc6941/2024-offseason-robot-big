@@ -10,7 +10,6 @@ import static edu.wpi.first.units.Units.Volts;
 public class IndexCommand extends Command {
     private final IndexerSubsystem indexerSubsystem;
     private final BeamBreakSubsystem beamBreakSubsystem;
-    private boolean enabledBefore = false;
 
     public IndexCommand(
             IndexerSubsystem indexerSubsystem,
@@ -21,29 +20,21 @@ public class IndexCommand extends Command {
 
     @Override
     public void initialize() {
-        enabledBefore = false;
     }
 
     @Override
     public void execute() {
         if (isFinished()) {
-            indexerSubsystem.getIo().setIndexVoltage(Volts.zero());
+            indexerSubsystem.getIo().setIndexRPM(0);
             return;
-        }
-        if (beamBreakSubsystem.getInputs().isIntakerBeamBreakOn) {
-            enabledBefore = true;
-        }
-        if (enabledBefore && !beamBreakSubsystem.getInputs().isIntakerBeamBreakOn) {
-            indexerSubsystem.getIo().setIndexVoltage(Volts.of(0.5));
-            return;
-        }
+            }
         indexerSubsystem.getIo()
-                .setIndexVoltage(Constants.IndexerConstants.indexVoltage);
+                .setIndexRPM(Constants.IndexerConstants.indexRPM);
     }
 
     @Override
     public void end(boolean interrupted) {
-        indexerSubsystem.getIo().setIndexVoltage(Volts.zero());
+        indexerSubsystem.getIo().setIndexRPM(0);
     }
 
     @Override

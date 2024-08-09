@@ -52,6 +52,19 @@ public class Constants {
         public final static Measure<Voltage> indexVoltage = Volts.of(5);
         public final static Measure<Voltage> trapIndexVoltage = Volts.of(2);
         public final static Measure<Voltage> indexShootVoltage = Volts.of(-16);
+
+        public final static double indexRPM = 500;
+        public final static double triggerRPM = 3500;
+
+
+        public static class indexerGainsClass {
+            public static final TunableNumber INDEXER_KP = new TunableNumber("INDEXER PID/kp", 0.25);
+            public static final TunableNumber INDEXER_KI = new TunableNumber("INDEXER PID/ki", 0.0);
+            public static final TunableNumber INDEXER_KD = new TunableNumber("INDEXER PID/kd", 0.001);
+            public static final TunableNumber INDEXER_KA = new TunableNumber("INDEXER PID/ka", 0.0037512677);
+            public static final TunableNumber INDEXER_KV = new TunableNumber("INDEXER PID/kv", 0.115);//0.107853495
+            public static final TunableNumber INDEXER_KS = new TunableNumber("INDEXER PID/ks", 0.28475008);
+        }
     }
 
     public static class IntakerConstants {
@@ -116,9 +129,9 @@ public class Constants {
         public static Measure<Angle> speakerArmOffsetMax = Degrees.of(64);
 
         public static class shooterGainsClass {
-            public static final TunableNumber SHOOTER_KP = new TunableNumber("SHOOTER PID/kp", 0.1);
+            public static final TunableNumber SHOOTER_KP = new TunableNumber("SHOOTER PID/kp", 0.3);
             public static final TunableNumber SHOOTER_KI = new TunableNumber("SHOOTER PID/ki", 0);
-            public static final TunableNumber SHOOTER_KD = new TunableNumber("SHOOTER PID/kd", 0.01);
+            public static final TunableNumber SHOOTER_KD = new TunableNumber("SHOOTER PID/kd", 0.005);
             public static final TunableNumber SHOOTER_KA = new TunableNumber("SHOOTER PID/ka", 0.0037512677);
             public static final TunableNumber SHOOTER_KV = new TunableNumber("SHOOTER PID/kv", 0.115);//0.107853495
             public static final TunableNumber SHOOTER_KS = new TunableNumber("SHOOTER PID/ks", 0.28475008);
@@ -322,7 +335,7 @@ public class Constants {
         private static final int FRONT_RIGHT_ENCODER_ID = 21;
         private static final double FRONT_RIGHT_ENCODER_OFFSET = 0.1270234375;// 0.125685;//0.13623046875//0.117686//0.046875
         private static final Measure<Distance> frontRightXPos = Meters.of(0.5);
-        private static final Measure<Distance> frontRightYPos = Meters.of(-0.5);
+        private static final Measure<Distance> frontRightYPos = Meters.of(-0.5);  
         public static final SwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
                 FRONT_RIGHT_STEER_MOTOR_ID,
                 FRONT_RIGHT_DRIVE_MOTOR_ID,

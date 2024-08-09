@@ -16,11 +16,11 @@ public class IndexOutCommand extends Command {
 	@Override
 	public void execute() {
 		indexerSubsystem.getIo()
-				.setIndexVoltage(Constants.IndexerConstants.indexVoltage.mutableCopy().negate());
+				.setIndexRPM(-Constants.IndexerConstants.indexRPM);
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		indexerSubsystem.getIo().setIndexVoltage(Volts.zero());
+		indexerSubsystem.getIo().setIndexRPM(0);
 	}
 }

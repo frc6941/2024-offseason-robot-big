@@ -8,13 +8,13 @@ import static edu.wpi.first.units.Units.*;
 public interface IndexerIO {
     void updateInputs(IndexerIOInputs inputs);
 
-    void setIndexVoltage(Measure<Voltage> volts);
+    void setIndexRPM(double velocityRPM);
 
     @AutoLog
     class IndexerIOInputs {
         public Measure<Velocity<Angle>> indexVelocity = RadiansPerSecond.zero();
         public Measure<Angle> indexPosition = Radians.zero();
-        public Measure<Voltage> indexAppliedVoltage = Volts.zero();
+        public double indexAppliedRPM = 0;
         public Measure<Current> indexSupplyCurrent = Amps.zero();
     }
 }

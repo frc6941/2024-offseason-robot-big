@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
+import frc.robot.commands.test.IndexTestCommand;
 import frc.robot.commands.test.PreShootTestCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
@@ -57,7 +58,8 @@ public class RobotContainer {
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
     ShooterIOTalonFX shooterIOTalonFX = new ShooterIOTalonFX();
-    ChoreoTrajectory traj = Choreo.getTrajectory("NewPathCircle");
+    IndexerIOTalonFX indexerIOTalonFX = new IndexerIOTalonFX();
+     ChoreoTrajectory traj = Choreo.getTrajectory("NewPathCircle");
     @Getter
     private UpdateManager updateManager;
     private LoggedDashboardChooser<Command> autoChooser;
@@ -67,6 +69,7 @@ public class RobotContainer {
                 swerve,
                 limelight,
                 display,
+                indexerIOTalonFX,
                 shooterIOTalonFX
         );
         updateManager.registerAll();
@@ -119,18 +122,18 @@ public class RobotContainer {
         NamedCommands.registerCommand("ResetArm",
                 new ResetArmCommand(shooterSubsystem));
 
-        autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
+        // autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
 
-        autoChooser.addOption(
-                "Flywheel SysId (Quasistatic Forward)",
-                shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Flywheel SysId (Quasistatic Reverse)",
-                shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption(
-                "Flywheel SysId (Dynamic Forward)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Flywheel SysId (Dynamic Reverse)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        // autoChooser.addOption(
+        //         "Flywheel SysId (Quasistatic Forward)",
+        //         shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        // autoChooser.addOption(
+        //         "Flywheel SysId (Quasistatic Reverse)",
+        //         shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        // autoChooser.addOption(
+        //         "Flywheel SysId (Dynamic Forward)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        // autoChooser.addOption(
+        //         "Flywheel SysId (Dynamic Reverse)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
 
     /**
@@ -212,11 +215,14 @@ public class RobotContainer {
                 Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL), indicatorSubsystem));
 
         // parameter
-        driverController.b().onTrue(new ResetArmCommand(shooterSubsystem));
+//         driverController.b().onTrue(new ResetArmCommand(shooterSubsystem));
 //        driverController.y().whileTrue(new ShooterUpCommand(shooterSubsystem));
 //        driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
 //        driverController.x().whileTrue(new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem));
-//        shooterSubsystem.setDefaultCommand(new PreShootTestCommand(shooterSubsystem));
+//         shooterSubsystem.setDefaultCommand(new PreShootTestCommand(shooterSubsystem));
+        //indexerSubsystem.setDefaultCommand(new IndexTestCommand(indexerSubsystem));
+
+
 
         driverController.leftTrigger().whileTrue(new IntakeOutCommand(intakerSubsystem));
         driverController.leftTrigger().whileTrue(new IndexOutCommand(indexerSubsystem));

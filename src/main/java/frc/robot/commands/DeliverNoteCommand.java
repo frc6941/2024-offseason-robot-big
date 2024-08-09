@@ -7,7 +7,9 @@ import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.Constants.IndexerConstants.indexRPM;
 import static frc.robot.Constants.IndexerConstants.indexVoltage;
+import static frc.robot.Constants.IndexerConstants.triggerRPM;
 
 public class DeliverNoteCommand extends Command {
 	private final IndexerSubsystem indexerSubsystem;
@@ -25,12 +27,12 @@ public class DeliverNoteCommand extends Command {
 
 	@Override
 	public void execute() {
-		indexerSubsystem.getIo().setIndexVoltage(indexVoltage);
+		indexerSubsystem.getIo().setIndexRPM(triggerRPM);
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		indexerSubsystem.getIo().setIndexVoltage(Volts.zero());
+		indexerSubsystem.getIo().setIndexRPM(0);
 		if (interrupted)
 			return;
 		indicatorSubsystem
