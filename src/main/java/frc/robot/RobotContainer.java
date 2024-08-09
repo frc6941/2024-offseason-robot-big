@@ -4,15 +4,21 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
+import com.choreo.lib.ChoreoTrajectory;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
+import frc.robot.commands.test.PreShootTestCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
@@ -27,11 +33,17 @@ import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.Utils;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.choreo.lib.Choreo;
+
+import java.util.Optional;
 
 import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.Constants.SwerveDrivetrain.speedAt12Volts;
 
 public class RobotContainer {
     IntakerSubsystem intakerSubsystem = new IntakerSubsystem(new IntakerIOTalonFX());
@@ -45,6 +57,7 @@ public class RobotContainer {
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
     ShooterIOTalonFX shooterIOTalonFX = new ShooterIOTalonFX();
+    ChoreoTrajectory traj = Choreo.getTrajectory("NewPathCircle");
     @Getter
     private UpdateManager updateManager;
     private LoggedDashboardChooser<Command> autoChooser;
@@ -64,34 +77,32 @@ public class RobotContainer {
     }
 
     private void configureAuto() {
-//        ChoreoTrajectory traj = Choreo.getTrajectory("test");
-//        Choreo.choreoSwerveCommand(
-//                traj,
-//                () -> swerve.getLocalizer().getCoarseFieldPose(0),
-//                new PIDController(
-//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
-//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
-//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()),
-//                new PIDController(
-//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KP.get(),
-//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KI.get(),
-//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KD.get()),
-//                new PIDController(
-//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
-//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
-//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()),
-//                (ChassisSpeeds speeds) ->
-//                        swerve.drive(
-//                                new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),
-//                                speeds.omegaRadiansPerSecond,
-//                                false,
-//                                false),
-//                () -> {
-//                    Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
-//                    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
-//                }
-//
-//        );
+        final LoggedDashboardChooser<Command> autoChooser;
+        Choreo.choreoSwerveCommand(
+                traj,
+                () -> swerve.getLocalizer().getCoarseFieldPose(0),
+                new PIDController(
+                        Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
+                        Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
+                        Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()),
+                new PIDController(
+                        Constants.AutoConstants.swerveYGainsClass.swerveY_KP.get(),
+                        Constants.AutoConstants.swerveYGainsClass.swerveY_KI.get(),
+                        Constants.AutoConstants.swerveYGainsClass.swerveY_KD.get()),
+                new PIDController(
+                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
+                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
+                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()),
+                (ChassisSpeeds speeds) ->
+                        swerve.drive(
+                                new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),
+                                speeds.omegaRadiansPerSecond,
+                                false,
+                                false),
+                () -> {
+                    Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+                    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+                });
 
         // FIXME Adapt to autonomous commands! Current adaptation is preliminary.
         NamedCommands.registerCommand("AutoShoot",
@@ -127,16 +138,16 @@ public class RobotContainer {
      */
     private void configureBindings() {
         // Drive mode 1
-//        swerve.setDefaultCommand(Commands
-//                .runOnce(() -> swerve.drive(
-//                                new Translation2d(
-//                                        -driverController.getLeftY() * Constants.SwerveDrivetrain.maxSpeed.magnitude(),
-//                                        -driverController.getLeftX() * Constants.SwerveDrivetrain.maxSpeed.magnitude()),
-//                                -Constants.RobotConstants.driverController.getRightX()
-//                                        * Constants.SwerveDrivetrain.maxAngularRate.magnitude(),
-//                                true,
-//                                false),
-//                        swerve));
+        swerve.setDefaultCommand(Commands
+                .runOnce(() -> swerve.drive(
+                                new Translation2d(
+                                        -driverController.getLeftY() * Constants.SwerveDrivetrain.maxSpeed.magnitude(),
+                                        -driverController.getLeftX() * Constants.SwerveDrivetrain.maxSpeed.magnitude()),
+                                -Constants.RobotConstants.driverController.getRightX()
+                                        * Constants.SwerveDrivetrain.maxAngularRate.magnitude(),
+                                true,
+                                false),
+                        swerve));
         // Drive mode 2
         // swerve.setDefaultCommand(Commands
         // .runOnce(() -> swerve.drive(
@@ -152,10 +163,10 @@ public class RobotContainer {
         // false),
         // swerve));
         // Point Wheel
-        swerve.setDefaultCommand(Commands.runOnce(() -> swerve.pointWheelsAt(
-                        new edu.wpi.first.math.geometry.Rotation2d(
-                                driverController.getLeftX() * Math.PI / 2)),
-                swerve));
+//        swerve.setDefaultCommand(Commands.runOnce(() -> swerve.pointWheelsAt(
+//                        new edu.wpi.first.math.geometry.Rotation2d(
+//                                driverController.getLeftX() * Math.PI / 2)),
+//                swerve));
 
         // driverController.rightTrigger().whileTrue(
         //         Commands.sequence(
@@ -225,7 +236,31 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // return new CharacterizationDriveCommand(swerve, 3, 1.5, 6);
         // return new CharacterizationShooterCommand(shooterSubsystem, 1, 1, 10);
-        // return autoChooser.get();
-        return null;
+        return Choreo.choreoSwerveCommand(
+                traj,
+                () -> swerve.getLocalizer().getCoarseFieldPose(0),
+                new PIDController(
+                        Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
+                        Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
+                        Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()),
+                new PIDController(
+                        Constants.AutoConstants.swerveYGainsClass.swerveY_KP.get(),
+                        Constants.AutoConstants.swerveYGainsClass.swerveY_KI.get(),
+                        Constants.AutoConstants.swerveYGainsClass.swerveY_KD.get()),
+                new PIDController(
+                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
+                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
+                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()),
+                (ChassisSpeeds speeds) ->
+                        swerve.autoDrive(
+                                new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),
+                                speeds.omegaRadiansPerSecond,
+                                true,
+                                false),
+                () -> {
+                    Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+                    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+                });
+        // return null;
     }
 }

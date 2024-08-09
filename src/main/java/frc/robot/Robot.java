@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -15,6 +19,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
     CommandXboxController driverController = new CommandXboxController(0);
+    Swerve swerve;
     private Command m_autonomousCommand;
     private RobotContainer robotContainer;
 
@@ -49,6 +54,10 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
+        Commands.runOnce(() -> {
+            swerve.resetHeadingController();
+            swerve.resetPose(new Pose2d(new Translation2d(1.401, 5.551), swerve.getLocalizer().getLatestPose().getRotation()));
+        });
         robotContainer.getUpdateManager().runEnableSingle();
         m_autonomousCommand = robotContainer.getAutonomousCommand();
 
@@ -56,6 +65,7 @@ public class Robot extends LoggedRobot {
             m_autonomousCommand.schedule();
         }
         robotContainer.getUpdateManager().invokeStart();
+        Swerve.getInstance().auto();
     }
 
     @Override
@@ -66,6 +76,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousExit() {
         robotContainer.getUpdateManager().invokeStop();
+        Swerve.getInstance().normal();
     }
 
     @Override

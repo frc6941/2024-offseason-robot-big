@@ -38,9 +38,9 @@ public class Constants {
         }
 
         public static class swerveOmegaGainsClass {
-            public static final TunableNumber swerveOmega_KP = new TunableNumber("swerveOmega PID/kp", 120);
-            public static final TunableNumber swerveOmega_KI = new TunableNumber("swerveOmega PID/ki", 0.2);
-            public static final TunableNumber swerveOmega_KD = new TunableNumber("swerveOmega PID/kd", 0.005);
+            public static final TunableNumber swerveOmega_KP = new TunableNumber("swerveOmega PID/kp", 0.3);
+            public static final TunableNumber swerveOmega_KI = new TunableNumber("swerveOmega PID/ki", 0);
+            public static final TunableNumber swerveOmega_KD = new TunableNumber("swerveOmega PID/kd", 0.0001);
         }
     }
 
@@ -167,7 +167,7 @@ public class Constants {
 
         public static final Measure<Voltage> MAX_VOLTAGE = Volts.of(12.0);
 
-        public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.0002;// 0.0002
+        public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.0003;// 0.0002
 
         public static final int PIGEON_ID = 1;
 
@@ -179,7 +179,7 @@ public class Constants {
         /**
          * The max speed of the swerve (should not larger than speedAt12Volts)
          */
-        public static final Measure<Velocity<Distance>> maxSpeed = MetersPerSecond.of(6);
+        public static final Measure<Velocity<Distance>> maxSpeed = MetersPerSecond.of(4.5);
         /**
          * The max turning speed of the swerve
          */
@@ -297,7 +297,7 @@ public class Constants {
                 .withDriveInertia(DRIVE_INERTIA)
                 .withSteerFrictionVoltage(steerFrictionVoltage.magnitude())
                 .withDriveFrictionVoltage(driveFrictionVoltage.magnitude())
-                .withFeedbackSource(SwerveModuleConstants.SteerFeedbackType.FusedCANcoder)
+                .withFeedbackSource(SwerveModuleConstants.SteerFeedbackType.RemoteCANcoder)
                 .withCouplingGearRatio(COUPLE_RATIO)
                 .withSteerMotorInverted(STEER_MOTOR_REVERSED);
 
@@ -305,7 +305,7 @@ public class Constants {
         private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 15;
         private static final int FRONT_LEFT_STEER_MOTOR_ID = 14;
         private static final int FRONT_LEFT_ENCODER_ID = 20;
-        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.1264296875;// 0.052955;//0.127686//0.5329550781
+        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.4421621094;// 0.052955;//0.127686//0.5329550781
         private static final Measure<Distance> frontLeftXPos = Meters.of(0.5);
         private static final Measure<Distance> frontLeftYPos = Meters.of(0.5);
         public static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
@@ -320,7 +320,7 @@ public class Constants {
         private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 2;
         private static final int FRONT_RIGHT_STEER_MOTOR_ID = 7;
         private static final int FRONT_RIGHT_ENCODER_ID = 21;
-        private static final double FRONT_RIGHT_ENCODER_OFFSET = 0.127441;// 0.125685;//0.13623046875//0.117686//0.046875
+        private static final double FRONT_RIGHT_ENCODER_OFFSET = 0.1270234375;// 0.125685;//0.13623046875//0.117686//0.046875
         private static final Measure<Distance> frontRightXPos = Meters.of(0.5);
         private static final Measure<Distance> frontRightYPos = Meters.of(-0.5);
         public static final SwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
@@ -335,7 +335,7 @@ public class Constants {
         private static final int BACK_LEFT_DRIVE_MOTOR_ID = 5;
         private static final int BACK_LEFT_STEER_MOTOR_ID = 3;
         private static final int BACK_LEFT_ENCODER_ID = 9;
-        private static final double BACK_LEFT_ENCODER_OFFSET = 0.775681;// 0.773925;//-0.223//0.401611//0.77392578125
+        private static final double BACK_LEFT_ENCODER_OFFSET = 0.7644375;// 0.773925;//-0.223//0.401611//0.77392578125
         private static final Measure<Distance> backLeftXPos = Meters.of(-0.5);
         private static final Measure<Distance> backLeftYPos = Meters.of(0.5);
         public static final SwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
@@ -350,7 +350,7 @@ public class Constants {
         private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 10;
         private static final int BACK_RIGHT_STEER_MOTOR_ID = 6;
         private static final int BACK_RIGHT_ENCODER_ID = 12;
-        private static final double BACK_RIGHT_ENCODER_OFFSET = 0.434814;// 0.422119;//-0.5684550781//-0.064453//0.432279296875
+        private static final double BACK_RIGHT_ENCODER_OFFSET = 0.4265703125;// 0.422119;//-0.5684550781//-0.064453//0.432279296875
         private static final Measure<Distance> backRightXPos = Meters.of(-0.5);
         private static final Measure<Distance> backRightYPos = Meters.of(-0.5);
         public static final SwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(

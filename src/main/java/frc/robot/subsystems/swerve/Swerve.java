@@ -75,6 +75,8 @@ public class Swerve implements Updatable, Subsystem {
     private double headingVelocityFeedforward = 0.00;
     // Control Targets
     private HolonomicDriveSignal driveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
+    private HolonomicDriveSignal autoDriveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
+    ;
     private SwerveSetpoint setpoint;
     private SwerveSetpoint previousSetpoint;
     @Getter
@@ -285,6 +287,16 @@ public class Swerve implements Updatable, Subsystem {
         driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented, isOpenLoop);
     }
 
+    public void autoDrive(Translation2d translationalVelocity, double rotationalVelocity,
+                          boolean isFieldOriented, boolean isOpenLoop) {
+//        System.out.println(translationalVelocity.toString());
+//        System.out.println(translationalVelocity.toString());
+//        System.out.println(translationalVelocity.toString());
+//        System.out.println(translationalVelocity.toString());
+//        System.out.println(translationalVelocity.toString());
+        autoDriveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented, isOpenLoop);
+    }
+
     public void pointWheelsAt(Rotation2d rotation2d) {
         for (SwerveModuleBase mod : swerveMods) {
             // System.out.println(setpoint.mModuleStates[mod.getModuleNumber()]);//add
@@ -304,6 +316,10 @@ public class Swerve implements Updatable, Subsystem {
 
     public void empty() {
         setState(State.EMPTY);
+    }
+
+    public void auto() {
+        setState(State.PATH_FOLLOWING);
     }
 
     public void stopMovement() {
@@ -476,8 +492,11 @@ public class Swerve implements Updatable, Subsystem {
                 setModuleStatesBrake();
                 break;
             case DRIVE:
-            case PATH_FOLLOWING:
                 updateModules(driveSignal, dt);
+                break;
+            case PATH_FOLLOWING:
+                updateModules(autoDriveSignal, dt);
+                System.out.println(autoDriveSignal.getTranslation());
                 break;
             case EMPTY:
                 break;
