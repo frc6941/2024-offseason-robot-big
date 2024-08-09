@@ -336,3 +336,6 @@ ctre_sim
 logs
 
 BuildConstants.java
+
+# Choreo
+/src/main/deploy/choreo/chor/*
