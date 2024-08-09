@@ -339,3 +339,4 @@ BuildConstants.java
 
 # Choreo
 /src/main/deploy/choreo/chor/*
+/src/main/deploy/pathplanner/autos/deploy/
