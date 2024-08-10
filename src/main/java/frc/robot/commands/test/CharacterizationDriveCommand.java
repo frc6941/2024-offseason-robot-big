@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.test;
 
 import com.team254.lib.util.PolynomialRegression;
 import edu.wpi.first.math.geometry.Rotation2d;

@@ -8,18 +8,18 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-public class CloseHighShootParameters {
-    private static CloseHighShootParameters instance;
+public class HighFerryParameters {
+    private static HighFerryParameters instance;
     private final List<ParametersBinding> parameters = new ArrayList<>();
     private final NavigableMap<Double, ShootingParameters> interpolatingTable = new TreeMap<>();
 
-    private CloseHighShootParameters() {
+    private HighFerryParameters() {
         readyTuning();
     }
 
-    public static CloseHighShootParameters getInstance() {
+    public static HighFerryParameters getInstance() {
         if (instance == null) {
-            instance = new CloseHighShootParameters();
+            instance = new HighFerryParameters();
         }
         return instance;
     }

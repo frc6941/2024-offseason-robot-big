@@ -8,18 +8,18 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-public class FarHighShootParameters {
-    private static FarHighShootParameters instance;
+public class LowFerryParameters {
+    private static LowFerryParameters instance;
     private final List<ParametersBinding> parameters = new ArrayList<>();
     private final NavigableMap<Double, ShootingParameters> interpolatingTable = new TreeMap<>();
 
-    private FarHighShootParameters() {
+    private LowFerryParameters() {
         readyTuning();
     }
 
-    public static FarHighShootParameters getInstance() {
+    public static LowFerryParameters getInstance() {
         if (instance == null) {
-            instance = new FarHighShootParameters();
+            instance = new LowFerryParameters();
         }
         return instance;
     }
