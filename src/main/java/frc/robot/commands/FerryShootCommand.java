@@ -12,8 +12,8 @@ import frc.robot.subsystems.swerve.Swerve;
 
 import java.util.function.DoubleSupplier;
 
-public class FerryCommand extends ParallelCommandGroup {
-    public FerryCommand(
+public class FerryShootCommand extends ParallelCommandGroup {
+    public FerryShootCommand(
             ShooterSubsystem shooterSubsystem,
             IndexerSubsystem indexerSubsystem,
             BeamBreakSubsystem beamBreakSubsystem,
@@ -25,6 +25,8 @@ public class FerryCommand extends ParallelCommandGroup {
                 // new SpeakerAimingCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem, Swerve, driverX, driverY),
                 // new PreShootCommand(shooterSubsystem),
                 Commands.sequence(
+                        new ArmAimCommand(shooterSubsystem, null),
+                        new FlyWheelRampUp(shooterSubsystem, null),        
                         new WaitUntilCommand(() -> (
                                 Swerve.aimingReady(2.5) &&
                                         shooterSubsystem.aimingReady()
