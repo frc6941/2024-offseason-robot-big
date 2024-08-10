@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3588626384735107,
-      "y": 5.5554704666137695
+      "x": 5.373457908630371,
+      "y": 7.311
     },
-    "rotation": 0.0
+    "rotation": -5.760116636320606e-26
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "S2-A2"
+            "pathName": "PIDstraight"
           }
         }
       ]
