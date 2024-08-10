@@ -5,7 +5,10 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.FollowPathCommand;
+
+import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.ResetArmCommand;
@@ -28,6 +31,7 @@ public class Robot extends LoggedRobot {
         DriverStation.silenceJoystickConnectionWarning(true);
         robotContainer.getUpdateManager().startEnableLoop(Constants.LOOPER_DT);
         FollowPathCommand.warmupCommand().schedule();
+        
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
         new ResetArmCommand(shooterSubsystem).schedule();
@@ -46,7 +50,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
-        robotContainer.getUpdateManager().runEnableSingle();
     }
 
     @Override
@@ -69,7 +72,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        robotContainer.getUpdateManager().runEnableSingle();
     }
 
     @Override
@@ -107,5 +109,15 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testExit() {
+    }
+
+    @Override
+    public void simulationInit() {
+        DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        robotContainer.getUpdateManager().runSimulateSingle();
     }
 }

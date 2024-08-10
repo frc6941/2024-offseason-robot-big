@@ -144,7 +144,8 @@ public class Limelight implements Updatable {
                 Swerve.getInstance().getLocalizer().addMeasurement(
                         botEstimate.get().timestampSeconds,
                         botEstimate.get().pose,
-                        new Pose2d(new Translation2d(deviationX, deviationY), Rotation2d.fromDegrees(deviationOmega)));
+                        new Pose2d(new Translation2d(deviationX, deviationY),
+                        Rotation2d.fromDegrees(deviationOmega)));
             });
         }
     }

@@ -29,19 +29,19 @@ public class Constants {
 
     public static class AutoConstants {
         public static class swerveXGainsClass {
-            public static final TunableNumber swerveX_KP = new TunableNumber("swerveX PID/kp", 30);
+            public static final TunableNumber swerveX_KP = new TunableNumber("swerveX PID/kp", 2.0);
             public static final TunableNumber swerveX_KI = new TunableNumber("swerveX PID/ki", 0);
-            public static final TunableNumber swerveX_KD = new TunableNumber("swerveX PID/kd", 0.0001);
+            public static final TunableNumber swerveX_KD = new TunableNumber("swerveX PID/kd", 0.0);
         }
 
         public static class swerveYGainsClass {
-            public static final TunableNumber swerveY_KP = new TunableNumber("swerveY PID/kp", 0.3);
+            public static final TunableNumber swerveY_KP = new TunableNumber("swerveY PID/kp", 2.0);
             public static final TunableNumber swerveY_KI = new TunableNumber("swerveY PID/ki", 0);
-            public static final TunableNumber swerveY_KD = new TunableNumber("swerveY PID/kd", 0.0001);
+            public static final TunableNumber swerveY_KD = new TunableNumber("swerveY PID/kd", 0);
         }
 
         public static class swerveOmegaGainsClass {
-            public static final TunableNumber swerveOmega_KP = new TunableNumber("swerveOmega PID/kp", 0.25);
+            public static final TunableNumber swerveOmega_KP = new TunableNumber("swerveOmega PID/kp", 3.0);
             public static final TunableNumber swerveOmega_KI = new TunableNumber("swerveOmega PID/ki", 0);
             public static final TunableNumber swerveOmega_KD = new TunableNumber("swerveOmega PID/kd", 0);
         }

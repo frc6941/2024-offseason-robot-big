@@ -99,14 +99,10 @@ public class Swerve implements Updatable, Subsystem {
             gyro = new Pigeon2Gyro(Constants.SwerveConstants.PIGEON_ID, Constants.RobotConstants.CAN_BUS_NAME);
         } else {
             swerveMods = new SwerveModuleBase[]{
-                    new SimSwerveModule(0, Constants.SwerveConstants.FrontLeft,
-                            Constants.RobotConstants.CAN_BUS_NAME),
-                    new SimSwerveModule(1, Constants.SwerveConstants.FrontRight,
-                            Constants.RobotConstants.CAN_BUS_NAME),
-                    new SimSwerveModule(2, Constants.SwerveConstants.BackLeft,
-                            Constants.RobotConstants.CAN_BUS_NAME),
-                    new SimSwerveModule(3, Constants.SwerveConstants.BackRight,
-                            Constants.RobotConstants.CAN_BUS_NAME),
+                    new SimSwerveModuleDummy(0, Constants.SwerveConstants.FrontLeft),
+                    new SimSwerveModuleDummy(1, Constants.SwerveConstants.FrontRight),
+                    new SimSwerveModuleDummy(2, Constants.SwerveConstants.BackLeft),
+                    new SimSwerveModuleDummy(3, Constants.SwerveConstants.BackRight),
             };
             gyro = new DummyGyro(Constants.LOOPER_DT);
         }
@@ -491,7 +487,6 @@ public class Swerve implements Updatable, Subsystem {
                 break;
             case PATH_FOLLOWING:
                 updateModules(autoDriveSignal, dt);
-                System.out.println(autoDriveSignal.getTranslation());
                 break;
             case EMPTY:
                 break;
@@ -532,9 +527,12 @@ public class Swerve implements Updatable, Subsystem {
 
     @Override
     public void simulate(double time, double dt) {
+        gyro.setYaw(
+            gyro.getYaw().rotateBy(
+                new Rotation2d(dt * setpoint.mChassisSpeeds.omegaRadiansPerSecond)
+            ).getDegrees()
+        );
         read(time, dt);
-        gyro.setYaw(gyro.getYaw().rotateBy(new Rotation2d(dt * setpoint.mChassisSpeeds.omegaRadiansPerSecond))
-                .getDegrees());
     }
 
     public boolean aimingReady(double offset) {
