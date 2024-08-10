@@ -56,8 +56,8 @@ public class CharacterizationDriveCommand extends Command {
             averageVelocity += Math.abs(state.speedMetersPerSecond);
             averageFalconVelocity += Math.abs(Conversions.MPSToFalcon(
                     state.speedMetersPerSecond,
-                    Constants.SwerveDrivetrain.wheelCircumferenceMeters.magnitude(),
-                    Constants.SwerveDrivetrain.DRIVE_GEAR_RATIO)
+                    Constants.SwerveConstants.wheelCircumferenceMeters.magnitude(),
+                    Constants.SwerveConstants.DRIVE_GEAR_RATIO)
             );
         }
         averageVelocity /= moduleStates.length;
@@ -108,8 +108,8 @@ public class CharacterizationDriveCommand extends Command {
         System.out.println("Drivetrain kV: " + regression.beta(1) + " V / ms^{-1}");
         System.out.println(
                 "Converted Module kV: "
-                        + regression.beta(1) / Constants.SwerveDrivetrain.DRIVE_GEAR_RATIO
-                        * Constants.SwerveDrivetrain.wheelCircumferenceMeters.magnitude()
+                        + regression.beta(1) / Constants.SwerveConstants.DRIVE_GEAR_RATIO
+                        * Constants.SwerveConstants.wheelCircumferenceMeters.magnitude()
                         + " V / rps");
 
         PolynomialRegression regressionFalcon = new PolynomialRegression(

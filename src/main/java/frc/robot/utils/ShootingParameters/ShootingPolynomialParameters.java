@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.robot.utils.ShootingParameters;
 
 import com.team254.lib.util.PolynomialRegression;
 

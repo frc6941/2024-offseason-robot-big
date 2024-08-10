@@ -1,4 +1,6 @@
-package frc.robot.utils;
+package frc.robot.utils.ShootingParameters;
+
+import frc.robot.utils.TunableNumber;
 
 import java.util.ArrayList;
 import java.util.List;

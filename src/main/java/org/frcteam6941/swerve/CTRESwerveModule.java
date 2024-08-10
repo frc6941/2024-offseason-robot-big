@@ -21,7 +21,7 @@ public class CTRESwerveModule implements SwerveModuleBase {
 
         // FIXME: not sure if needed. if does, do change the initMotorConfigs() in CTREModuleIO.
         module.getDriveMotor().getConfigurator().apply(new ClosedLoopRampsConfigs()
-                .withVoltageClosedLoopRampPeriod(Constants.SwerveDrivetrain.VOLTAGE_CLOSED_LOOP_RAMP_PERIOD));
+                .withVoltageClosedLoopRampPeriod(Constants.SwerveConstants.VOLTAGE_CLOSED_LOOP_RAMP_PERIOD));
         module.getDriveMotor().getConfigurator()
                 .apply(new CurrentLimitsConfigs()
                         .withStatorCurrentLimit(110)
@@ -56,20 +56,20 @@ public class CTRESwerveModule implements SwerveModuleBase {
     @Override
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, boolean overrideMotion) {
         module.getSteerMotor().getConfigurator().apply(new Slot0Configs()
-                .withKP(Constants.SwerveDrivetrain.steerGainsClass.STEER_KP.get())
-                .withKI(Constants.SwerveDrivetrain.steerGainsClass.STEER_KI.get())
-                .withKD(Constants.SwerveDrivetrain.steerGainsClass.STEER_KD.get())
-                .withKA(Constants.SwerveDrivetrain.steerGainsClass.STEER_KA.get())
-                .withKV(Constants.SwerveDrivetrain.steerGainsClass.STEER_KV.get())
-                .withKS(Constants.SwerveDrivetrain.steerGainsClass.STEER_KS.get()));
+                .withKP(Constants.SwerveConstants.steerGainsClass.STEER_KP.get())
+                .withKI(Constants.SwerveConstants.steerGainsClass.STEER_KI.get())
+                .withKD(Constants.SwerveConstants.steerGainsClass.STEER_KD.get())
+                .withKA(Constants.SwerveConstants.steerGainsClass.STEER_KA.get())
+                .withKV(Constants.SwerveConstants.steerGainsClass.STEER_KV.get())
+                .withKS(Constants.SwerveConstants.steerGainsClass.STEER_KS.get()));
         module.getDriveMotor().getConfigurator().apply(new Slot0Configs()
-                .withKP(Constants.SwerveDrivetrain.driveGainsClass.DRIVE_KP.get())
-                .withKI(Constants.SwerveDrivetrain.driveGainsClass.DRIVE_KI.get())
-                .withKD(Constants.SwerveDrivetrain.driveGainsClass.DRIVE_KD.get())
-                .withKA(Constants.SwerveDrivetrain.driveGainsClass.DRIVE_KA.get())
-                .withKV(Constants.SwerveDrivetrain.driveGainsClass.DRIVE_KV.get())
-                .withKS(Constants.SwerveDrivetrain.driveGainsClass.DRIVE_KS.get()));
-        // if (Math.abs(desiredState.speedMetersPerSecond) <= 0.15 * Constants.SwerveDrivetrain.maxSpeed.magnitude()) {
+                .withKP(Constants.SwerveConstants.driveGainsClass.DRIVE_KP.get())
+                .withKI(Constants.SwerveConstants.driveGainsClass.DRIVE_KI.get())
+                .withKD(Constants.SwerveConstants.driveGainsClass.DRIVE_KD.get())
+                .withKA(Constants.SwerveConstants.driveGainsClass.DRIVE_KA.get())
+                .withKV(Constants.SwerveConstants.driveGainsClass.DRIVE_KV.get())
+                .withKS(Constants.SwerveConstants.driveGainsClass.DRIVE_KS.get()));
+        // if (Math.abs(desiredState.speedMetersPerSecond) <= 0.15 * Constants.SwerveConstants.maxSpeed.magnitude()) {
         // 	if (!lowSpeed) {
         // 		angleLowSpeed = desiredState.angle;
         // 		lowSpeed = true;

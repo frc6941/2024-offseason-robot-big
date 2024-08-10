@@ -35,7 +35,7 @@ import org.frcteam6941.swerve.*;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 import org.frcteam6941.utils.AngleNormalization;
 
-import static frc.robot.Constants.SwerveDrivetrain.speedAt12Volts;
+import static frc.robot.Constants.SwerveConstants.speedAt12Volts;
 
 // FIXME: do odometry even when disabled
 
@@ -88,31 +88,31 @@ public class Swerve implements Updatable, Subsystem {
     private Swerve() {
         if (RobotBase.isReal()) {
             swerveMods = new SwerveModuleBase[]{
-                    new CTRESwerveModule(0, Constants.SwerveDrivetrain.FrontLeft,
+                    new CTRESwerveModule(0, Constants.SwerveConstants.FrontLeft,
                             Constants.RobotConstants.CAN_BUS_NAME),
-                    new CTRESwerveModule(1, Constants.SwerveDrivetrain.FrontRight,
+                    new CTRESwerveModule(1, Constants.SwerveConstants.FrontRight,
                             Constants.RobotConstants.CAN_BUS_NAME),
-                    new CTRESwerveModule(2, Constants.SwerveDrivetrain.BackLeft, Constants.RobotConstants.CAN_BUS_NAME),
-                    new CTRESwerveModule(3, Constants.SwerveDrivetrain.BackRight,
+                    new CTRESwerveModule(2, Constants.SwerveConstants.BackLeft, Constants.RobotConstants.CAN_BUS_NAME),
+                    new CTRESwerveModule(3, Constants.SwerveConstants.BackRight,
                             Constants.RobotConstants.CAN_BUS_NAME),
             };
-            gyro = new Pigeon2Gyro(Constants.SwerveDrivetrain.PIGEON_ID, Constants.RobotConstants.CAN_BUS_NAME);
+            gyro = new Pigeon2Gyro(Constants.SwerveConstants.PIGEON_ID, Constants.RobotConstants.CAN_BUS_NAME);
         } else {
             swerveMods = new SwerveModuleBase[]{
-                    new SimSwerveModule(0, Constants.SwerveDrivetrain.FrontLeft,
+                    new SimSwerveModule(0, Constants.SwerveConstants.FrontLeft,
                             Constants.RobotConstants.CAN_BUS_NAME),
-                    new SimSwerveModule(1, Constants.SwerveDrivetrain.FrontRight,
+                    new SimSwerveModule(1, Constants.SwerveConstants.FrontRight,
                             Constants.RobotConstants.CAN_BUS_NAME),
-                    new SimSwerveModule(2, Constants.SwerveDrivetrain.BackLeft,
+                    new SimSwerveModule(2, Constants.SwerveConstants.BackLeft,
                             Constants.RobotConstants.CAN_BUS_NAME),
-                    new SimSwerveModule(3, Constants.SwerveDrivetrain.BackRight,
+                    new SimSwerveModule(3, Constants.SwerveConstants.BackRight,
                             Constants.RobotConstants.CAN_BUS_NAME),
             };
             gyro = new DummyGyro(Constants.LOOPER_DT);
         }
 
         swerveKinematics = new SwerveDriveKinematics(
-                Constants.SwerveDrivetrain.modulePlacements);
+                Constants.SwerveConstants.modulePlacements);
         swerveLocalizer = new SwerveDeltaCoarseLocalizer(swerveKinematics, 50, 20, 20, getModulePositions());
 
         gyro.setYaw(0.0);
@@ -124,13 +124,13 @@ public class Swerve implements Updatable, Subsystem {
 
         setpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates());
         previousSetpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates());
-        generator = new SwerveSetpointGenerator(Constants.SwerveDrivetrain.modulePlacements);
-        kinematicLimits = Constants.SwerveDrivetrain.DRIVETRAIN_UNCAPPED;
+        generator = new SwerveSetpointGenerator(Constants.SwerveConstants.modulePlacements);
+        kinematicLimits = Constants.SwerveConstants.DRIVETRAIN_UNCAPPED;
 
         headingController = new ProfiledPIDController(
-                Constants.SwerveDrivetrain.headingController.HEADING_KP.get(),
-                Constants.SwerveDrivetrain.headingController.HEADING_KI.get(),
-                Constants.SwerveDrivetrain.headingController.HEADING_KD.get(),
+                Constants.SwerveConstants.headingController.HEADING_KP.get(),
+                Constants.SwerveConstants.headingController.HEADING_KI.get(),
+                Constants.SwerveConstants.headingController.HEADING_KD.get(),
                 new TrapezoidProfile.Constraints(6000, 7200));
         headingController.setIntegratorRange(-0.5, 0.5);
         headingController.enableContinuousInput(0, 360.0);
@@ -153,14 +153,14 @@ public class Swerve implements Updatable, Subsystem {
 
     private static double getDriveBaseRadius() {
         var moduleLocations = new Translation2d[]{
-                new Translation2d(Constants.SwerveDrivetrain.FrontLeft.LocationX,
-                        Constants.SwerveDrivetrain.FrontLeft.LocationY),
-                new Translation2d(Constants.SwerveDrivetrain.FrontRight.LocationX,
-                        Constants.SwerveDrivetrain.FrontRight.LocationY),
-                new Translation2d(Constants.SwerveDrivetrain.BackLeft.LocationX,
-                        Constants.SwerveDrivetrain.BackLeft.LocationY),
-                new Translation2d(Constants.SwerveDrivetrain.BackRight.LocationX,
-                        Constants.SwerveDrivetrain.BackRight.LocationY)
+                new Translation2d(Constants.SwerveConstants.FrontLeft.LocationX,
+                        Constants.SwerveConstants.FrontLeft.LocationY),
+                new Translation2d(Constants.SwerveConstants.FrontRight.LocationX,
+                        Constants.SwerveConstants.FrontRight.LocationY),
+                new Translation2d(Constants.SwerveConstants.BackLeft.LocationX,
+                        Constants.SwerveConstants.BackLeft.LocationY),
+                new Translation2d(Constants.SwerveConstants.BackRight.LocationX,
+                        Constants.SwerveConstants.BackRight.LocationY)
         };
 
         var driveBaseRadius = 0.0;
@@ -272,16 +272,16 @@ public class Swerve implements Updatable, Subsystem {
     public void drive(Translation2d translationalVelocity, double rotationalVelocity,
                       boolean isFieldOriented, boolean isOpenLoop) {
         // if (Math.hypot(translationalVelocity.getX(), translationalVelocity.getY())
-        // < Constants.SwerveDrivetrain.deadband) {
+        // < Constants.SwerveConstants.deadband) {
         // translationalVelocity = new Translation2d(0, 0);
         // }
-        if (Math.abs(translationalVelocity.getX()) < Constants.SwerveDrivetrain.deadband) {
+        if (Math.abs(translationalVelocity.getX()) < Constants.SwerveConstants.deadband) {
             translationalVelocity = new Translation2d(0, translationalVelocity.getY());
         }
-        if (Math.abs(translationalVelocity.getY()) < Constants.SwerveDrivetrain.deadband) {
+        if (Math.abs(translationalVelocity.getY()) < Constants.SwerveConstants.deadband) {
             translationalVelocity = new Translation2d(translationalVelocity.getX(), 0);
         }
-        if (Math.abs(rotationalVelocity) < Constants.SwerveDrivetrain.rotationalDeadband) {
+        if (Math.abs(rotationalVelocity) < Constants.SwerveConstants.rotationalDeadband) {
             rotationalVelocity = 0;
         }
         driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented, isOpenLoop);
@@ -341,7 +341,7 @@ public class Swerve implements Updatable, Subsystem {
     public void setModuleStates(SwerveModuleState[] desiredStates, boolean isOpenLoop, boolean overrideMotion) {
         if (isOpenLoop) {
             SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
-                    Constants.SwerveDrivetrain.MAX_VOLTAGE.magnitude());
+                    Constants.SwerveConstants.MAX_VOLTAGE.magnitude());
         }
 
         for (SwerveModuleBase mod : swerveMods) {
@@ -354,7 +354,7 @@ public class Swerve implements Updatable, Subsystem {
      */
     private void setModuleStatesBrake() {
         for (SwerveModuleBase mod : swerveMods) {
-            Translation2d modulePosition = Constants.SwerveDrivetrain.modulePlacements[mod.getModuleNumber()];
+            Translation2d modulePosition = Constants.SwerveConstants.modulePlacements[mod.getModuleNumber()];
             Rotation2d angle = new Rotation2d(modulePosition.getX(), modulePosition.getY());
             mod.setDesiredState(new SwerveModuleState(0.0, angle.plus(Rotation2d.fromDegrees(180.0))), false, true);
         }
@@ -394,9 +394,9 @@ public class Swerve implements Updatable, Subsystem {
 
     public void setHeadingControllerPID() {
         headingController.setPID(
-                Constants.SwerveDrivetrain.headingController.HEADING_KP.get(),
-                Constants.SwerveDrivetrain.headingController.HEADING_KI.get(),
-                Constants.SwerveDrivetrain.headingController.HEADING_KD.get());
+                Constants.SwerveConstants.headingController.HEADING_KP.get(),
+                Constants.SwerveConstants.headingController.HEADING_KI.get(),
+                Constants.SwerveConstants.headingController.HEADING_KD.get());
     }
 
     /*

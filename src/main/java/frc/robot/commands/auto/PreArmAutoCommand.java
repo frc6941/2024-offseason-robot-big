@@ -8,8 +8,8 @@ import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.utils.ShootingParameters;
-import frc.robot.utils.SpeakerShootingParameters;
+import frc.robot.utils.ShootingParameters.ShootingParameters;
+import frc.robot.utils.ShootingParameters.SpeakerShootingParameters;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import static edu.wpi.first.units.Units.Degrees;

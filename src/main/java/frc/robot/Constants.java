@@ -9,7 +9,10 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.utils.TunableNumber;
@@ -166,6 +169,136 @@ public class Constants {
         }
     }
 
+    public class FieldConstants {
+        public static final double fieldLength = edu.wpi.first.math.util.Units.inchesToMeters(651.223);
+        public static final double fieldWidth = edu.wpi.first.math.util.Units.inchesToMeters(323.277);
+        public static final double wingX = edu.wpi.first.math.util.Units.inchesToMeters(229.201);
+        public static final double podiumX = edu.wpi.first.math.util.Units.inchesToMeters(126.75);
+        public static final double startingLineX = edu.wpi.first.math.util.Units.inchesToMeters(74.111);
+
+        public static final Translation2d ampCenter =
+                new Translation2d(edu.wpi.first.math.util.Units.inchesToMeters(72.455), fieldWidth);
+        public static final double aprilTagWidth = edu.wpi.first.math.util.Units.inchesToMeters(6.50);
+
+        /**
+         * Staging locations for each note
+         */
+        public static final class StagingLocations {
+            public static final double centerlineX = fieldLength / 2.0;
+
+            // need to update
+            public static final double centerlineFirstY = edu.wpi.first.math.util.Units.inchesToMeters(29.638);
+            public static final double centerlineSeparationY = edu.wpi.first.math.util.Units.inchesToMeters(66);
+            public static final double spikeX = edu.wpi.first.math.util.Units.inchesToMeters(114);
+            // need
+            public static final double spikeFirstY = edu.wpi.first.math.util.Units.inchesToMeters(161.638);
+            public static final double spikeSeparationY = edu.wpi.first.math.util.Units.inchesToMeters(57);
+
+            public static final Translation2d[] centerlineTranslations = new Translation2d[5];
+            public static final Translation2d[] spikeTranslations = new Translation2d[3];
+
+            static {
+                for (int i = 0; i < centerlineTranslations.length; i++) {
+                    centerlineTranslations[i] =
+                            new Translation2d(centerlineX, centerlineFirstY + (i * centerlineSeparationY));
+                }
+            }
+
+            static {
+                for (int i = 0; i < spikeTranslations.length; i++) {
+                    spikeTranslations[i] = new Translation2d(spikeX, spikeFirstY + (i * spikeSeparationY));
+                }
+            }
+        }
+
+        /**
+         * Each corner of the speaker *
+         */
+        public static final class Speaker {
+
+            // corners (blue alliance origin)
+            public static final Translation3d topRightSpeaker =
+                    new Translation3d(
+                            edu.wpi.first.math.util.Units.inchesToMeters(18.055),
+                            edu.wpi.first.math.util.Units.inchesToMeters(238.815),
+                            edu.wpi.first.math.util.Units.inchesToMeters(83.091));
+
+            public static final Translation3d topLeftSpeaker =
+                    new Translation3d(
+                            edu.wpi.first.math.util.Units.inchesToMeters(18.055),
+                            edu.wpi.first.math.util.Units.inchesToMeters(197.765),
+                            edu.wpi.first.math.util.Units.inchesToMeters(83.091));
+
+            public static final Translation3d bottomRightSpeaker =
+                    new Translation3d(0.0, edu.wpi.first.math.util.Units.inchesToMeters(238.815), edu.wpi.first.math.util.Units.inchesToMeters(78.324));
+            public static final Translation3d bottomLeftSpeaker =
+                    new Translation3d(0.0, edu.wpi.first.math.util.Units.inchesToMeters(197.765), edu.wpi.first.math.util.Units.inchesToMeters(78.324));
+
+            /**
+             * Center of the speaker opening (blue alliance)
+             */
+            public static final Translation3d centerSpeakerOpening =
+                    bottomLeftSpeaker.interpolate(topRightSpeaker, 0.5);
+        }
+
+        public static final class Subwoofer {
+            public static final Pose2d ampFaceCorner =
+                    new Pose2d(
+                            edu.wpi.first.math.util.Units.inchesToMeters(35.775),
+                            edu.wpi.first.math.util.Units.inchesToMeters(239.366),
+                            Rotation2d.fromDegrees(-120));
+
+            public static final Pose2d sourceFaceCorner =
+                    new Pose2d(
+                            edu.wpi.first.math.util.Units.inchesToMeters(35.775),
+                            edu.wpi.first.math.util.Units.inchesToMeters(197.466),
+                            Rotation2d.fromDegrees(120));
+
+            public static final Pose2d centerFace =
+                    new Pose2d(
+                            edu.wpi.first.math.util.Units.inchesToMeters(35.775),
+                            edu.wpi.first.math.util.Units.inchesToMeters(218.416),
+                            Rotation2d.fromDegrees(180));
+        }
+
+        public static final class Stage {
+            public static final Pose2d center =
+                    new Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(192.55), edu.wpi.first.math.util.Units.inchesToMeters(161.638), new Rotation2d());
+            public static final Pose2d podiumLeg =
+                    new Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(126.75), edu.wpi.first.math.util.Units.inchesToMeters(161.638), new Rotation2d());
+            public static final Pose2d ampLeg =
+                    new Pose2d(
+                            edu.wpi.first.math.util.Units.inchesToMeters(220.873),
+                            edu.wpi.first.math.util.Units.inchesToMeters(212.425),
+                            Rotation2d.fromDegrees(-30));
+            public static final Pose2d sourceLeg =
+                    new Pose2d(
+                            edu.wpi.first.math.util.Units.inchesToMeters(220.873),
+                            edu.wpi.first.math.util.Units.inchesToMeters(110.837),
+                            Rotation2d.fromDegrees(30));
+
+            public static final Pose2d centerPodiumAmpChain =
+                    new Pose2d(
+                            podiumLeg.getTranslation().interpolate(ampLeg.getTranslation(), 0.5),
+                            Rotation2d.fromDegrees(120.0));
+            public static final double centerToChainDistance =
+                    center.getTranslation().getDistance(centerPodiumAmpChain.getTranslation());
+            public static final Pose2d centerAmpSourceChain =
+                    new Pose2d(
+                            ampLeg.getTranslation().interpolate(sourceLeg.getTranslation(), 0.5), new Rotation2d());
+            public static final Pose2d centerSourcePodiumChain =
+                    new Pose2d(
+                            sourceLeg.getTranslation().interpolate(podiumLeg.getTranslation(), 0.5),
+                            Rotation2d.fromDegrees(240.0));
+        }
+
+        public static final class Amp {
+            public static final Translation2d ampTapeTopCorner =
+                    new Translation2d(edu.wpi.first.math.util.Units.inchesToMeters(130.0), edu.wpi.first.math.util.Units.inchesToMeters(305.256));
+            public static final double ampBottomY = fieldWidth - edu.wpi.first.math.util.Units.inchesToMeters(17.75);
+        }
+    }
+
     public class RobotConstants {
 
         public static final CommandXboxController driverController = new CommandXboxController(0);
@@ -174,7 +307,7 @@ public class Constants {
 
     }
 
-    public class SwerveDrivetrain {
+    public class SwerveConstants {
 
         public static final TunableNumber LongShotAngle = new TunableNumber("Long shot angle", 25);
 
@@ -378,14 +511,14 @@ public class Constants {
         public static SwerveModuleConstants[] modules = {FrontLeft, FrontRight, BackLeft, BackRight};
 
         public static final Translation2d[] modulePlacements = new Translation2d[]{
-                new Translation2d(SwerveDrivetrain.FrontLeft.LocationX,
-                        SwerveDrivetrain.FrontLeft.LocationY),
-                new Translation2d(SwerveDrivetrain.FrontRight.LocationX,
-                        SwerveDrivetrain.FrontRight.LocationY),
-                new Translation2d(SwerveDrivetrain.BackLeft.LocationX,
-                        SwerveDrivetrain.BackLeft.LocationY),
-                new Translation2d(SwerveDrivetrain.BackRight.LocationX,
-                        SwerveDrivetrain.BackRight.LocationY)
+                new Translation2d(SwerveConstants.FrontLeft.LocationX,
+                        SwerveConstants.FrontLeft.LocationY),
+                new Translation2d(SwerveConstants.FrontRight.LocationX,
+                        SwerveConstants.FrontRight.LocationY),
+                new Translation2d(SwerveConstants.BackLeft.LocationX,
+                        SwerveConstants.BackLeft.LocationY),
+                new Translation2d(SwerveConstants.BackRight.LocationX,
+                        SwerveConstants.BackRight.LocationY)
         };
 
         public static class steerGainsClass {

@@ -11,8 +11,8 @@ import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.utils.ShootingParameters;
-import frc.robot.utils.SpeakerShootingParameters;
+import frc.robot.utils.ShootingParameters.ShootingParameters;
+import frc.robot.utils.ShootingParameters.SpeakerShootingParameters;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import java.util.function.DoubleSupplier;
@@ -82,8 +82,8 @@ public class SpeakerAimingCommand extends Command {
         distanceLogged.set(distance);
         Swerve.drive(
                 new Translation2d(
-                        -driverX.getAsDouble() * Constants.SwerveDrivetrain.maxSpeed.magnitude(),
-                        -driverY.getAsDouble() * Constants.SwerveDrivetrain.maxSpeed.magnitude()),
+                        -driverX.getAsDouble() * Constants.SwerveConstants.maxSpeed.magnitude(),
+                        -driverY.getAsDouble() * Constants.SwerveConstants.maxSpeed.magnitude()),
                 0,
                 true,
                 false);

@@ -8,7 +8,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Time;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.FieldConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.limelight.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
@@ -115,15 +115,15 @@ public class Limelight implements Updatable {
                 Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation().getDegrees(),
                 0, 0, 0, 0);
         //rejection
-        if (Swerve.getInstance().getLocalizer().getSmoothedVelocity().getTranslation().getNorm() > Constants.SwerveDrivetrain.maxSpeed.magnitude())
+        if (Swerve.getInstance().getLocalizer().getSmoothedVelocity().getTranslation().getNorm() > Constants.SwerveConstants.maxSpeed.magnitude())
             return;
         if (Math.abs(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation()
-                .getDegrees()) > Math.toDegrees(Constants.SwerveDrivetrain.maxAngularRate.magnitude()))
+                .getDegrees()) > Math.toDegrees(Constants.SwerveConstants.maxAngularRate.magnitude()))
             return;
         // if (Swerve.getInstance().getLocalizer().getLatestPose().getX() < 0
-        // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getX() > FieldConstants.fieldLength
+        // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getX() > Constants.FieldConstants.fieldLength
         // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getY() < 0
-        // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getY() > FieldConstants.fieldWidth)
+        // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getY() > Constants.FieldConstants.fieldWidth)
         // 	return;
         if (!botEstimate.isEmpty()) {
             if (measuerCnt <= 3) {
@@ -152,8 +152,8 @@ public class Limelight implements Updatable {
     public Translation2d getSpeakerRelativePosition() {
         Pose2d robotPos = swerve.getLocalizer().getCoarseFieldPose(edu.wpi.first.wpilibj.Timer.getFPGATimestamp());
         SmartDashboard.putString("robotPos", robotPos.toString());
-        // Pose2d SpeakerPos = new Pose2d(new Translation2d(FieldConstants.Speaker.centerSpeakerOpening.getX(),
-        // 		FieldConstants.Speaker.centerSpeakerOpening.getY()), new Rotation2d(0));
+        // Pose2d SpeakerPos = new Pose2d(new Translation2d(Constants.FieldConstants.Speaker.centerSpeakerOpening.getX(),
+        // 		Constants.FieldConstants.Speaker.centerSpeakerOpening.getY()), new Rotation2d(0));
         Translation2d blueSpeakerTranslation = FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d();
         Pose2d blueSpeaker = new Pose2d(blueSpeakerTranslation, Rotation2d.fromDegrees(180.0));
         Translation2d redSpeakerTranslation = new Translation2d(

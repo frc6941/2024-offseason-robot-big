@@ -79,7 +79,7 @@ public class CharacterizationShooterCommand extends Command {
         System.out.println("Drivetrain kV: " + regression.beta(1) + " V / ms^{-1}");
         System.out.println(
                 "Converted Module kV: "
-                        + regression.beta(1) * Constants.SwerveDrivetrain.wheelCircumferenceMeters.magnitude()
+                        + regression.beta(1) * Constants.SwerveConstants.wheelCircumferenceMeters.magnitude()
                         + " V / rps");
     }
 

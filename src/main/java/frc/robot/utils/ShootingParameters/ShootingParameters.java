@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.robot.utils.ShootingParameters;
 
 public class ShootingParameters {
     private double shootingVelocity;

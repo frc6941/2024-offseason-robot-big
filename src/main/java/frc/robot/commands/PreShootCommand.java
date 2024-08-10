@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.utils.ShootingParameters;
-import frc.robot.utils.SpeakerShootingParameters;
+import frc.robot.utils.ShootingParameters.ShootingParameters;
+import frc.robot.utils.ShootingParameters.SpeakerShootingParameters;
 
 import static frc.robot.Constants.ShooterConstants.defaultShootRPM;
 

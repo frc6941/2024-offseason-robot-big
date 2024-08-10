@@ -108,7 +108,7 @@ public class RobotContainer {
                                 Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
                                 Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
                                 Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()),
-                        Constants.SwerveDrivetrain.maxSpeed.magnitude(),
+                        Constants.SwerveConstants.maxSpeed.magnitude(),
                         0.4,
                         new ReplanningConfig()
                 ),
@@ -156,10 +156,10 @@ public class RobotContainer {
         swerve.setDefaultCommand(Commands
                 .runOnce(() -> swerve.drive(
                                 new Translation2d(
-                                        -driverController.getLeftY() * Constants.SwerveDrivetrain.maxSpeed.magnitude(),
-                                        -driverController.getLeftX() * Constants.SwerveDrivetrain.maxSpeed.magnitude()),
+                                        -driverController.getLeftY() * Constants.SwerveConstants.maxSpeed.magnitude(),
+                                        -driverController.getLeftX() * Constants.SwerveConstants.maxSpeed.magnitude()),
                                 -Constants.RobotConstants.driverController.getRightX()
-                                        * Constants.SwerveDrivetrain.maxAngularRate.magnitude(),
+                                        * Constants.SwerveConstants.maxAngularRate.magnitude(),
                                 true,
                                 false),
                         swerve));
@@ -168,12 +168,12 @@ public class RobotContainer {
         // .runOnce(() -> swerve.drive(
         // new Translation2d(
         // -
-        // driverController.getLeftY()*Constants.SwerveDrivetrain.maxSpeed.magnitude(),
+        // driverController.getLeftY()*Constants.SwerveConstants.maxSpeed.magnitude(),
         // -
-        // driverController.getRightX()*Constants.SwerveDrivetrain.maxSpeed.magnitude()),
+        // driverController.getRightX()*Constants.SwerveConstants.maxSpeed.magnitude()),
         // (-Constants.RobotConstants.driverController.getRightTriggerAxis()
         // + Constants.RobotConstants.driverController.getLeftTriggerAxis())
-        // * Constants.SwerveDrivetrain.maxAngularRate.magnitude(),
+        // * Constants.SwerveConstants.maxAngularRate.magnitude(),
         // true,
         // false),
         // swerve));
