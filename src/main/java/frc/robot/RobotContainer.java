@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
 import frc.robot.commands.auto.PreArmAutoCommand;
 import frc.robot.commands.auto.SpeakerShootAutoCommand;
@@ -54,6 +55,7 @@ public class RobotContainer {
     //    LinearFilter filterX = LinearFilter.singlePoleIIR(0.1, 0.02);
 //    LinearFilter filterY = LinearFilter.singlePoleIIR(0.1, 0.02);
 //    LinearFilter filterOmega = LinearFilter.singlePoleIIR(0.1, 0.02);
+
     @Getter
     private UpdateManager updateManager;
     private LoggedDashboardChooser<Command> autoChooser;
@@ -105,18 +107,19 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoPreArm",
                 new PreArmAutoCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem));
 
-        autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser("S2-S-A1-A2-A3"));
+        autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
+        
 
-//        autoChooser.addOption(
-//                "Flywheel SysId (Quasistatic Forward)",
-//                shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-//        autoChooser.addOption(
-//                "Flywheel SysId (Quasistatic Reverse)",
-//                shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-//        autoChooser.addOption(
-//                "Flywheel SysId (Dynamic Forward)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-//        autoChooser.addOption(
-//                "Flywheel SysId (Dynamic Reverse)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+       autoChooser.addOption(
+               "Flywheel SysId (Quasistatic Forward)",
+               shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+       autoChooser.addOption(
+               "Flywheel SysId (Quasistatic Reverse)",
+               shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+       autoChooser.addOption(
+               "Flywheel SysId (Dynamic Forward)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+       autoChooser.addOption(
+               "Flywheel SysId (Dynamic Reverse)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
 
     /**
@@ -221,7 +224,6 @@ public class RobotContainer {
                 new RumbleCommand(Seconds.of(1), driverController.getHID())));
 
     }
-        
 
     public Command getAutonomousCommand() {
         // return new CharacterizationDriveCommand(swerve, 3, 1.5, 6);
