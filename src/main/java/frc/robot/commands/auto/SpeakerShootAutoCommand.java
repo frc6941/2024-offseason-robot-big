@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.DeliverNoteCommand;
-import frc.robot.commands.PreShootCommand;
+import frc.robot.commands.FlyWheelRampUp;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
@@ -24,6 +24,6 @@ public class SpeakerShootAutoCommand extends ParallelCommandGroup {
                                 Commands.runOnce(() -> Timer.delay(0.02), indicatorSubsystem),
                                 new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)),
                         new SpeakerAimingAutoCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem),
-                        new PreShootCommand(shooterSubsystem)));
+                        new FlyWheelRampUp(shooterSubsystem)));
     }
 }

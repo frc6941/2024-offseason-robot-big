@@ -11,32 +11,35 @@ import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.utils.ShootingParameters.ShootingParameters;
-import frc.robot.utils.ShootingParameters.SpeakerParameterTable;
+import frc.robot.utils.shooting.ShootingDecider;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
 public class ChassisAimCommand extends Command {
-    private final BeamBreakSubsystem beamBreakSubsystem;
     private final Swerve Swerve;
     private final DoubleSupplier driverX;
     private final DoubleSupplier driverY;
+    private final Supplier<ShootingDecider.Destination> destinationSupplier;
+
     LinearFilter filter = LinearFilter.singlePoleIIR(0.2, 0.02);
 
     public ChassisAimCommand(
-            IndicatorSubsystem indicatorSubsystem,
-            BeamBreakSubsystem beamBreakSubsystem,
             Swerve Swerve,
+            Supplier<ShootingDecider.Destination> destinationSupplier,
             DoubleSupplier driverX,
-            DoubleSupplier driverY) {
-        this.beamBreakSubsystem = beamBreakSubsystem;
+            DoubleSupplier driverY
+            ) {
         this.Swerve = Swerve;
         this.driverX = driverX;
         this.driverY = driverY;
+        this.destinationSupplier = destinationSupplier;
+
     }
 
     @Override

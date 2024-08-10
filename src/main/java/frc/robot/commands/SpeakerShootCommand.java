@@ -23,7 +23,7 @@ public class SpeakerShootCommand extends ParallelCommandGroup {
             DoubleSupplier driverY) {
         addCommands(
                 new SpeakerAimingCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem, Swerve, driverX, driverY),
-                new PreShootCommand(shooterSubsystem),
+                new FlyWheelRampUp(shooterSubsystem),
                 Commands.sequence(
                         new WaitUntilCommand(() -> (
                                 Swerve.aimingReady(2.5) &&

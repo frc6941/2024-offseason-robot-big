@@ -6,22 +6,29 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.utils.ShootingParameters.ShootingParameters;
-import frc.robot.utils.ShootingParameters.SpeakerShootingParameters;
+import frc.robot.utils.shooting.ShootingDecider;
 
 import static frc.robot.Constants.ShooterConstants.defaultShootRPM;
 
-public class PreShootCommand extends Command {
-    private final ShooterSubsystem shooterSubsystem;
-    private double defaultRPM = defaultShootRPM;
+import java.util.function.Supplier;
 
-    public PreShootCommand(ShooterSubsystem shooterSubsystem) {
+public class FlyWheelRampUp extends Command {
+    private final ShooterSubsystem shooterSubsystem;
+    private final Supplier<ShootingDecider.Destination> destinationSupplier;
+
+
+    public FlyWheelRampUp(
+        ShooterSubsystem shooterSubsystem,
+        Supplier<ShootingDecider.Destination> destinationSupplier
+
+    ) {
         this.shooterSubsystem = shooterSubsystem;
+        this.destinationSupplier = destinationSupplier;
+
     }
 
     @Override
     public void initialize() {
-        defaultRPM = defaultShootRPM;
     }
 
     @Override
@@ -29,7 +36,6 @@ public class PreShootCommand extends Command {
 
         double distance = Limelight.getInstance().getSpeakerRelativePosition().getNorm();
 
-        ShootingParameters parameter = SpeakerShootingParameters.getInstance().getParameters(distance);
         SmartDashboard.putNumber("shooter desired angle", Units.degreesToRadians(
                 shooterSubsystem.getInputs().leftShooterVelocity.magnitude()));
 
