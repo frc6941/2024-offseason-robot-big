@@ -9,7 +9,7 @@ import frc.robot.Constants;
 import frc.robot.utils.FerryUtil;
 import frc.robot.utils.TunableNumber;
 
-public class ShootingMux {
+public class ShootingDecider {
     enum Destination {
         AMP, SPEAKER, FERRY
     }
@@ -21,14 +21,14 @@ public class ShootingMux {
     HighFerryParameterTable highFerryParams;
     LowFerryParameterTable lowFerryParams;
 
-    private static ShootingMux instance;
-    public ShootingMux getInstance() {
+    private static ShootingDecider instance;
+    public ShootingDecider getInstance() {
         if(instance == null) {
-            instance = new ShootingMux();
+            instance = new ShootingDecider();
         }
         return instance;
     }
-    private ShootingMux() {
+    private ShootingDecider() {
         speakerParams = SpeakerParameterTable.getInstance();
         highFerryParams = HighFerryParameterTable.getInstance();
         lowFerryParams = LowFerryParameterTable.getInstance();
@@ -42,8 +42,8 @@ public class ShootingMux {
         lowFerryParams.update();
     }
 
-    public ShootingParameters getShootingParameterTargetRelative(Destination destination, Pose2d robotPose) {
-        double distance = poseToTarget.getTranslation().getNorm();
+    public ShootingParameters getShootingParameter(Destination destination, Pose2d robotPose) {
+        double distance = robotPose.getTranslation().getNorm();
         switch (destination) {
             case AMP:
                 return new ShootingParameters(ampVelocity.get(), ampAngle.get());
