@@ -8,38 +8,18 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-public class SpeakerShootingParameters {
-    private static SpeakerShootingParameters instance;
+public class HighFerryParameterTable {
+    private static HighFerryParameterTable instance;
     private final List<ParametersBinding> parameters = new ArrayList<>();
     private final NavigableMap<Double, ShootingParameters> interpolatingTable = new TreeMap<>();
 
-    private SpeakerShootingParameters() {
-        // loadParameter(1.10, -4500, 0.4494 / 3.14 * 180);//20240807
-        // loadParameter(1.68, -4500, 0.6427 / 3.14 * 180);//20240807
-        // loadParameter(2.01, -4500, 0.7000 / 3.14 * 180);//20240807
-        // loadParameter(2.36, -4500, 0.8513 / 3.14 * 180);//20240807
-        // loadParameter(2.60, -4500, 0.9556 / 3.14 * 180);//20240807
-        // loadParameter(2.92, -4500, 0.9924 / 3.14 * 180);//20240807
-        // loadParameter(3.40, -5700, 1.0630 / 3.14 * 180);//20240807
-        // loadParameter(3.67, -5700, 1.2115 / 3.14 * 180);//20240807
-        // loadParameter(4.00, -5700, 1.2532 / 3.14 * 180);//20240807
-        loadParameter(1.064, -4500, 0.2574 / 3.14 * 180);//20240808
-        loadParameter(1.245, -4500, 0.5026 / 3.14 * 180);//20240808
-        loadParameter(1.600, -4500, 0.6736 / 3.14 * 180);//20240808
-        loadParameter(1.910, -4500, 0.8587 / 3.14 * 180);//20240808
-        loadParameter(2.20, -4500, 0.9205 / 3.14 * 180);//20240808
-        loadParameter(2.51, -4500, 0.9704 / 3.14 * 180);//20240808
-        loadParameter(2.8, -4500, 1.0502 / 3.14 * 180);
-        loadParameter(3.06, -5700, 1.1117 / 3.14 * 180);//20240808
-        loadParameter(3.47, -5700, 1.1746 / 3.14 * 180);//20240808
-        loadParameter(3.79, -5700, 1.2322 / 3.14 * 180);//
-        loadParameter(3.9, -5700, 1.2391 / 3.14 * 180);//20240808
+    private HighFerryParameterTable() {
         readyTuning();
     }
 
-    public static SpeakerShootingParameters getInstance() {
+    public static HighFerryParameterTable getInstance() {
         if (instance == null) {
-            instance = new SpeakerShootingParameters();
+            instance = new HighFerryParameterTable();
         }
         return instance;
     }
@@ -52,9 +32,9 @@ public class SpeakerShootingParameters {
         int counter = 1;
         for (Double key : interpolatingTable.keySet()) {
             parameters.add(new ParametersBinding(
-                    new TunableNumber("P" + counter + " Distance", key),
-                    new TunableNumber("P" + counter + " Velocity", interpolatingTable.get(key).getVelocity()),
-                    new TunableNumber("P" + counter + " Angle", interpolatingTable.get(key).getAngle())));
+                    new TunableNumber("HighFerry" + counter + " Distance", key),
+                    new TunableNumber("HighFerry" + counter + " Velocity", interpolatingTable.get(key).getVelocity()),
+                    new TunableNumber("HighFerry" + counter + " Angle", interpolatingTable.get(key).getAngle())));
             counter++;
         }
     }

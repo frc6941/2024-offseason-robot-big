@@ -12,7 +12,7 @@ import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShootingParameters.ShootingParameters;
-import frc.robot.utils.ShootingParameters.SpeakerShootingParameters;
+import frc.robot.utils.ShootingParameters.SpeakerParameterTable;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import java.util.function.DoubleSupplier;
@@ -54,7 +54,7 @@ public class ArmAimCommand extends Command {
 
         var distance = Limelight.getInstance().getSpeakerRelativePosition().getNorm();
 
-        ShootingParameters parameter = SpeakerShootingParameters.getInstance().getParameters(distance);
+        ShootingParameters parameter = SpeakerParameterTable.getInstance().getParameters(distance);
 
         if (Math.abs(
                 parameter.getAngle() -

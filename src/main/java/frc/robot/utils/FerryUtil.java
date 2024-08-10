@@ -1,10 +1,10 @@
 package frc.robot.utils;
 
 import frc.robot.utils.FieldLayout;
-import frc.robot.utils.ShootingParameters.HighFerryParameters;
-import frc.robot.utils.ShootingParameters.LowFerryParameters;
+import frc.robot.utils.ShootingParameters.HighFerryParameterTable;
+import frc.robot.utils.ShootingParameters.LowFerryParameterTable;
 import frc.robot.utils.ShootingParameters.ShootingParameters;
-import frc.robot.utils.ShootingParameters.SpeakerShootingParameters;
+import frc.robot.utils.ShootingParameters.SpeakerParameterTable;
 
 import com.team254.lib.util.InterpolatingDouble;
 import com.team254.lib.util.Util;
@@ -29,7 +29,8 @@ public class FerryUtil {
 	 * @param is_red_alliance
 	 * @return Array of length 4 containing distance to target, hood angle, shooter rpm, and drivetrain angle
 	 */
-	public static double[] getFerryShotParameters(Pose2d robot_pose, boolean is_red_alliance) {
+	public static double[] getFerryShotParameters(edu.wpi.first.math.geometry.Pose2d robot_pose_wpi, boolean is_red_alliance) {
+		Pose2d robot_pose = new Pose2d(robot_pose_wpi.getX(), robot_pose_wpi.getY(), Rotation2d.fromDegrees(robot_pose_wpi.getRotation().getDegrees()));
 		boolean midfield_target = useMidfieldTarget(robot_pose.getTranslation().x(), is_red_alliance);
 		Translation2d target;
 		if (midfield_target) {
@@ -46,8 +47,8 @@ public class FerryUtil {
 				//TODO: WTF
 		double arm_setpoint, velocity_setpoint, dist_to_target;
 		dist_to_target = robot_to_target.norm();
-		ShootingParameters high_parameter = HighFerryParameters.getInstance().getParameters(dist_to_target);
-		ShootingParameters low_parameter = LowFerryParameters.getInstance().getParameters(dist_to_target);
+		ShootingParameters high_parameter = HighFerryParameterTable.getInstance().getParameters(dist_to_target);
+		ShootingParameters low_parameter = LowFerryParameterTable.getInstance().getParameters(dist_to_target);
 		if (inHighFerryZone(robot_pose, is_red_alliance) || midfield_target) {
 			arm_setpoint = high_parameter.getAngle();
 			velocity_setpoint = high_parameter.getVelocity();

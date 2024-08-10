@@ -8,18 +8,18 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-public class LowFerryParameters {
-    private static LowFerryParameters instance;
+public class LowFerryParameterTable {
+    private static LowFerryParameterTable instance;
     private final List<ParametersBinding> parameters = new ArrayList<>();
     private final NavigableMap<Double, ShootingParameters> interpolatingTable = new TreeMap<>();
 
-    private LowFerryParameters() {
+    private LowFerryParameterTable() {
         readyTuning();
     }
 
-    public static LowFerryParameters getInstance() {
+    public static LowFerryParameterTable getInstance() {
         if (instance == null) {
-            instance = new LowFerryParameters();
+            instance = new LowFerryParameterTable();
         }
         return instance;
     }
@@ -32,9 +32,9 @@ public class LowFerryParameters {
         int counter = 1;
         for (Double key : interpolatingTable.keySet()) {
             parameters.add(new ParametersBinding(
-                    new TunableNumber("P" + counter + " Distance", key),
-                    new TunableNumber("P" + counter + " Velocity", interpolatingTable.get(key).getVelocity()),
-                    new TunableNumber("P" + counter + " Angle", interpolatingTable.get(key).getAngle())));
+                    new TunableNumber("LowFerry" + counter + " Distance", key),
+                    new TunableNumber("LowFerry" + counter + " Velocity", interpolatingTable.get(key).getVelocity()),
+                    new TunableNumber("LowFerry" + counter + " Angle", interpolatingTable.get(key).getAngle())));
             counter++;
         }
     }
