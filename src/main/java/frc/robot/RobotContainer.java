@@ -105,14 +105,13 @@ public class RobotContainer {
                 Utils::flip,
                 swerve);
 
-        autoChooser = AutoBuilder.buildAutoChooser();
-
         // FIXME Adapt to autonomous commands! Current adaptation is preliminary.
         NamedCommands.registerCommand("AutoShoot",
                 new SpeakerShootAutoCommand(
                         shooterSubsystem, indexerSubsystem, beamBreakSubsystem, indicatorSubsystem));
         NamedCommands.registerCommand("Intake",
                 Commands.parallel(
+                        Commands.print("Running Intake!"),
                         new IntakeCommand(intakerSubsystem, beamBreakSubsystem, indicatorSubsystem, shooterSubsystem),
                         new IndexCommand(indexerSubsystem, beamBreakSubsystem)));
         NamedCommands.registerCommand("AutoPreShoot",
@@ -122,6 +121,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoPreArm",
                 new PreArmAutoCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem));
 
+        autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("AutoData", autoChooser);
         // autoChooser = new LoggedDashboardChooser<>("Chooser",
         // AutoBuilder.buildAutoChooser("S2-S-A1-A2-A3"));
