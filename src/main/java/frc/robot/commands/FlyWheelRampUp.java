@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.shooting.ShootingDecider;
 
 import static frc.robot.Constants.ShooterConstants.defaultShootRPM;
@@ -15,15 +16,20 @@ import java.util.function.Supplier;
 public class FlyWheelRampUp extends Command {
     private final ShooterSubsystem shooterSubsystem;
     private final Supplier<ShootingDecider.Destination> destinationSupplier;
+    private final ShootingDecider shootingDecider;
+
 
 
     public FlyWheelRampUp(
         ShooterSubsystem shooterSubsystem,
         Supplier<ShootingDecider.Destination> destinationSupplier
+        
 
     ) {
         this.shooterSubsystem = shooterSubsystem;
         this.destinationSupplier = destinationSupplier;
+        this.shootingDecider = ShootingDecider.getInstance();
+
 
     }
 
@@ -34,12 +40,12 @@ public class FlyWheelRampUp extends Command {
     @Override
     public void execute() {
 
-        double distance = Limelight.getInstance().getSpeakerRelativePosition().getNorm();
 
-        SmartDashboard.putNumber("shooter desired angle", Units.degreesToRadians(
-                shooterSubsystem.getInputs().leftShooterVelocity.magnitude()));
-
-        shooterSubsystem.getIo().setFlyWheelVelocity(parameter.getVelocity());
+        shooterSubsystem.getIo().setFlyWheelVelocity(
+                shootingDecider.getShootingParameter(
+                    destinationSupplier.get(), 
+                    Swerve.getInstance().getLocalizer().getCoarseFieldPose(0)
+                ).getShootingVelocity());
     }
 
     @Override

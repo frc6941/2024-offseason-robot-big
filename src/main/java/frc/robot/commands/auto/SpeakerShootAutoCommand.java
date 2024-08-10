@@ -24,6 +24,6 @@ public class SpeakerShootAutoCommand extends ParallelCommandGroup {
                                 Commands.runOnce(() -> Timer.delay(0.02), indicatorSubsystem),
                                 new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)),
                         new SpeakerAimingAutoCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem),
-                        new FlyWheelRampUp(shooterSubsystem)));
+                        new FlyWheelRampUp(shooterSubsystem,null)));
     }
 }

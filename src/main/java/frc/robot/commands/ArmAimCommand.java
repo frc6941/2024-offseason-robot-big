@@ -16,6 +16,8 @@ import frc.robot.utils.shooting.ShootingParameters;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
+import com.team254.lib.geometry.Pose2d;
+
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -26,7 +28,6 @@ public class ArmAimCommand extends Command {
     private final ShooterSubsystem shooterSubsystem;
     private final ShootingDecider shootingDecider;
     private final Supplier<ShootingDecider.Destination> destinationSupplier;
-    private double armDesiredPos;
 
     public ArmAimCommand(
             ShooterSubsystem shooterSubsystem,
@@ -44,9 +45,14 @@ public class ArmAimCommand extends Command {
     @Override
     public void execute() {        
 
-        var robotPose = Limelight.
 
-        shooterSubsystem.getIo().setArmPosition(Radians.of(Units.degreesToRadians(shootingDecider.getShootingParameter(null, null).getShootingAngle())));
+
+        shooterSubsystem.getIo().setArmPosition(Radians.of(
+            Units.degreesToRadians(
+                shootingDecider.getShootingParameter(
+                    destinationSupplier.get(), 
+                    Swerve.getInstance().getLocalizer().getCoarseFieldPose(0)
+                ).getShootingAngle())));
     }
     
 

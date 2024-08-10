@@ -26,6 +26,8 @@ public class ChassisAimCommand extends Command {
     private final DoubleSupplier driverX;
     private final DoubleSupplier driverY;
     private final Supplier<ShootingDecider.Destination> destinationSupplier;
+    private final ShootingDecider shootingDecider;
+
 
     LinearFilter filter = LinearFilter.singlePoleIIR(0.2, 0.02);
 
@@ -39,6 +41,8 @@ public class ChassisAimCommand extends Command {
         this.driverX = driverX;
         this.driverY = driverY;
         this.destinationSupplier = destinationSupplier;
+        this.shootingDecider = ShootingDecider.getInstance();
+
 
     }
 
@@ -49,7 +53,6 @@ public class ChassisAimCommand extends Command {
 
     @Override
     public void execute() {
-        filter.calculate(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees());//todo
         Swerve.drive(
                 new Translation2d(
                         -driverX.getAsDouble() * Constants.SwerveConstants.maxSpeed.magnitude(),
@@ -57,7 +60,14 @@ public class ChassisAimCommand extends Command {
                 0,
                 true,
                 false);
-        filter.calculate(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees());
+        filter.calculate(
+            Units.degreesToRadians(
+                shootingDecider.getShootingParameter(
+                    destinationSupplier.get(), 
+                    Swerve.getInstance().getLocalizer().getCoarseFieldPose(0)
+                    ).getFieldAimignAngle().getDegrees()));
+
+        
         Swerve.setLockHeading(true);
         Swerve.setHeadingTarget(filter.lastValue());
     }
