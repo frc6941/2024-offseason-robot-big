@@ -21,24 +21,18 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
 public class ChassisAimCommand extends Command {
-    private final ShooterSubsystem shooterSubsystem;
-    private final IndicatorSubsystem indicatorSubsystem;
     private final BeamBreakSubsystem beamBreakSubsystem;
     private final Swerve Swerve;
     private final DoubleSupplier driverX;
     private final DoubleSupplier driverY;
     LinearFilter filter = LinearFilter.singlePoleIIR(0.2, 0.02);
-    private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("Distance");
 
     public ChassisAimCommand(
-            ShooterSubsystem shooterSubsystem,
             IndicatorSubsystem indicatorSubsystem,
             BeamBreakSubsystem beamBreakSubsystem,
             Swerve Swerve,
             DoubleSupplier driverX,
             DoubleSupplier driverY) {
-        this.shooterSubsystem = shooterSubsystem;
-        this.indicatorSubsystem = indicatorSubsystem;
         this.beamBreakSubsystem = beamBreakSubsystem;
         this.Swerve = Swerve;
         this.driverX = driverX;
@@ -52,24 +46,7 @@ public class ChassisAimCommand extends Command {
 
     @Override
     public void execute() {
-//        if (!beamBreakSubsystem.isIntakeReady()) {
-//            shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
-//            return;
-//        }
-        if (Limelight.getInstance().getSpeakerRelativePosition().getNorm() >
-                SpeakerParameterTable.getInstance().getFarthestDistance()/*+0.5*/) {
-            shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
-            Swerve.setLockHeading(true);
-            filter.calculate(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees());
-            Swerve.setHeadingTarget(filter.lastValue());
-            return;
-        }
-        this.indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMED);
-
-        var distance = Limelight.getInstance().getSpeakerRelativePosition().getNorm();
-
-        ShootingParameters parameter = SpeakerParameterTable.getInstance().getParameters(distance);
-        distanceLogged.set(distance);
+        filter.calculate(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees());//todo
         Swerve.drive(
                 new Translation2d(
                         -driverX.getAsDouble() * Constants.SwerveConstants.maxSpeed.magnitude(),
@@ -85,7 +62,6 @@ public class ChassisAimCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         Swerve.setLockHeading(false);
-        shooterSubsystem.getIo().setArmPosition(Radians.zero());
     }
 
     @Override

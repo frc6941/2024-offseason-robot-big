@@ -64,7 +64,6 @@ public class SpeakerAimingCommand extends Command {
             Swerve.setHeadingTarget(filter.lastValue());
             return;
         }
-        this.indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMED);
 
         var distance = Limelight.getInstance().getSpeakerRelativePosition().getNorm();
 
