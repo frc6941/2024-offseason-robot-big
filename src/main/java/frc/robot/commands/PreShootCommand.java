@@ -7,7 +7,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.utils.ShootingParameters;
-import frc.robot.utils.ShootingParametersTable;
+import frc.robot.utils.SpeakerShootingParameters;
 
 import static frc.robot.Constants.ShooterConstants.defaultShootRPM;
 
@@ -29,7 +29,7 @@ public class PreShootCommand extends Command {
 
         double distance = Limelight.getInstance().getSpeakerRelativePosition().getNorm();
 
-        ShootingParameters parameter = ShootingParametersTable.getInstance().getParameters(distance);
+        ShootingParameters parameter = SpeakerShootingParameters.getInstance().getParameters(distance);
         SmartDashboard.putNumber("shooter desired angle", Units.degreesToRadians(
                 shooterSubsystem.getInputs().leftShooterVelocity.magnitude()));
 

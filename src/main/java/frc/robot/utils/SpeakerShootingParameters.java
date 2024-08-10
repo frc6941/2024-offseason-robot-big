@@ -6,12 +6,12 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-public class ShootingParametersTable {
-    private static ShootingParametersTable instance;
+public class SpeakerShootingParameters {
+    private static SpeakerShootingParameters instance;
     private final List<ParametersBinding> parameters = new ArrayList<>();
     private final NavigableMap<Double, ShootingParameters> interpolatingTable = new TreeMap<>();
 
-    private ShootingParametersTable() {
+    private SpeakerShootingParameters() {
         // loadParameter(1.10, -4500, 0.4494 / 3.14 * 180);//20240807
         // loadParameter(1.68, -4500, 0.6427 / 3.14 * 180);//20240807
         // loadParameter(2.01, -4500, 0.7000 / 3.14 * 180);//20240807
@@ -35,9 +35,9 @@ public class ShootingParametersTable {
         readyTuning();
     }
 
-    public static ShootingParametersTable getInstance() {
+    public static SpeakerShootingParameters getInstance() {
         if (instance == null) {
-            instance = new ShootingParametersTable();
+            instance = new SpeakerShootingParameters();
         }
         return instance;
     }

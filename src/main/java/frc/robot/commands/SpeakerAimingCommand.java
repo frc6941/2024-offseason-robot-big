@@ -12,7 +12,7 @@ import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShootingParameters;
-import frc.robot.utils.ShootingParametersTable;
+import frc.robot.utils.SpeakerShootingParameters;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import java.util.function.DoubleSupplier;
@@ -57,7 +57,7 @@ public class SpeakerAimingCommand extends Command {
 //            return;
 //        }
         if (Limelight.getInstance().getSpeakerRelativePosition().getNorm() >
-                ShootingParametersTable.getInstance().getFarthestDistance()/*+0.5*/) {
+                SpeakerShootingParameters.getInstance().getFarthestDistance()/*+0.5*/) {
             shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
             Swerve.setLockHeading(true);
             filter.calculate(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees());
@@ -68,7 +68,7 @@ public class SpeakerAimingCommand extends Command {
 
         var distance = Limelight.getInstance().getSpeakerRelativePosition().getNorm();
 
-        ShootingParameters parameter = ShootingParametersTable.getInstance().getParameters(distance);
+        ShootingParameters parameter = SpeakerShootingParameters.getInstance().getParameters(distance);
 
         if (Math.abs(
                 parameter.getAngle() -
