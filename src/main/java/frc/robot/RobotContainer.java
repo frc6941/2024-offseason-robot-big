@@ -6,15 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -35,12 +28,9 @@ import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.utils.Utils;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import java.util.Optional;
 
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -57,12 +47,12 @@ public class RobotContainer {
     CommandXboxController operatorController = new CommandXboxController(1);
     ShooterIOTalonFX shooterIOTalonFX = new ShooterIOTalonFX();
     IndexerIOTalonFX indexerIOTalonFX = new IndexerIOTalonFX();
-    // LinearFilter filterX = LinearFilter.singlePoleIIR(0.1, 0.02);
-    // LinearFilter filterY = LinearFilter.singlePoleIIR(0.1, 0.02);
-    // LinearFilter filterOmega = LinearFilter.singlePoleIIR(0.1, 0.02);
+    //    LinearFilter filterX = LinearFilter.singlePoleIIR(0.1, 0.02);
+//    LinearFilter filterY = LinearFilter.singlePoleIIR(0.1, 0.02);
+//    LinearFilter filterOmega = LinearFilter.singlePoleIIR(0.1, 0.02);
     @Getter
     private UpdateManager updateManager;
-    private SendableChooser<Command> autoChooser;
+    private LoggedDashboardChooser<Command> autoChooser;
 
     public RobotContainer() {
         updateManager = new UpdateManager(
@@ -79,41 +69,17 @@ public class RobotContainer {
     }
 
     private void configureAuto() {
-        AutoBuilder.configureHolonomic(
-                () -> {
-                    return swerve.getLocalizer().getCoarseFieldPose(0);
-                },
-                swerve::resetPose,
-                swerve::getChassisSpeeds,
-                (ChassisSpeeds speeds) -> swerve.autoDrive(
-                        new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),
-                        speeds.omegaRadiansPerSecond,
-                        true,
-                        false),
-                new HolonomicPathFollowerConfig(
-                        new PIDConstants(
-                                Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
-                                Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
-                                Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()),
-                        new PIDConstants(
-                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
-                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
-                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()),
-                        Constants.SwerveConstants.maxSpeed.magnitude(),
-                        0.4,
-                        new ReplanningConfig()),
-                Utils::flip,
-                swerve);
-
         // FIXME Adapt to autonomous commands! Current adaptation is preliminary.
         NamedCommands.registerCommand("AutoShoot",
                 new SpeakerShootAutoCommand(
-                        shooterSubsystem, indexerSubsystem, beamBreakSubsystem, indicatorSubsystem));
+                        shooterSubsystem, indexerSubsystem, beamBreakSubsystem, indicatorSubsystem
+                ));
         NamedCommands.registerCommand("Intake",
                 Commands.parallel(
                         Commands.print("Running Intake!"),
                         new IntakeCommand(intakerSubsystem, beamBreakSubsystem, indicatorSubsystem, shooterSubsystem),
-                        new IndexCommand(indexerSubsystem, beamBreakSubsystem)));
+                        new IndexCommand(indexerSubsystem, beamBreakSubsystem)
+                ));
         NamedCommands.registerCommand("AutoPreShoot",
                 new PreShootCommand(shooterSubsystem));
         NamedCommands.registerCommand("ResetArm",
@@ -121,23 +87,18 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoPreArm",
                 new PreArmAutoCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem));
 
-        autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("AutoData", autoChooser);
-        // autoChooser = new LoggedDashboardChooser<>("Chooser",
-        // AutoBuilder.buildAutoChooser("S2-S-A1-A2-A3"));
+        autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser("S2-S-A1-A2-A3"));
 
-        // autoChooser.addOption(
-        // "Flywheel SysId (Quasistatic Forward)",
-        // shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        // autoChooser.addOption(
-        // "Flywheel SysId (Quasistatic Reverse)",
-        // shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        // autoChooser.addOption(
-        // "Flywheel SysId (Dynamic Forward)",
-        // shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        // autoChooser.addOption(
-        // "Flywheel SysId (Dynamic Reverse)",
-        // shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+//        autoChooser.addOption(
+//                "Flywheel SysId (Quasistatic Forward)",
+//                shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+//        autoChooser.addOption(
+//                "Flywheel SysId (Quasistatic Reverse)",
+//                shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+//        autoChooser.addOption(
+//                "Flywheel SysId (Dynamic Forward)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+//        autoChooser.addOption(
+//                "Flywheel SysId (Dynamic Reverse)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
 
     /**
@@ -147,13 +108,13 @@ public class RobotContainer {
         // Drive mode 1
         swerve.setDefaultCommand(Commands
                 .runOnce(() -> swerve.drive(
-                        new Translation2d(
-                                -driverController.getLeftY() * Constants.SwerveConstants.maxSpeed.magnitude(),
-                                -driverController.getLeftX() * Constants.SwerveConstants.maxSpeed.magnitude()),
-                        -Constants.RobotConstants.driverController.getRightX()
-                                * Constants.SwerveConstants.maxAngularRate.magnitude(),
-                        true,
-                        false),
+                                new Translation2d(
+                                        -driverController.getLeftY() * Constants.SwerveConstants.maxSpeed.magnitude(),
+                                        -driverController.getLeftX() * Constants.SwerveConstants.maxSpeed.magnitude()),
+                                -Constants.RobotConstants.driverController.getRightX()
+                                        * Constants.SwerveConstants.maxAngularRate.magnitude(),
+                                true,
+                                false),
                         swerve));
         // Drive mode 2
         // swerve.setDefaultCommand(Commands
@@ -170,23 +131,23 @@ public class RobotContainer {
         // false),
         // swerve));
         // Point Wheel
-        // swerve.setDefaultCommand(Commands.runOnce(() -> swerve.pointWheelsAt(
-        // new edu.wpi.first.math.geometry.Rotation2d(
-        // driverController.getLeftX() * Math.PI / 2)),
-        // swerve));
+//        swerve.setDefaultCommand(Commands.runOnce(() -> swerve.pointWheelsAt(
+//                        new edu.wpi.first.math.geometry.Rotation2d(
+//                                driverController.getLeftX() * Math.PI / 2)),
+//                swerve));
 
         // driverController.rightTrigger().whileTrue(
-        // Commands.sequence(
-        // new SpeakerShootCommand(
-        // shooterSubsystem,
-        // indexerSubsystem,
-        // beamBreakSubsystem,
-        // indicatorSubsystem,
-        // swerve,
-        // driverController,
-        // () -> driverController.getHID().getRightBumper()),
-        // new RumbleCommand(Seconds.of(1), driverController.getHID(),
-        // operatorController.getHID())));
+        //         Commands.sequence(
+        //                 new SpeakerShootCommand(
+        //                         shooterSubsystem,
+        //                         indexerSubsystem,
+        //                         beamBreakSubsystem,
+        //                         indicatorSubsystem,
+        //                         swerve,
+        //                         driverController,
+        //                         () -> driverController.getHID().getRightBumper()),
+        //                 new RumbleCommand(Seconds.of(1), driverController.getHID(),
+        //                         operatorController.getHID())));
 
         driverController.leftBumper().whileTrue(
                 Commands.sequence(
@@ -213,9 +174,8 @@ public class RobotContainer {
         driverController.povLeft().onTrue(new SetFacingCommand(swerve, 90));
         driverController.povUpLeft().onTrue(new SetFacingCommand(swerve, 45));
         // driverController.x()
-        // .onTrue(Commands.runOnce(() ->
-        // indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL),
-        // indicatorSubsystem));
+        // 		.onTrue(Commands.runOnce(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL),
+        // 				indicatorSubsystem));
         indicatorSubsystem.setDefaultCommand(
                 Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL), indicatorSubsystem));
 
@@ -249,6 +209,6 @@ public class RobotContainer {
         // return new CharacterizationShooterCommand(shooterSubsystem, 1, 1, 10);
         // return autoChooser.get();
         // return AutoBuilder.buildAuto("PIDspin");
-        return autoChooser.getSelected();
+        return autoChooser.get();
     }
 }

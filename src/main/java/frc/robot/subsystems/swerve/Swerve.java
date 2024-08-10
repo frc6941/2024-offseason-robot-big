@@ -134,7 +134,7 @@ public class Swerve implements Updatable, Subsystem {
         var driveBaseRadius = getDriveBaseRadius();
 
         AutoBuilder.configureHolonomic(
-                swerveLocalizer::getLatestPose,
+                () -> swerveLocalizer.getCoarseFieldPose(0),
                 this::resetPose,
                 this::getChassisSpeeds,
                 this::driveSpeed,
@@ -173,10 +173,10 @@ public class Swerve implements Updatable, Subsystem {
     }
 
     private void driveSpeed(ChassisSpeeds speeds) {
-        drive(new Translation2d(
+        autoDrive(new Translation2d(
                 speeds.vxMetersPerSecond,
                 speeds.vyMetersPerSecond
-        ), speeds.omegaRadiansPerSecond, false, false);
+        ), speeds.omegaRadiansPerSecond, true, false);
     }
 
     public ChassisSpeeds getChassisSpeeds() {
@@ -528,9 +528,9 @@ public class Swerve implements Updatable, Subsystem {
     @Override
     public void simulate(double time, double dt) {
         gyro.setYaw(
-            gyro.getYaw().rotateBy(
-                new Rotation2d(dt * setpoint.mChassisSpeeds.omegaRadiansPerSecond)
-            ).getDegrees()
+                gyro.getYaw().rotateBy(
+                        new Rotation2d(dt * setpoint.mChassisSpeeds.omegaRadiansPerSecond)
+                ).getDegrees()
         );
         read(time, dt);
     }
