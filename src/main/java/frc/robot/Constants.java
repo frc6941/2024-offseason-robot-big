@@ -26,8 +26,8 @@ public class Constants {
 
     public static class AutoConstants {
         public static class swerveXGainsClass {
-            public static final TunableNumber swerveX_KP = new TunableNumber("swerveX PID/kp", 0.3);
-            public static final TunableNumber swerveX_KI = new TunableNumber("swerveX PID/ki", 0.);
+            public static final TunableNumber swerveX_KP = new TunableNumber("swerveX PID/kp", 30);
+            public static final TunableNumber swerveX_KI = new TunableNumber("swerveX PID/ki", 0);
             public static final TunableNumber swerveX_KD = new TunableNumber("swerveX PID/kd", 0.0001);
         }
 
@@ -38,9 +38,9 @@ public class Constants {
         }
 
         public static class swerveOmegaGainsClass {
-            public static final TunableNumber swerveOmega_KP = new TunableNumber("swerveOmega PID/kp", 0.3);
+            public static final TunableNumber swerveOmega_KP = new TunableNumber("swerveOmega PID/kp", 0.25);
             public static final TunableNumber swerveOmega_KI = new TunableNumber("swerveOmega PID/ki", 0);
-            public static final TunableNumber swerveOmega_KD = new TunableNumber("swerveOmega PID/kd", 0.0001);
+            public static final TunableNumber swerveOmega_KD = new TunableNumber("swerveOmega PID/kd", 0);
         }
     }
 
@@ -53,7 +53,7 @@ public class Constants {
         public final static Measure<Voltage> trapIndexVoltage = Volts.of(2);
         public final static Measure<Voltage> indexShootVoltage = Volts.of(-16);
 
-        public final static double indexRPM = 500;
+        public final static double indexRPM = 1000;
         public final static double triggerRPM = 3500;
 
 
@@ -129,9 +129,9 @@ public class Constants {
         public static Measure<Angle> speakerArmOffsetMax = Degrees.of(64);
 
         public static class shooterGainsClass {
-            public static final TunableNumber SHOOTER_KP = new TunableNumber("SHOOTER PID/kp", 0.3);
+            public static final TunableNumber SHOOTER_KP = new TunableNumber("SHOOTER PID/kp", 0.2);
             public static final TunableNumber SHOOTER_KI = new TunableNumber("SHOOTER PID/ki", 0);
-            public static final TunableNumber SHOOTER_KD = new TunableNumber("SHOOTER PID/kd", 0.005);
+            public static final TunableNumber SHOOTER_KD = new TunableNumber("SHOOTER PID/kd", 0.001);
             public static final TunableNumber SHOOTER_KA = new TunableNumber("SHOOTER PID/ka", 0.0037512677);
             public static final TunableNumber SHOOTER_KV = new TunableNumber("SHOOTER PID/kv", 0.115);//0.107853495
             public static final TunableNumber SHOOTER_KS = new TunableNumber("SHOOTER PID/ks", 0.28475008);
@@ -180,7 +180,7 @@ public class Constants {
 
         public static final Measure<Voltage> MAX_VOLTAGE = Volts.of(12.0);
 
-        public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.0003;// 0.0002
+        public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.0003;// 0.0003
 
         public static final int PIGEON_ID = 1;
 
@@ -318,7 +318,7 @@ public class Constants {
         private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 15;
         private static final int FRONT_LEFT_STEER_MOTOR_ID = 14;
         private static final int FRONT_LEFT_ENCODER_ID = 20;
-        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.4421621094;// 0.052955;//0.127686//0.5329550781
+        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.42603515625;
         private static final Measure<Distance> frontLeftXPos = Meters.of(0.5);
         private static final Measure<Distance> frontLeftYPos = Meters.of(0.5);
         public static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
@@ -333,9 +333,9 @@ public class Constants {
         private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 2;
         private static final int FRONT_RIGHT_STEER_MOTOR_ID = 7;
         private static final int FRONT_RIGHT_ENCODER_ID = 21;
-        private static final double FRONT_RIGHT_ENCODER_OFFSET = 0.1270234375;// 0.125685;//0.13623046875//0.117686//0.046875
+        private static final double FRONT_RIGHT_ENCODER_OFFSET = 0.1270234375;
         private static final Measure<Distance> frontRightXPos = Meters.of(0.5);
-        private static final Measure<Distance> frontRightYPos = Meters.of(-0.5);  
+        private static final Measure<Distance> frontRightYPos = Meters.of(-0.5);
         public static final SwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
                 FRONT_RIGHT_STEER_MOTOR_ID,
                 FRONT_RIGHT_DRIVE_MOTOR_ID,
@@ -348,7 +348,7 @@ public class Constants {
         private static final int BACK_LEFT_DRIVE_MOTOR_ID = 5;
         private static final int BACK_LEFT_STEER_MOTOR_ID = 3;
         private static final int BACK_LEFT_ENCODER_ID = 9;
-        private static final double BACK_LEFT_ENCODER_OFFSET = 0.7644375;// 0.773925;//-0.223//0.401611//0.77392578125
+        private static final double BACK_LEFT_ENCODER_OFFSET = 0.7752128906;
         private static final Measure<Distance> backLeftXPos = Meters.of(-0.5);
         private static final Measure<Distance> backLeftYPos = Meters.of(0.5);
         public static final SwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
@@ -363,7 +363,7 @@ public class Constants {
         private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 10;
         private static final int BACK_RIGHT_STEER_MOTOR_ID = 6;
         private static final int BACK_RIGHT_ENCODER_ID = 12;
-        private static final double BACK_RIGHT_ENCODER_OFFSET = 0.4265703125;// 0.422119;//-0.5684550781//-0.064453//0.432279296875
+        private static final double BACK_RIGHT_ENCODER_OFFSET = 0.4265703125;
         private static final Measure<Distance> backRightXPos = Meters.of(-0.5);
         private static final Measure<Distance> backRightYPos = Meters.of(-0.5);
         public static final SwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
@@ -396,20 +396,6 @@ public class Constants {
             public static final TunableNumber STEER_KV = new TunableNumber("STEER PID/kv", 0);
             public static final TunableNumber STEER_KS = new TunableNumber("STEER PID/ks", 0);
         }
-        // public static final KinematicLimits DRIVETRAIN_SMOOTHED = new
-        // KinematicLimits(
-        // 4.5,
-        // 30.0,
-        // 200.0);
-        // public static final KinematicLimits DRIVETRAIN_LIMITED = new KinematicLimits(
-        // 2.0,
-        // 10.0,
-        // 1200.0);
-        // public static final KinematicLimits DRIVETRAIN_ROBOT_ORIENTED = new
-        // KinematicLimits(
-        // 2.0,
-        // 5.0,
-        // 1500.0);
 
         public static class driveGainsClass {
             public static final TunableNumber DRIVE_KP = new TunableNumber("DRIVE PID/kp", 0.3);

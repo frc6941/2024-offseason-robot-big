@@ -4,24 +4,21 @@
 
 package frc.robot;
 
-import com.choreo.lib.ChoreoTrajectory;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
-import frc.robot.commands.test.IndexTestCommand;
-import frc.robot.commands.test.PreShootTestCommand;
+import frc.robot.commands.auto.PreArmAutoCommand;
+import frc.robot.commands.auto.SpeakerShootAutoCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
@@ -36,17 +33,13 @@ import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.utils.Utils;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.choreo.lib.Choreo;
 
 import java.util.Optional;
 
 import static edu.wpi.first.units.Units.Seconds;
-import static frc.robot.Constants.SwerveDrivetrain.speedAt12Volts;
 
 public class RobotContainer {
     IntakerSubsystem intakerSubsystem = new IntakerSubsystem(new IntakerIOTalonFX());
@@ -61,7 +54,9 @@ public class RobotContainer {
     CommandXboxController operatorController = new CommandXboxController(1);
     ShooterIOTalonFX shooterIOTalonFX = new ShooterIOTalonFX();
     IndexerIOTalonFX indexerIOTalonFX = new IndexerIOTalonFX();
-    ChoreoTrajectory traj = Choreo.getTrajectory("NewPathCircle");
+    //    LinearFilter filterX = LinearFilter.singlePoleIIR(0.1, 0.02);
+//    LinearFilter filterY = LinearFilter.singlePoleIIR(0.1, 0.02);
+//    LinearFilter filterOmega = LinearFilter.singlePoleIIR(0.1, 0.02);
     @Getter
     private UpdateManager updateManager;
     private LoggedDashboardChooser<Command> autoChooser;
@@ -83,34 +78,17 @@ public class RobotContainer {
 
     private void configureAuto() {
         final LoggedDashboardChooser<Command> autoChooser;
-//        Choreo.choreoSwerveCommand(
-//                traj,
-//                () -> swerve.getLocalizer().getCoarseFieldPose(0),
-//                new PIDController(
-//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
-//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
-//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()),
-//                new PIDController(
-//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KP.get(),
-//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KI.get(),
-//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KD.get()),
-//                new PIDController(
-//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
-//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
-//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()),
-//                (ChassisSpeeds speeds) ->
-//                        swerve.drive(
-//                                new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),
-//                                speeds.omegaRadiansPerSecond,
-//                                false,
-//                                false),
-//                () -> {
-//                    Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
-//                    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
-//                });
 
         AutoBuilder.configureHolonomic(
-                () -> swerve.getLocalizer().getCoarseFieldPose(0),
+                () -> {
+//                    filterX.calculate(swerve.getLocalizer().getCoarseFieldPose(0).getX());
+//                    filterY.calculate(swerve.getLocalizer().getCoarseFieldPose(0).getY());
+//                    filterOmega.calculate(swerve.getLocalizer().getCoarseFieldPose(0).getRotation().getDegrees());
+//                    return new Pose2d(
+//                            new Translation2d(filterX.lastValue(), filterY.lastValue()),
+//                            Rotation2d.fromDegrees(filterOmega.lastValue()));
+                    return swerve.getLocalizer().getCoarseFieldPose(0);
+                },
                 (Pose2d pose2d) -> swerve.resetPose(pose2d),
                 () -> new ChassisSpeeds(swerve.getLocalizer().getSmoothedVelocity().getX(),
                         swerve.getLocalizer().getSmoothedVelocity().getY(),
@@ -141,8 +119,8 @@ public class RobotContainer {
 
         // FIXME Adapt to autonomous commands! Current adaptation is preliminary.
         NamedCommands.registerCommand("AutoShoot",
-                new SpeakerShootCommand(
-                        shooterSubsystem, indexerSubsystem, beamBreakSubsystem, indicatorSubsystem, swerve, () -> 0, () -> 0, () -> true
+                new SpeakerShootAutoCommand(
+                        shooterSubsystem, indexerSubsystem, beamBreakSubsystem, indicatorSubsystem
                 ));
         NamedCommands.registerCommand("Intake",
                 Commands.parallel(
@@ -153,8 +131,10 @@ public class RobotContainer {
                 new PreShootCommand(shooterSubsystem));
         NamedCommands.registerCommand("ResetArm",
                 new ResetArmCommand(shooterSubsystem));
+        NamedCommands.registerCommand("AutoPreArm",
+                new PreArmAutoCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem));
 
-        //autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser("123"));
+        // autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser("S2-S-A1-A2-A3"));
 
 //        autoChooser.addOption(
 //                "Flywheel SysId (Quasistatic Forward)",
@@ -251,10 +231,8 @@ public class RobotContainer {
 //        driverController.y().whileTrue(new ShooterUpCommand(shooterSubsystem));
 //        driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
 //        driverController.x().whileTrue(new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem));
-//         shooterSubsystem.setDefaultCommand(new PreShootTestCommand(shooterSubsystem));
-        //indexerSubsystem.setDefaultCommand(new IndexTestCommand(indexerSubsystem));
-
-
+//        shooterSubsystem.setDefaultCommand(new PreShootTestCommand(shooterSubsystem));
+//        indexerSubsystem.setDefaultCommand(new IndexTestCommand(indexerSubsystem));
 
         driverController.leftTrigger().whileTrue(new IntakeOutCommand(intakerSubsystem));
         driverController.leftTrigger().whileTrue(new IndexOutCommand(indexerSubsystem));
@@ -274,32 +252,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // return new CharacterizationDriveCommand(swerve, 3, 1.5, 6);
         // return new CharacterizationShooterCommand(shooterSubsystem, 1, 1, 10);
-//        return Choreo.choreoSwerveCommand(
-//                traj,
-//                () -> swerve.getLocalizer().getCoarseFieldPose(0),
-//                new PIDController(
-//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
-//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
-//                        Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()),
-//                new PIDController(
-//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KP.get(),
-//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KI.get(),
-//                        Constants.AutoConstants.swerveYGainsClass.swerveY_KD.get()),
-//                new PIDController(
-//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
-//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
-//                        Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()),
-//                (ChassisSpeeds speeds) ->
-//                        swerve.autoDrive(
-//                                new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),
-//                                speeds.omegaRadiansPerSecond,
-//                                true,
-//                                false),
-//                () -> {
-//                    Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
-//                    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
-//                });
         //return autoChooser.get();
-        return AutoBuilder.buildAuto("123");
+        return AutoBuilder.buildAuto("PIDspin");
     }
 }

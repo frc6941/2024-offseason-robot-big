@@ -5,13 +5,12 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.FollowPathCommand;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.ResetArmCommand;
+import frc.robot.subsystems.shooter.ShooterIOTalonFX;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -19,8 +18,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 
 public class Robot extends LoggedRobot {
-    CommandXboxController driverController = new CommandXboxController(0);
-    Swerve swerve;
+    ShooterSubsystem shooterSubsystem = new ShooterSubsystem(new ShooterIOTalonFX());
     private Command m_autonomousCommand;
     private RobotContainer robotContainer;
 
@@ -28,10 +26,11 @@ public class Robot extends LoggedRobot {
     public void robotInit() {
         robotContainer = new RobotContainer();
         DriverStation.silenceJoystickConnectionWarning(true);
-        // robotContainer.getUpdateManager().startEnableLoop(Constants.LOOPER_DT);
+        robotContainer.getUpdateManager().startEnableLoop(Constants.LOOPER_DT);
         FollowPathCommand.warmupCommand().schedule();
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
+        new ResetArmCommand(shooterSubsystem).schedule();
     }
 
     @Override
@@ -56,10 +55,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-        Commands.runOnce(() -> {
-            swerve.resetHeadingController();
-            swerve.resetPose(new Pose2d(new Translation2d(1.401, 5.551), swerve.getLocalizer().getLatestPose().getRotation()));
-        });
         robotContainer.getUpdateManager().runEnableSingle();
         m_autonomousCommand = robotContainer.getAutonomousCommand();
 
@@ -68,6 +63,8 @@ public class Robot extends LoggedRobot {
         }
         robotContainer.getUpdateManager().invokeStart();
         Swerve.getInstance().auto();
+        new ResetArmCommand(shooterSubsystem).schedule();
+        CommandScheduler.getInstance().run();
     }
 
     @Override
