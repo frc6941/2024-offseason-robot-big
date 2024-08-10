@@ -20,7 +20,7 @@ public class SpeakerShootAutoCommand extends ParallelCommandGroup {
         addCommands(
                 Commands.deadline(
                         Commands.sequence(
-                                new WaitUntilCommand(() -> shooterSubsystem.aimingReady()),
+                                new WaitUntilCommand(shooterSubsystem::aimingReady),
                                 Commands.runOnce(() -> Timer.delay(0.02), indicatorSubsystem),
                                 new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)),
                         new SpeakerAimingAutoCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem),

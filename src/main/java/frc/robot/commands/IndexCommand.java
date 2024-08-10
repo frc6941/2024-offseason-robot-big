@@ -1,11 +1,10 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
-
-import static edu.wpi.first.units.Units.Volts;
 
 public class IndexCommand extends Command {
     private final IndexerSubsystem indexerSubsystem;
@@ -27,7 +26,7 @@ public class IndexCommand extends Command {
         if (isFinished()) {
             indexerSubsystem.getIo().setIndexRPM(0);
             return;
-            }
+        }
         indexerSubsystem.getIo()
                 .setIndexRPM(Constants.IndexerConstants.indexRPM);
     }
@@ -39,6 +38,6 @@ public class IndexCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return beamBreakSubsystem.getInputs().isIndexerBeamBreakOn;
+        return RobotBase.isSimulation() || beamBreakSubsystem.getInputs().isIndexerBeamBreakOn;
     }
 }

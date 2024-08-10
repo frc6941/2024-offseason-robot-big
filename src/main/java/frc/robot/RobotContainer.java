@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -16,15 +17,20 @@ import frc.robot.commands.auto.PreArmAutoCommand;
 import frc.robot.commands.auto.SpeakerShootAutoCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
+import frc.robot.subsystems.beambreak.BeamBreakIOSim;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
+import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorIOARGB;
+import frc.robot.subsystems.indicator.IndicatorIOSim;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
+import frc.robot.subsystems.intaker.IntakerIOSim;
 import frc.robot.subsystems.intaker.IntakerIOTalonFX;
 import frc.robot.subsystems.intaker.IntakerSubsystem;
 import frc.robot.subsystems.limelight.Limelight;
+import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
@@ -35,12 +41,12 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import static edu.wpi.first.units.Units.Seconds;
 
 public class RobotContainer {
-    IntakerSubsystem intakerSubsystem = new IntakerSubsystem(new IntakerIOTalonFX());
-    IndexerSubsystem indexerSubsystem = new IndexerSubsystem(new IndexerIOTalonFX());
-    ShooterSubsystem shooterSubsystem = new ShooterSubsystem(new ShooterIOTalonFX());
-    BeamBreakSubsystem beamBreakSubsystem = new BeamBreakSubsystem(new BeamBreakIORev());
+    IntakerSubsystem intakerSubsystem;
+    IndexerSubsystem indexerSubsystem;
+    ShooterSubsystem shooterSubsystem;
+    BeamBreakSubsystem beamBreakSubsystem;
+    IndicatorSubsystem indicatorSubsystem;
     Limelight limelight = Limelight.getInstance();
-    IndicatorSubsystem indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOARGB());
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
     CommandXboxController driverController = new CommandXboxController(0);
@@ -59,9 +65,26 @@ public class RobotContainer {
                 display);
         updateManager.registerAll();
 
+        configureSubsystems();
         configureAuto();
         configureBindings();
         System.out.println("Init Completed!");
+    }
+
+    public void configureSubsystems() {
+        if (RobotBase.isReal()) {
+            intakerSubsystem = new IntakerSubsystem(new IntakerIOTalonFX());
+            indexerSubsystem = new IndexerSubsystem(new IndexerIOTalonFX());
+            shooterSubsystem = new ShooterSubsystem(new ShooterIOTalonFX());
+            beamBreakSubsystem = new BeamBreakSubsystem(new BeamBreakIORev());
+            indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOARGB());
+        } else {
+            intakerSubsystem = new IntakerSubsystem(new IntakerIOSim());
+            indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
+            shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
+            beamBreakSubsystem = new BeamBreakSubsystem(new BeamBreakIOSim());
+            indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOSim());
+        }
     }
 
     private void configureAuto() {
@@ -72,7 +95,6 @@ public class RobotContainer {
                 ));
         NamedCommands.registerCommand("Intake",
                 Commands.parallel(
-                        Commands.print("Running Intake!"),
                         new IntakeCommand(intakerSubsystem, beamBreakSubsystem, indicatorSubsystem, shooterSubsystem),
                         new IndexCommand(indexerSubsystem, beamBreakSubsystem)
                 ));

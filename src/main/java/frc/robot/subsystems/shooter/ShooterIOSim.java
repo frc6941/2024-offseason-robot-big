@@ -82,16 +82,20 @@ public class ShooterIOSim implements ShooterIO {
 
     @Override
     public void setFlyWheelDirectVoltage(Measure<Voltage> volts) {
-
+        leftShooterAppliedVoltage = volts;
+        rightShooterAppliedVoltage = volts;
+        leftShooterTalonSim.setInputVoltage(volts.magnitude());
+        rightShooterTalonSim.setInputVoltage(volts.magnitude());
     }
 
     @Override
     public void setFlyWheelVelocity(double velocityRPM, double ffVoltage) {
+        setFlyWheelVelocity(velocityRPM);
     }
 
     @Override
     public void setFlyWheelVelocity(double velocityRPM) {
-
+        leftShooterTalonSim.setState(0, velocityRPM);
     }
 
     @Override
