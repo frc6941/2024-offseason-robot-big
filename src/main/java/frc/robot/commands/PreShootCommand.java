@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,17 +27,7 @@ public class PreShootCommand extends Command {
     @Override
     public void execute() {
 
-        var targetOptional = Limelight.getTarget();
-        if (targetOptional.isEmpty()) {
-            shooterSubsystem.getIo().setFlyWheelVelocity(defaultRPM);
-            return;
-        }
-
-        var target = targetOptional.get();
-        var distance = target
-                .targetPoseCameraSpace()
-                .getTranslation()
-                .getDistance(new Translation3d());
+        double distance = Limelight.getInstance().getSpeakerRelativePosition().getNorm();
 
         ShootingParameters parameter = ShootingParametersTable.getInstance().getParameters(distance);
         SmartDashboard.putNumber("shooter desired angle", Units.degreesToRadians(

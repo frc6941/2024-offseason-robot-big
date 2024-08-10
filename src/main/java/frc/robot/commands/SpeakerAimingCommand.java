@@ -47,18 +47,19 @@ public class SpeakerAimingCommand extends Command {
 
     @Override
     public void initialize() {
-        Swerve.setLockHeading(true);
+        filter.reset();
     }
 
     @Override
     public void execute() {
-        if (!beamBreakSubsystem.isIntakeReady()) {
-            shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
-            return;
-        }
+//        if (!beamBreakSubsystem.isIntakeReady()) {
+//            shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
+//            return;
+//        }
         if (Limelight.getInstance().getSpeakerRelativePosition().getNorm() >
                 ShootingParametersTable.getInstance().getFarthestDistance()/*+0.5*/) {
             shooterSubsystem.getIo().setArmPosition(Radians.zero(), false);
+            Swerve.setLockHeading(true);
             filter.calculate(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees());
             Swerve.setHeadingTarget(filter.lastValue());
             return;
@@ -87,6 +88,7 @@ public class SpeakerAimingCommand extends Command {
                 true,
                 false);
         filter.calculate(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees());
+        Swerve.setLockHeading(true);
         Swerve.setHeadingTarget(filter.lastValue());
     }
 
