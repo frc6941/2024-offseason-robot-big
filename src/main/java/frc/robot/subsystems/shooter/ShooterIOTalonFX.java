@@ -15,12 +15,11 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
-import org.frcteam6941.looper.Updatable;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
-public class ShooterIOTalonFX implements ShooterIO, Updatable {
+public class ShooterIOTalonFX implements ShooterIO {
     private final TalonFX leftShooterTalon = new TalonFX(LEFT_SHOOTER_MOTOR_ID, Constants.RobotConstants.CAN_BUS_NAME);
     private final TalonFX rightShooterTalon = new TalonFX(RIGHT_SHOOTER_MOTOR_ID,
             Constants.RobotConstants.CAN_BUS_NAME);
@@ -254,17 +253,6 @@ public class ShooterIOTalonFX implements ShooterIO, Updatable {
     @Override
     public void setHomed(boolean homed) {
         this.homed = homed;
-    }
-
-    @Override
-    public void telemetry() {
-        leftShooterTalon.getConfigurator().apply(new Slot0Configs()
-                .withKP(shooterGainsClass.SHOOTER_KP.get())
-                .withKI(shooterGainsClass.SHOOTER_KI.get())
-                .withKD(shooterGainsClass.SHOOTER_KD.get())
-                .withKA(shooterGainsClass.SHOOTER_KA.get())
-                .withKV(shooterGainsClass.SHOOTER_KV.get())
-                .withKS(shooterGainsClass.SHOOTER_KS.get()));
     }
 
     @Override

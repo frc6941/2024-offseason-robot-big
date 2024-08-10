@@ -45,8 +45,6 @@ public class RobotContainer {
     Display display = Display.getInstance();
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
-    ShooterIOTalonFX shooterIOTalonFX = new ShooterIOTalonFX();
-    IndexerIOTalonFX indexerIOTalonFX = new IndexerIOTalonFX();
     //    LinearFilter filterX = LinearFilter.singlePoleIIR(0.1, 0.02);
 //    LinearFilter filterY = LinearFilter.singlePoleIIR(0.1, 0.02);
 //    LinearFilter filterOmega = LinearFilter.singlePoleIIR(0.1, 0.02);
@@ -58,9 +56,7 @@ public class RobotContainer {
         updateManager = new UpdateManager(
                 swerve,
                 limelight,
-                display,
-                indexerIOTalonFX,
-                shooterIOTalonFX);
+                display);
         updateManager.registerAll();
 
         configureAuto();
