@@ -2,16 +2,16 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.arm.ArmSubsystem;
 
 import static edu.wpi.first.units.Units.Radians;
 
 public class ResetArmAutoCommand extends Command {
-    private final ShooterSubsystem shooterSubsystem;
+    private final ArmSubsystem armSubsystem;
 
-    public ResetArmAutoCommand(ShooterSubsystem shooterSubsystem) {
-        this.shooterSubsystem = shooterSubsystem;
-        shooterSubsystem.getIo().setHomed(true);
+    public ResetArmAutoCommand(ArmSubsystem armSubsystem) {
+        this.armSubsystem = armSubsystem;
+        armSubsystem.getIo().setHomed(true);
         Constants.armPosition = Radians.of(0);
     }
 }

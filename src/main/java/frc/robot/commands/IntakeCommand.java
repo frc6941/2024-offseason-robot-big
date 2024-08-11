@@ -1,8 +1,8 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
@@ -16,17 +16,20 @@ public class IntakeCommand extends Command {
     private final BeamBreakSubsystem beamBreakSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
     private final ShooterSubsystem shooterSubsystem;
+    private final ArmSubsystem armSubsystem;
     private boolean enabledBefore = false;
 
     public IntakeCommand(
             IntakerSubsystem intakerSubsystem,
             BeamBreakSubsystem beamBreakSubsystem,
             IndicatorSubsystem indicatorSubsystem,
-            ShooterSubsystem shooterSubsystem) {
+            ShooterSubsystem shooterSubsystem,
+            ArmSubsystem armSubsystem) {
         this.intakerSubsystem = intakerSubsystem;
         this.beamBreakSubsystem = beamBreakSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
         this.shooterSubsystem = shooterSubsystem;
+        this.armSubsystem = armSubsystem;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class IntakeCommand extends Command {
             intakerSubsystem.getIo().setIntakeVoltage(Volts.of(0.5));
             return;
         }
-        if ((shooterSubsystem.getInputs().armPosition.magnitude() > 0.1
+        if ((armSubsystem.getInputs().armPosition.magnitude() > 0.1
                 && beamBreakSubsystem.getInputs().isIntakerBeamBreakOn)) {
             intakerSubsystem.getIo().setIntakeVoltage(Volts.of(0));
         } else {

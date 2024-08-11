@@ -1,26 +1,26 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Radians;
-
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.shooting.ShootingDecider;
 
+import java.util.function.Supplier;
+
+import static edu.wpi.first.units.Units.Radians;
+
 public class ArmAimCommand extends Command {
-    private final ShooterSubsystem shooterSubsystem;
+    private final ArmSubsystem armSubsystem;
     private final ShootingDecider shootingDecider;
     private final Supplier<ShootingDecider.Destination> destinationSupplier;
 
     public ArmAimCommand(
-            ShooterSubsystem shooterSubsystem,
+            ArmSubsystem armSubsystem,
             Supplier<ShootingDecider.Destination> destinationSupplier
     ) {
         this.shootingDecider = ShootingDecider.getInstance();
-        this.shooterSubsystem = shooterSubsystem;
+        this.armSubsystem = armSubsystem;
         this.destinationSupplier = destinationSupplier;
     }
 
@@ -29,19 +29,19 @@ public class ArmAimCommand extends Command {
     }
 
     @Override
-    public void execute() {        
-        shooterSubsystem.getIo().setArmPosition(Radians.of(
-            Units.degreesToRadians(
-                shootingDecider.getShootingParameter(
-                    destinationSupplier.get(), 
-                    Swerve.getInstance().getLocalizer().getCoarseFieldPose(0)
-                ).getShootingAngle())));
+    public void execute() {
+        armSubsystem.getIo().setArmPosition(Radians.of(
+                Units.degreesToRadians(
+                        shootingDecider.getShootingParameter(
+                                destinationSupplier.get(),
+                                Swerve.getInstance().getLocalizer().getCoarseFieldPose(0)
+                        ).getShootingAngle())));
     }
-    
+
 
     @Override
     public void end(boolean interrupted) {
-        shooterSubsystem.getIo().setArmPosition(Radians.zero());
+        armSubsystem.getIo().setArmPosition(Radians.zero());
     }
 
     @Override

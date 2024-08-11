@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
-import frc.robot.commands.auto.SpeakerShootAutoCommand;
 import frc.robot.display.Display;
 import frc.robot.display.OperatorDashboard;
+import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
 import frc.robot.subsystems.beambreak.BeamBreakIOSim;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
@@ -52,6 +52,7 @@ public class RobotContainer {
     IntakerSubsystem intaker;
     IndexerSubsystem indexer;
     ShooterSubsystem shooter;
+    ArmSubsystem arm;
     BeamBreakSubsystem beamBreak;
     IndicatorSubsystem indicator;
     Limelight limelight = Limelight.getInstance();
@@ -105,9 +106,9 @@ public class RobotContainer {
     private void configureAuto() {
         NamedCommands.registerCommand("AutoShoot", speakerAutoShot().withTimeout(2.0));
         NamedCommands.registerCommand("Intake", intake());
-        NamedCommands.registerCommand("ResetArm", new ResetArmCommand(shooter));
+        NamedCommands.registerCommand("ResetArm", new ResetArmCommand(arm));
         NamedCommands.registerCommand("AutoPreShoot", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));
-        NamedCommands.registerCommand("AutoPreArm", new ArmAimCommand(shooter, () -> Destination.SPEAKER));
+        NamedCommands.registerCommand("AutoPreArm", new ArmAimCommand(arm, () -> Destination.SPEAKER));
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
 
@@ -170,7 +171,7 @@ public class RobotContainer {
         driverController.povUpLeft().whileTrue(facing(45));
 
         // superstructure
-        driverController.back().onTrue(new ResetArmCommand(shooter));
+        driverController.back().onTrue(new ResetArmCommand(arm));
         driverController.x().whileTrue(
                 speakerShot()
                         .alongWith(setDest(Destination.SPEAKER))
@@ -208,21 +209,22 @@ public class RobotContainer {
     }
 
     private Command ferryShot() {
-        return new FerryShootCommand(shooter, indexer, beamBreak, indicator, swerve,
+        return new FerryShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve,
                 driverController::getLeftX, driverController::getLeftY);
     }
 
     private Command ampShot() {
-        return new AmpShootCommand(shooter, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean());
+        return new AmpShootCommand(shooter, arm, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean());
     }
 
     private Command speakerShot() {
-        return new SpeakerShootCommand(shooter, indexer, beamBreak, indicator, swerve,
+        return new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve,
                 driverController::getLeftX, driverController::getLeftY);
     }
 
     private Command speakerAutoShot() {
-        return new SpeakerShootAutoCommand(shooter, indexer, beamBreak, indicator, swerve);
+        //return new SpeakerShootAutoCommand(shooter, indexer, beamBreak, indicator, swerve);
+        return new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve);
     }
 
     private Command selectShot() {
@@ -234,7 +236,7 @@ public class RobotContainer {
     }
 
     private Command intake() {
-        return new IntakeCommand(intaker, beamBreak, indicator, shooter)
+        return new IntakeCommand(intaker, beamBreak, indicator, shooter, arm)
                 .alongWith(new IndexCommand(indexer, beamBreak));
     }
 
@@ -292,14 +294,14 @@ public class RobotContainer {
                 }));
         driverController.leftBumper().whileTrue(
                 Commands.sequence(
-                        Commands.parallel(new IntakeCommand(intaker, beamBreak, indicator, shooter),
+                        Commands.parallel(new IntakeCommand(intaker, beamBreak, indicator, shooter, arm),
                                 new IndexCommand(indexer, beamBreak)),
                         new RumbleCommand(Seconds.of(1), driverController.getHID(), operatorController.getHID())));
 
         driverController.leftBumper().whileTrue(
                 Commands.sequence(
                         Commands.parallel(
-                                new IntakeCommand(intaker, beamBreak, indicator, shooter),
+                                new IntakeCommand(intaker, beamBreak, indicator, shooter, arm),
                                 new IndexCommand(indexer, beamBreak)),
                         new RumbleCommand(Seconds.of(1), driverController.getHID(),
                                 operatorController.getHID())));
@@ -314,20 +316,20 @@ public class RobotContainer {
         driverController.povUpLeft().whileTrue(new SetFacingCommand(swerve, 45));
 
         // superstructure
-        driverController.back().onTrue(new ResetArmCommand(shooter));
+        driverController.back().onTrue(new ResetArmCommand(arm));
         driverController.x().whileTrue(
-                new SpeakerShootCommand(shooter, indexer, beamBreak, indicator, swerve,
+                new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve,
                         driverController::getLeftX, driverController::getLeftY)
                         .alongWith(Commands
                                 .runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.SPEAKER)))
                         .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
         driverController.y().whileTrue(
-                new AmpShootCommand(shooter, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean())
+                new AmpShootCommand(shooter, arm, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean())
                         .alongWith(Commands
                                 .runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.AMP)))
                         .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
         driverController.b().whileTrue(
-                new FerryShootCommand(shooter, indexer, beamBreak, indicator, swerve,
+                new FerryShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve,
                         driverController::getLeftX, driverController::getLeftY)
                         .alongWith(Commands
                                 .runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.FERRY)))
@@ -339,13 +341,13 @@ public class RobotContainer {
 
         shootingCommandMapping = new HashMap<Destination, Command>();
         shootingCommandMapping.put(
-                Destination.FERRY, new FerryShootCommand(shooter, indexer, beamBreak, indicator,
+                Destination.FERRY, new FerryShootCommand(shooter, arm, indexer, beamBreak, indicator,
                         swerve, driverController::getLeftX, driverController::getLeftY));
         shootingCommandMapping.put(
                 Destination.AMP,
-                new AmpShootCommand(shooter, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean()));
+                new AmpShootCommand(shooter, arm, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean()));
         shootingCommandMapping.put(
-                Destination.SPEAKER, new SpeakerShootCommand(shooter, indexer, beamBreak, indicator, swerve,
+                Destination.SPEAKER, new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve,
                         driverController::getLeftX, driverController::getLeftY));
 
         driverController.rightBumper().whileTrue(

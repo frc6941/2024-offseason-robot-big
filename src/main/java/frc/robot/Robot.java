@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.ResetArmCommand;
 import frc.robot.commands.auto.ResetArmAutoCommand;
 import frc.robot.display.OperatorDashboard;
+import frc.robot.subsystems.arm.ArmIOTalonFX;
+import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
@@ -25,6 +27,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
     ShooterSubsystem shooterSubsystem = new ShooterSubsystem(new ShooterIOTalonFX());
+    ArmSubsystem armSubsystem = new ArmSubsystem(new ArmIOTalonFX());
     OperatorDashboard dashboard = OperatorDashboard.getInstance();
     private Command m_autonomousCommand;
     private RobotContainer robotContainer;
@@ -38,7 +41,7 @@ public class Robot extends LoggedRobot {
 
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
-        new ResetArmCommand(shooterSubsystem).schedule();
+        new ResetArmCommand(armSubsystem).schedule();
     }
 
     @Override
@@ -71,7 +74,7 @@ public class Robot extends LoggedRobot {
         robotContainer.getUpdateManager().invokeStart();
         Swerve.getInstance().auto();
         Commands.runOnce(() -> dashboard.updateDestination(ShootingDecider.Destination.SPEAKER));
-        new ResetArmAutoCommand(shooterSubsystem).schedule();
+        new ResetArmAutoCommand(armSubsystem).schedule();
         CommandScheduler.getInstance().run();
     }
 

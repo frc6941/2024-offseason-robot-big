@@ -78,13 +78,30 @@ public class Constants {
     public static class ShooterConstants {
         public static final int LEFT_SHOOTER_MOTOR_ID = 41;
         public static final int RIGHT_SHOOTER_MOTOR_ID = 42;
+
+        public static final Measure<Voltage> shooterConstantVoltage = Volts.of(2);
+        public static final double defaultShootRPM = -9.0 / 12 * 6380;
+        public static final Measure<Voltage> ampShootingVoltage = Volts.of(-8);
+        public static final double shortShootVoltage = -8.0 / 12 * 6380;
+        public static final Measure<Distance> shortShootMaxDistance = Meters.of(2.7);
+        public static final Measure<Distance> shootMaxDistance = Meters.of(3.7);
+        public static final double farShootVoltage = -11.0 / 12 * 6380;
+        public static final double shooterUpDownVoltage = -2.0 / 12 * 6380;
+        public static final double shooterIndexVoltage = 13.0 / 12 * 6380;
+
+        public static class shooterGainsClass {
+            public static final TunableNumber SHOOTER_KP = new TunableNumber("SHOOTER PID/kp", 0.2);
+            public static final TunableNumber SHOOTER_KI = new TunableNumber("SHOOTER PID/ki", 0);
+            public static final TunableNumber SHOOTER_KD = new TunableNumber("SHOOTER PID/kd", 0.001);
+            public static final TunableNumber SHOOTER_KA = new TunableNumber("SHOOTER PID/ka", 0.0037512677);
+            public static final TunableNumber SHOOTER_KV = new TunableNumber("SHOOTER PID/kv", 0.113);// 0.107853495
+            public static final TunableNumber SHOOTER_KS = new TunableNumber("SHOOTER PID/ks", 0.28475008);
+        }
+    }
+
+    public static class ArmConstants {
         public static final int ARM_MOTOR_ID = 43;
         public static final int PULLER_MOTOR_ID = 44;
-
-        // public static final TunableNumber custumAngle = new TunableNumber("custum
-        // angle", 30);
-        // public static final TunableNumber custumVoltage = new TunableNumber("custm
-        // V", -7);
 
         // Shooter gains when deploying shooter to desired angle
         public static final Slot0Configs armGainsUp = new Slot0Configs()
@@ -114,30 +131,17 @@ public class Constants {
                 .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
                 .withSensorToMechanismRatio(8d / 64 * 16 / 64);
 
-        public static final Measure<Voltage> shooterConstantVoltage = Volts.of(2);
-        public static final double defaultShootRPM = -9.0 / 12 * 6380;
-        public static final Measure<Voltage> ampShootingVoltage = Volts.of(-8);
-        public static final double shortShootVoltage = -8.0 / 12 * 6380;
-        public static final Measure<Distance> shortShootMaxDistance = Meters.of(2.7);
-        public static final Measure<Distance> shootMaxDistance = Meters.of(3.7);
-        public static final double farShootVoltage = -11.0 / 12 * 6380;
         public static final double pullVoltage = -8.0 / 12 * 6380;
         public final static Measure<Angle> ampDeployAngle = Degrees.of(165);
-        public static final double shooterUpDownVoltage = -2.0 / 12 * 6380;
-        public static final double shooterIndexVoltage = 13.0 / 12 * 6380;
         public static Measure<Angle> speakerArmOffsetNear = Degrees.of(17);
         public static Measure<Angle> speakerArmOffset = Degrees.of(44);// 44
         public static Measure<Angle> speakerArmOffsetFar = Degrees.of(58.5);
         public static Measure<Angle> speakerArmOffsetMax = Degrees.of(64);
 
-        public static class shooterGainsClass {
-            public static final TunableNumber SHOOTER_KP = new TunableNumber("SHOOTER PID/kp", 0.2);
-            public static final TunableNumber SHOOTER_KI = new TunableNumber("SHOOTER PID/ki", 0);
-            public static final TunableNumber SHOOTER_KD = new TunableNumber("SHOOTER PID/kd", 0.001);
-            public static final TunableNumber SHOOTER_KA = new TunableNumber("SHOOTER PID/ka", 0.0037512677);
-            public static final TunableNumber SHOOTER_KV = new TunableNumber("SHOOTER PID/kv", 0.113);// 0.107853495
-            public static final TunableNumber SHOOTER_KS = new TunableNumber("SHOOTER PID/ks", 0.28475008);
-        }
+        //TODO: Arm PID
+        public static final LoggedDashboardNumber ArmP = new LoggedDashboardNumber("arm p", 400);
+        public static final LoggedDashboardNumber ArmI = new LoggedDashboardNumber("arm i", 200);
+        public static final LoggedDashboardNumber ArmD = new LoggedDashboardNumber("arm d", 15);
     }
 
     public static class BeamBreakConstants {
@@ -539,11 +543,4 @@ public class Constants {
             // TODO:Fixme
         }
     }
-
-    public class ArmConstants {
-        public static final LoggedDashboardNumber ArmP = new LoggedDashboardNumber("arm p", 400);
-        public static final LoggedDashboardNumber ArmI = new LoggedDashboardNumber("arm i", 200);
-        public static final LoggedDashboardNumber ArmD = new LoggedDashboardNumber("arm d", 15);
-    }
-
 }
