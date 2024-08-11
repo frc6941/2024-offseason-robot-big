@@ -44,7 +44,6 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import java.util.HashMap;
 import java.util.Map;
 
-import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Seconds;
 
 public class RobotContainer {
@@ -152,10 +151,10 @@ public class RobotContainer {
          */
 
         swerve.setDefaultCommand(drive());
-        shooter.setDefaultCommand(Commands.runOnce(() -> {
-            shooter.getIo().setFlyWheelDirectVoltage(Constants.ShooterConstants.shooterConstantVoltage);
-            shooter.getIo().setArmPosition(Radians.zero());
-        }, shooter));
+//        shooter.setDefaultCommand(Commands.runOnce(() -> {
+//            shooter.getIo().setFlyWheelDirectVoltage(Constants.ShooterConstants.shooterConstantVoltage);
+//            shooter.getIo().setArmPosition(Radians.zero());
+//        }, shooter));
 
         driverController.start().onTrue(resetOdom());
         driverController.leftBumper().whileTrue(

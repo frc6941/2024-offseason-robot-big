@@ -135,7 +135,7 @@ public class Constants {
             public static final TunableNumber SHOOTER_KI = new TunableNumber("SHOOTER PID/ki", 0);
             public static final TunableNumber SHOOTER_KD = new TunableNumber("SHOOTER PID/kd", 0.001);
             public static final TunableNumber SHOOTER_KA = new TunableNumber("SHOOTER PID/ka", 0.0037512677);
-            public static final TunableNumber SHOOTER_KV = new TunableNumber("SHOOTER PID/kv", 0.115);// 0.107853495
+            public static final TunableNumber SHOOTER_KV = new TunableNumber("SHOOTER PID/kv", 0.113);// 0.107853495
             public static final TunableNumber SHOOTER_KS = new TunableNumber("SHOOTER PID/ks", 0.28475008);
         }
     }
@@ -501,9 +501,9 @@ public class Constants {
                 backRightYPos.magnitude(),
                 true);
 
-        public static SwerveModuleConstants[] modules = { FrontLeft, FrontRight, BackLeft, BackRight };
+        public static SwerveModuleConstants[] modules = {FrontLeft, FrontRight, BackLeft, BackRight};
 
-        public static final Translation2d[] modulePlacements = new Translation2d[] {
+        public static final Translation2d[] modulePlacements = new Translation2d[]{
                 new Translation2d(SwerveConstants.FrontLeft.LocationX,
                         SwerveConstants.FrontLeft.LocationY),
                 new Translation2d(SwerveConstants.FrontRight.LocationX,

@@ -48,7 +48,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public boolean aimingReady() {
-        var velocityReady = Math.abs(inputs.leftShooterVelocity.magnitude() - inputs.targetShooterVelocity.magnitude()) < 6.28;//1
+        var velocityReady = Math.abs(inputs.leftShooterVelocity.magnitude() - inputs.targetShooterVelocity.magnitude()) < 12.56;//1
         var positionReady = Math.abs(inputs.armPosition.magnitude() - inputs.targetArmPosition.magnitude()) < 0.007 && Math.abs(inputs.armPosition.magnitude()) > 0.007;//0.007
         SmartDashboard.putBoolean("velocityReady", velocityReady);
         SmartDashboard.putBoolean("positionReady", positionReady);
