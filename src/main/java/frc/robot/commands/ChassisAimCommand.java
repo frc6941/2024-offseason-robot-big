@@ -50,7 +50,8 @@ public class ChassisAimCommand extends Command {
         swerve.setHeadingTarget(filter.calculate(
                 shootingDecider.getShootingParameter(
                         destinationSupplier.get(),
-                        swerve.getLocalizer().getCoarseFieldPose(0)).getFieldAimingAngle().getDegrees()));
+                        swerve.getLocalizer().getCoarseFieldPose(0))
+                        .getFieldAimingAngle().getDegrees()));
     }
 
     @Override

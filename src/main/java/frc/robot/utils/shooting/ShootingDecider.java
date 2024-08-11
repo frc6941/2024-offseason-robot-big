@@ -88,13 +88,13 @@ public class ShootingDecider implements Updatable {
                 delta = target.minus(robotPose.getTranslation());
                 launchParam = speakerParams.getParameters(delta.getNorm());
                 return new ShootingParameters(delta.getNorm(), launchParam.getFirst(), launchParam.getSecond(),
-                        new Rotation2d(delta.getX(), delta.getY()));
+                        new Rotation2d(delta.getX(), delta.getY()).rotateBy(Rotation2d.fromDegrees(180)));
             case SPEAKER:
                 target = AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening).toTranslation2d();
                 delta = target.minus(robotPose.getTranslation());
                 launchParam = speakerParams.getParameters(delta.getNorm());
                 return new ShootingParameters(delta.getNorm(), launchParam.getFirst(), launchParam.getSecond(),
-                        new Rotation2d(delta.getX(), delta.getY()));
+                        new Rotation2d(delta.getX(), delta.getY()).rotateBy(Rotation2d.fromDegrees(180)));
             default:
                 throw new IllegalArgumentException("Illegal destination: undefined.");
         }
