@@ -48,9 +48,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public boolean aimingReady() {
-        if (RobotBase.isSimulation()) {
-            return true;
-        }
         var velocityReady = Math.abs(inputs.leftShooterVelocity.magnitude() - inputs.targetShooterVelocity.magnitude()) < 6.28;//1
         var positionReady = Math.abs(inputs.armPosition.magnitude() - inputs.targetArmPosition.magnitude()) < 0.007 && Math.abs(inputs.armPosition.magnitude()) > 0.007;//0.007
         SmartDashboard.putBoolean("velocityReady", velocityReady);

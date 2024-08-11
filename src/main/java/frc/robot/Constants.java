@@ -172,6 +172,7 @@ public class Constants {
         public static final double fieldLength = edu.wpi.first.math.util.Units.inchesToMeters(651.223);
         public static final double fieldWidth = edu.wpi.first.math.util.Units.inchesToMeters(323.277);
         public static final double wingX = edu.wpi.first.math.util.Units.inchesToMeters(229.201);
+        public static final double wingOpponentX = fieldLength - wingX;
         public static final double podiumX = edu.wpi.first.math.util.Units.inchesToMeters(126.75);
         public static final double startingLineX = edu.wpi.first.math.util.Units.inchesToMeters(74.111);
 

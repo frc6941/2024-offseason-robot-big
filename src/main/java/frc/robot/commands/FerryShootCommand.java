@@ -24,12 +24,12 @@ public class FerryShootCommand extends ParallelCommandGroup {
             DoubleSupplier driverY) {
         addCommands(
                 Commands.parallel(
-                        new ChassisAimCommand(Swerve, () -> Destination.FERRY, driverX, driverY),
-                        new ArmAimCommand(shooterSubsystem, () -> Destination.FERRY),
-                        new FlyWheelRampUp(shooterSubsystem, () -> Destination.FERRY),
+                        new ChassisAimCommand(Swerve, () -> Destination.FERRY, driverX, driverY).andThen(Commands.print("Spun Up")),
+                        new ArmAimCommand(shooterSubsystem, () -> Destination.FERRY).andThen(Commands.print("Arm Aimed")),
+                        new FlyWheelRampUp(shooterSubsystem, () -> Destination.FERRY).andThen(Commands.print("Spun Up")),
                         new WaitUntilCommand(() -> (Swerve.aimingReady(2.5) &&
                                 shooterSubsystem.aimingReady())).andThen(
-                                        Commands.runOnce(() -> Timer.delay(0.02), indicatorSubsystem),
+                                        Commands.waitSeconds(0.02),
                                         new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem,
                                                 indicatorSubsystem))));
     }

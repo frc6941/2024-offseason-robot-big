@@ -1,4 +1,5 @@
 package frc.robot.utils.shooting;
+
 import org.frcteam6941.looper.Updatable;
 
 import com.team254.lib.util.Util;
@@ -14,15 +15,12 @@ import frc.robot.display.OperatorDashboard;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.FieldLayout;
 import frc.robot.utils.TunableNumber;
-import org.frcteam6941.looper.Updatable;
 
 public class ShootingDecider implements Updatable {
     public static final Translation2d kCornerTarget = new Translation2d(1.0, FieldLayout.kFieldWidth - 1.5);
-    public static final Translation2d kMidTarget = new Translation2d((FieldLayout.kFieldLength / 2.0) - 1.0,
+    public static final Translation2d kMidUpperTarget = new Translation2d((FieldLayout.kFieldLength / 2.0) - 1.0,
             FieldLayout.kFieldWidth - 0.2);
-    // Ferry Related
-    private static final double kOppoWingToAllianceWall = FieldLayout.distanceFromAllianceWall(FieldLayout.kWingX,
-            true);
+
     private static ShootingDecider instance;
     TunableNumber ampAngle;
     TunableNumber ampVelocity;
@@ -66,19 +64,9 @@ public class ShootingDecider implements Updatable {
         return instance;
     }
 
-    private static boolean inHighFerryZone(Pose2d robot_pose, boolean is_red_alliance) {
-        double x = robot_pose.getTranslation().getX();
-        double y = robot_pose.getTranslation().getY();
-        com.team254.lib.geometry.Translation2d cor_0 = FieldLayout.handleAllianceFlip(
-                new com.team254.lib.geometry.Translation2d(FieldLayout.kWingX, 0.0), is_red_alliance);
-        com.team254.lib.geometry.Translation2d cor_1 = FieldLayout.kCenterNote2;
-        boolean in_x = Util.inRange(x, Math.min(cor_0.x(), cor_1.x()), Math.max(cor_0.x(), cor_1.x()));
-        boolean in_y = Util.inRange(y, Math.min(cor_0.y(), cor_1.y()), Math.max(cor_0.y(), cor_1.y()));
-        return in_x && in_y;
-    }
-
-    private static boolean useMidfieldTarget(double x_coord, boolean is_red_alliance) {
-        return FieldLayout.distanceFromAllianceWall(x_coord, is_red_alliance) - kOppoWingToAllianceWall > 1.0;
+    private static boolean inHighFerryZone(Pose2d robotPose) {
+        Pose2d pose = AllianceFlipUtil.apply(robotPose);
+        return pose.getX() > FieldConstants.wingOpponentX;
     }
 
     @Override
@@ -96,10 +84,8 @@ public class ShootingDecider implements Updatable {
             case AMP:
                 return new ShootingParameters(Double.NaN, ampVelocity.get(), ampAngle.get(), new Rotation2d());
             case FERRY:
-                boolean isRed = DriverStation.getAlliance().get() == Alliance.Red;
-                boolean useMid = inHighFerryZone(robotPose, isRed)
-                        || useMidfieldTarget(robotPose.getX(), isRed);
-                target = useMid ? AllianceFlipUtil.apply(kMidTarget) : AllianceFlipUtil.apply(kCornerTarget);
+                boolean useMid = inHighFerryZone(robotPose);
+                target = useMid ? AllianceFlipUtil.apply(kMidUpperTarget) : AllianceFlipUtil.apply(kCornerTarget);
                 Display.getInstance().setFerryLocation(target);
                 delta = target.minus(robotPose.getTranslation());
                 OperatorDashboard.getInstance().updateDistanceToTarget(delta.getNorm());
