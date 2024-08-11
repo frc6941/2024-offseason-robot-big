@@ -40,7 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean ShooterVelocityReady() {
         var velocityReady = Math.abs(inputs.leftShooterVelocity.magnitude() - inputs.targetShooterVelocity.magnitude()) < 12.56;//1
         SmartDashboard.putBoolean("velocityReady", velocityReady);
-        return velocityReady;//TODO:fixme
+        return velocityReady;//FIXME
     }
 
     /**

@@ -103,13 +103,14 @@ public class Constants {
         public static final int ARM_MOTOR_ID = 43;
         public static final int PULLER_MOTOR_ID = 44;
 
-        // Shooter gains when deploying shooter to desired angle
-        public static final Slot0Configs armGainsUp = new Slot0Configs()
-                .withKP(400)
-                .withKI(200)
-                .withKD(15)
-                // .withKV(0.12) // add 12v for desired velocity
-                .withKS(0.25); // add 0.24v to overcome friction
+        public static class armGainsClass {
+            public static final TunableNumber ARM_KP = new TunableNumber("ARM PID/kp", 400);
+            public static final TunableNumber ARM_KI = new TunableNumber("ARM PID/ki", 200);
+            public static final TunableNumber ARM_KD = new TunableNumber("ARM PID/kd", 15);
+            public static final TunableNumber ARM_KA = new TunableNumber("ARM PID/ka", 0);
+            public static final TunableNumber ARM_KV = new TunableNumber("ARM PID/kv", 0);// 0.107853495
+            public static final TunableNumber ARM_KS = new TunableNumber("ARM PID/ks", 0.25);
+        }
 
         public static final Measure<Current> armZeroCurrent = Amps.of(1.0);
         public static final Measure<Voltage> armZeroVoltage = Volts.of(-2);

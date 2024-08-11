@@ -467,6 +467,8 @@ public class Swerve implements Updatable, Subsystem {
             if (this.state == State.PATH_FOLLOWING) {
                 autoDriveSignal = new HolonomicDriveSignal(autoDriveSignal.getTranslation(), rotation,
                         autoDriveSignal.isFieldOriented(), autoDriveSignal.isOpenLoop());
+                System.out.println(autoDriveSignal.toString());
+                //FIXME: path following
             } else {
                 driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), rotation,
                         driveSignal.isFieldOriented(), driveSignal.isOpenLoop());

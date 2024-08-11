@@ -15,7 +15,6 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import frc.robot.Constants;
-import frc.robot.Constants.ArmConstants;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ArmConstants.*;
@@ -37,10 +36,9 @@ public class ArmIOTalonFX implements ArmIO {
     public ArmIOTalonFX() {
         //TODO: Arm PID
         var armMotorConfig = new TalonFXConfiguration()
-                .withSlot0(armGainsUp)
                 .withMotionMagic(motionMagicConfigs)
                 .withMotorOutput(motorOutputConfigs)
-                .withClosedLoopRamps(rampConfigs)
+                .withClosedLoopRamps(rampConfigs)//TODO: delete it
                 .withFeedback(feedbackConfigs);
         var response = armTalon.getConfigurator().apply(armMotorConfig);
         if (response.isError())
@@ -83,13 +81,15 @@ public class ArmIOTalonFX implements ArmIO {
         inputs.pullerTorqueCurrent = Amps.of(pullerTorqueCurrent.getValueAsDouble());
 
         inputs.homed = homed;
-        Slot0Configs newconfig = ArmConstants.armGainsUp
-                .withKP(Constants.ArmConstants.ArmP.get())
-                .withKI(Constants.ArmConstants.ArmI.get())
-                .withKD(Constants.ArmConstants.ArmD.get());
-        armTalon.getConfigurator().apply(newconfig);
-
         inputs.targetArmPosition = Radians.of(targetArmPosition);
+
+        armTalon.getConfigurator().apply(new Slot0Configs()
+                .withKP(inputs.ArmKP)
+                .withKI(inputs.ArmKI)
+                .withKD(inputs.ArmKD)
+                .withKA(inputs.ArmKA)
+                .withKV(inputs.ArmKV)
+                .withKS(inputs.ArmKS));
     }
 
     @Override
@@ -135,18 +135,6 @@ public class ArmIOTalonFX implements ArmIO {
         config.NeutralMode = isCoast ? NeutralModeValue.Coast : NeutralModeValue.Brake;
         pullerTalon.getConfigurator().apply(config);
         pullerTalon.setControl(new NeutralOut());
-    }
-
-    @Override
-    public boolean setArmConfig(double p, double i, double d) {
-        TalonFXConfiguration config = new TalonFXConfiguration()
-                .withSlot0(new Slot0Configs().withKP(p).withKI(i).withKD(d))
-                .withMotionMagic(motionMagicConfigs)
-                .withMotorOutput(motorOutputConfigs)
-                .withClosedLoopRamps(rampConfigs)
-                .withFeedback(feedbackConfigs);
-        var response = armTalon.getConfigurator().apply(config);
-        return response.isError();
     }
 
     @Override

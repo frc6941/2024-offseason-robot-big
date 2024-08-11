@@ -36,6 +36,6 @@ public class ArmSubsystem extends SubsystemBase {
     public boolean armAimingReady() {
         var positionReady = Math.abs(inputs.armPosition.magnitude() - inputs.targetArmPosition.magnitude()) < 0.007 && Math.abs(inputs.armPosition.magnitude()) > 0.007;
         SmartDashboard.putBoolean("positionReady", positionReady);
-        return positionReady;//TODO:fixme
+        return positionReady;//FIXME
     }
 }

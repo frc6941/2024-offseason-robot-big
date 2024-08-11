@@ -88,11 +88,6 @@ public class ArmIOSim implements ArmIO {
     }
 
     @Override
-    public boolean setArmConfig(double p, double i, double d) {
-        return true;
-    }
-
-    @Override
     public void setHomed(boolean homed) {
         this.homed = homed;
     }
