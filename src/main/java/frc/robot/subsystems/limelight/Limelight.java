@@ -134,18 +134,18 @@ public class Limelight implements Updatable {
             } else if (swerve.getState() == Swerve.State.PATH_FOLLOWING) {
                 deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 50;//140
                 deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 50;
-                deviationOmega = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 0.2;
+                deviationOmega = (0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
             } else {
                 deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 30;
                 deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 30;
-                deviationOmega = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 0.2;
+                deviationOmega = (0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
             }
             botEstimate.ifPresent((poseEstimate) -> {
                 Swerve.getInstance().getLocalizer().addMeasurement(
                         botEstimate.get().timestampSeconds,
                         botEstimate.get().pose,
                         new Pose2d(new Translation2d(deviationX, deviationY),
-                        Rotation2d.fromDegrees(deviationOmega)));
+                                Rotation2d.fromDegrees(deviationOmega)));
             });
         }
     }
@@ -167,7 +167,6 @@ public class Limelight implements Updatable {
                 robotPos.getTranslation().getY() - SpeakerPos.getTranslation().getY());
         SmartDashboard.putNumber("headingtarget", relativePos.getAngle().getDegrees() - swerve.getGyro().getYaw().getDegrees());
         return relativePos;
-
     }
 
     @Override
@@ -178,7 +177,6 @@ public class Limelight implements Updatable {
     public void telemetry() {
         //SmartDashboard.putBoolean("has_target", hasTarget());
         if (hasTarget()) {
-            distanceLogged.set(Limelight.getInstance().getSpeakerRelativePosition().getNorm());
             SmartDashboard.putString("metaTag2blue",
                     LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.AIM_LIMELIGHT_NAME).pose.toString());
             if (!botEstimate.isEmpty()) {
@@ -186,6 +184,7 @@ public class Limelight implements Updatable {
                 SmartDashboard.putNumber("latency", botEstimate.get().latency);
             }
         }
+        distanceLogged.set(Limelight.getInstance().getSpeakerRelativePosition().getNorm());
         //System.out.println(tx.getDouble(0));
         // SmartDashboard.putNumber("relativePos2",  getSpeakerRelativePosition());
     }
