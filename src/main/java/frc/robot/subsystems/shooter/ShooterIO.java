@@ -4,6 +4,7 @@ import edu.wpi.first.units.*;
 import org.littletonrobotics.junction.AutoLog;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.ShooterConstants.shooterGainsClass.*;
 
 public interface ShooterIO {
     void updateInputs(ShooterIOInputs inputs);
@@ -63,5 +64,12 @@ public interface ShooterIO {
 
         public Measure<Velocity<Angle>> targetShooterVelocity = RadiansPerSecond.zero();
         public Measure<Angle> targetArmPosition = Radians.zero();
+
+        public double ShooterKP = SHOOTER_KP.get();
+        public double ShooterKI = SHOOTER_KI.get();
+        public double ShooterKD = SHOOTER_KD.get();
+        public double ShooterKA = SHOOTER_KA.get();
+        public double ShooterKV = SHOOTER_KV.get();
+        public double ShooterKS = SHOOTER_KS.get();
     }
 }

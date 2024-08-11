@@ -154,6 +154,14 @@ public class ShooterIOTalonFX implements ShooterIO {
 
         inputs.targetShooterVelocity = RadiansPerSecond.of(targetShooterVelocity);
         inputs.targetArmPosition = Radians.of(targetArmPosition);
+
+        rightShooterTalon.getConfigurator().apply(new Slot0Configs()
+                .withKP(inputs.ShooterKP)
+                .withKI(inputs.ShooterKI)
+                .withKD(inputs.ShooterKD)
+                .withKA(inputs.ShooterKA)
+                .withKV(inputs.ShooterKV)
+                .withKS(inputs.ShooterKS));
     }
 
     @Override
