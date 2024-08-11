@@ -1,5 +1,4 @@
 package frc.robot.utils.shooting;
-
 import org.frcteam6941.looper.Updatable;
 
 import com.team254.lib.util.Util;
@@ -11,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.display.Display;
+import frc.robot.display.OperatorDashboard;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.FieldLayout;
 import frc.robot.utils.TunableNumber;
@@ -86,15 +86,17 @@ public class ShootingDecider implements Updatable {
                 target = useMid ? AllianceFlipUtil.apply(kMidTarget) : AllianceFlipUtil.apply(kCornerTarget);
                 Display.getInstance().setFerryLocation(target);
                 delta = target.minus(robotPose.getTranslation());
+                OperatorDashboard.getInstance().updateDistanceToTarget(delta.getNorm());
                 launchParam = speakerParams.getParameters(delta.getNorm());
                 return new ShootingParameters(delta.getNorm(), launchParam.getFirst(), launchParam.getSecond(),
-                        new Rotation2d(delta.getX(), delta.getY()));
+                        new Rotation2d(delta.getX(), delta.getY()).rotateBy(Rotation2d.fromDegrees(180.0)));
             case SPEAKER:
                 target = AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening).toTranslation2d();
                 delta = target.minus(robotPose.getTranslation());
+                OperatorDashboard.getInstance().updateDistanceToTarget(delta.getNorm());
                 launchParam = speakerParams.getParameters(delta.getNorm());
                 return new ShootingParameters(delta.getNorm(), launchParam.getFirst(), launchParam.getSecond(),
-                        new Rotation2d(delta.getX(), delta.getY()));
+                        new Rotation2d(delta.getX(), delta.getY()).rotateBy(Rotation2d.fromDegrees(180.0)));
             default:
                 throw new IllegalArgumentException("Illegal destination: undefined.");
         }

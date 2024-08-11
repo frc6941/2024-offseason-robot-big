@@ -15,6 +15,7 @@ import lombok.Setter;
 @Getter
 public class OperatorDashboard {
     private final ShuffleboardTab operatorTab;
+    private final GenericEntry distanceToTarget;
     private final GenericEntry useFerry, useAmp, useSpeaker;
     private final GenericEntry isShooterReady, isDrivetrainReady, isArmReady, isReady;
     private final GenericEntry noteAtIntaker, noteAtIndexer, noteAtShooter;
@@ -33,6 +34,11 @@ public class OperatorDashboard {
 
     private OperatorDashboard() {
         operatorTab = Shuffleboard.getTab("Operator");
+        distanceToTarget = operatorTab
+            .add("Distance", -1.0)
+            .withPosition(0, 1)
+            .withSize(1, 1)
+            .getEntry();
 
         useFerry = operatorTab
             .add("Use Ferry", false)
@@ -134,5 +140,9 @@ public class OperatorDashboard {
             default:
                 throw new IllegalArgumentException("illegal destination.");
         }
+    }
+
+    public void updateDistanceToTarget(double distanceToTarget) {
+        this.distanceToTarget.setDouble(distanceToTarget); 
     }
 }

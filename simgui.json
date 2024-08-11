@@ -1,4 +1,11 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -35,6 +42,11 @@
     "transitory": {
       "AdvantageKit": {
         "Shooter": {
+          "open": true
+        }
+      },
+      "SmartDashboard": {
+        "TunableNumbers": {
           "open": true
         },
         "open": true
