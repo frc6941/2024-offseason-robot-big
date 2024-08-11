@@ -38,6 +38,8 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.shooting.ShootingDecider;
 import frc.robot.utils.shooting.ShootingDecider.Destination;
 import lombok.Getter;
+
+import org.checkerframework.checker.units.qual.degrees;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -66,9 +68,10 @@ public class RobotContainer {
     private UpdateManager updateManager;
     @Getter
     private LoggedDashboardChooser<Command> autoChooser;
-    private Map<Destination, Command> shootingCommandMapping;
+    private static Map<Destination, Command> shootingCommandMapping;
 
     public RobotContainer() {
+        configureSubsystems();
         updateManager = new UpdateManager(
                 swerve,
                 limelight,
@@ -76,7 +79,11 @@ public class RobotContainer {
                 decider);
         updateManager.registerAll();
 
-        configureSubsystems();
+        shootingCommandMapping = new HashMap<Destination, Command>();
+        shootingCommandMapping.put(Destination.FERRY, ferryShot());
+        shootingCommandMapping.put(Destination.AMP, ampShot());
+        shootingCommandMapping.put(Destination.SPEAKER, speakerShot());
+
         configureAuto();
         configureBindings();
     }
@@ -100,13 +107,8 @@ public class RobotContainer {
     }
 
     private void configureAuto() {
-        NamedCommands.registerCommand("AutoShoot",
-                new SpeakerShootCommand(shooter, indexer, beamBreak, indicator, swerve)
-                        .withTimeout(2.0));
-        NamedCommands.registerCommand("Intake",
-                Commands.parallel(
-                        new IntakeCommand(intaker, beamBreak, indicator, shooter),
-                        new IndexCommand(indexer, beamBreak)));
+        NamedCommands.registerCommand("AutoShoot",speakerShot().withTimeout(2.0));
+        NamedCommands.registerCommand("Intake", intake());
         NamedCommands.registerCommand("ResetArm", new ResetArmCommand(shooter));
         NamedCommands.registerCommand("AutoPreShoot", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));
         NamedCommands.registerCommand("ResetArm", new ResetArmCommand(shooter));
@@ -127,10 +129,7 @@ public class RobotContainer {
         dashboard.registerAutoSelector(autoChooser.getSendableChooser());
     }
 
-    /**
-     * Bind controller keys to commands.
-     */
-    private void configureBindings() {
+    public void configureBindings() {
         /**
          * ------- Driver Keymap -------
          * Driving:
@@ -143,19 +142,131 @@ public class RobotContainer {
          * Superstructure:
          * X - Speaker Shot
          * Y - Amp Shot
-         * A - Amp Confirmation (TODO: Consider Removing)
+         * A - Amp Confirmation (TODO: Consider remove)
          * B - Ferry Shot
          * LB - Intake
          * LT - Outtake
          * 
          * 
          * ------- Operator Keymap -------
-         * Superstructure: (TODO: Consider Removing)
+         * Superstructure: (TODO: Consider remove)
          * D-Pad Up - Select Speaker
          * D-Pad Down - Select Amp
          * D-Pad Left - Select Ferry
          */
 
+        swerve.setDefaultCommand(drive());
+        driverController.start().onTrue(resetOdom());
+        driverController.leftBumper().whileTrue(
+                intake().andThen(rumbleDriver(1.0)));
+
+        driverController.povUp().whileTrue(facing(0));
+        driverController.povUpRight().whileTrue(facing(315));
+        driverController.povRight().whileTrue(facing(270));
+        driverController.povDownRight().whileTrue(facing(225));
+        driverController.povDown().whileTrue(facing(180));
+        driverController.povDownLeft().whileTrue(facing(135));
+        driverController.povLeft().whileTrue(facing(90));
+        driverController.povUpLeft().whileTrue(facing(45));
+
+        // superstructure
+        driverController.back().onTrue(new ResetArmCommand(shooter));
+        driverController.x().whileTrue(
+                speakerShot()
+                        .alongWith(setDest(Destination.SPEAKER))
+                        .andThen(rumbleDriver(1.0)));
+        driverController.y().whileTrue(
+                ampShot()
+                        .alongWith(setDest(Destination.AMP))
+                        .andThen(rumbleDriver(1.0)));
+        driverController.b().whileTrue(
+                ferryShot()
+                        .alongWith(setDest(Destination.FERRY))
+                        .andThen(rumbleDriver(1.0)));
+        driverController.leftTrigger().whileTrue(outtake()); // FIXME: will cause stuck, confirmation on safe needed
+        driverController.rightBumper().whileTrue(selectShot()); // FIXME: consider only use ABXY to shoot
+
+        // operator superstructure commands
+        operatorController.povLeft().onTrue(setDest(Destination.FERRY));
+        operatorController.povUp().onTrue(setDest(Destination.SPEAKER));
+        operatorController.povDown().onTrue(setDest(Destination.AMP));
+    }
+
+    public Command getAutonomousCommand() {
+        return autoChooser.get();
+    }
+
+    // command composers
+    private Command rumbleDriver(double seconds) {
+        return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
+    }
+
+    private Command rumbleOperator(double seconds) {
+        return new RumbleCommand(Seconds.of(seconds), operatorController.getHID());
+    }
+
+    private Command ferryShot() {
+        return new FerryShootCommand(shooter, indexer, beamBreak, indicator, swerve,
+                driverController::getLeftX, driverController::getLeftY);
+    }
+
+    private Command ampShot() {
+        return new AmpShootCommand(shooter, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean());
+    }
+
+    private Command speakerShot() {
+        return new SpeakerShootCommand(shooter, indexer, beamBreak, indicator, swerve,
+                driverController::getLeftX, driverController::getLeftY);
+    }
+
+    private Command selectShot() {
+        return Commands.select(shootingCommandMapping, dashboard::getCurrDestination);
+    }
+
+    private Command facing(double fieldAngleDeg) {
+        return new SetFacingCommand(swerve, fieldAngleDeg);
+    }
+
+    private Command intake() {
+        return new IntakeCommand(intaker, beamBreak, indicator, shooter)
+                .alongWith(new IndexCommand(indexer, beamBreak));
+    }
+
+    private Command outtake() {
+        return new IntakeOutCommand(intaker)
+                .alongWith(new IndexOutCommand(indexer));
+    }
+
+    private Command drive() {
+        return Commands.runOnce(() -> {
+            Translation2d transVel = new Translation2d(
+                    -driverController.getLeftY(),
+                    -driverController.getLeftX()).times(Constants.SwerveConstants.maxSpeed.magnitude());
+            double rotVel = -Constants.RobotConstants.driverController.getRightX()
+                    * Constants.SwerveConstants.maxAngularRate.magnitude();
+            swerve.drive(transVel, rotVel, true, false);
+        }, swerve);
+    }
+
+    private Command resetOdom() {
+        return Commands.runOnce(() -> {
+            swerve.resetHeadingController();
+            Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();
+            Pose2d b = new Pose2d(new Translation2d(0, 0), a);
+            swerve.resetPose(b);
+        });
+    }
+
+    private Command setDest(Destination des) {
+        return Commands.runOnce(() -> dashboard.updateDestination(des));
+    }
+
+
+    /**
+     * Bind controller keys to commands.
+     */
+    @Deprecated
+    private void configureBindingsOld() {
         // Driving
         swerve.setDefaultCommand(
                 Commands.runOnce(() -> {
@@ -201,18 +312,20 @@ public class RobotContainer {
         driverController.x().whileTrue(
                 new SpeakerShootCommand(shooter, indexer, beamBreak, indicator, swerve,
                         driverController::getLeftX, driverController::getLeftY)
-                .alongWith(Commands.runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.SPEAKER)))
-                .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
+                        .alongWith(Commands
+                                .runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.SPEAKER)))
+                        .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
         driverController.y().whileTrue(
                 new AmpShootCommand(shooter, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean())
-                .alongWith(Commands.runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.AMP)))
-                .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID()))
-        );
+                        .alongWith(Commands
+                                .runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.AMP)))
+                        .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
         driverController.b().whileTrue(
                 new FerryShootCommand(shooter, indexer, beamBreak, indicator, swerve,
                         driverController::getLeftX, driverController::getLeftY)
-                .alongWith(Commands.runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.FERRY)))
-                .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
+                        .alongWith(Commands
+                                .runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.FERRY)))
+                        .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
         driverController.leftTrigger().whileTrue(
                 new IntakeOutCommand(intaker).alongWith(
                         new IndexOutCommand(indexer))); // FIXME: will cause stuck, confirmation on arriving at safe
@@ -228,7 +341,7 @@ public class RobotContainer {
         shootingCommandMapping.put(
                 Destination.SPEAKER, new SpeakerShootCommand(shooter, indexer, beamBreak, indicator, swerve,
                         driverController::getLeftX, driverController::getLeftY));
-        
+
         driverController.rightBumper().whileTrue(
                 Commands.select(shootingCommandMapping, dashboard::getCurrDestination)
                         .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
@@ -241,9 +354,4 @@ public class RobotContainer {
         operatorController.povDown().onTrue(
                 Commands.runOnce(() -> dashboard.updateDestination(Destination.AMP)));
     }
-
-    public Command getAutonomousCommand() {
-        return autoChooser.get();
-    }
-
 }

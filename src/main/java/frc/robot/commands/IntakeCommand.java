@@ -36,8 +36,6 @@ public class IntakeCommand extends Command {
 
     @Override
     public void execute() {
-        if (isFinished())
-            return;
         if (beamBreakSubsystem.getInputs().isIntakerBeamBreakOn) {
             enabledBefore = true;
         }
@@ -51,10 +49,6 @@ public class IntakeCommand extends Command {
         } else {
             intakerSubsystem.getIo().setIntakeVoltage(Constants.IntakerConstants.intakeVoltage);
         }
-
-//        shooterSubsystem.getIo().setFlyWheelVoltage(Volts.of(2));
-
-        // debug(" " + shooterSubsystem.getInputs().armPosition.magnitude());
     }
 
     @Override
@@ -71,7 +65,7 @@ public class IntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return RobotBase.isSimulation() || (beamBreakSubsystem.getInputs().isIndexerBeamBreakOn &&
+        return (beamBreakSubsystem.getInputs().isIndexerBeamBreakOn &&
                 !beamBreakSubsystem.getInputs().isIntakerBeamBreakOn);
     }
 }
