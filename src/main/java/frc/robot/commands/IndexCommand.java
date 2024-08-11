@@ -23,10 +23,6 @@ public class IndexCommand extends Command {
 
     @Override
     public void execute() {
-        if (isFinished()) {
-            indexerSubsystem.getIo().setIndexRPM(0);
-            return;
-        }
         indexerSubsystem.getIo()
                 .setIndexRPM(Constants.IndexerConstants.indexRPM);
     }
@@ -38,6 +34,6 @@ public class IndexCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return RobotBase.isSimulation() || beamBreakSubsystem.getInputs().isIndexerBeamBreakOn;
+        return beamBreakSubsystem.getInputs().isIndexerBeamBreakOn;
     }
 }
