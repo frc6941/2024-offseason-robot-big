@@ -1,20 +1,16 @@
 package frc.robot.utils.shooting;
 
-import org.frcteam6941.looper.Updatable;
-
-import com.team254.lib.util.Util;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.display.Display;
 import frc.robot.display.OperatorDashboard;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.FieldLayout;
 import frc.robot.utils.TunableNumber;
+import org.frcteam6941.looper.Updatable;
 
 public class ShootingDecider implements Updatable {
     public static final Translation2d kCornerTarget = new Translation2d(1.0, FieldLayout.kFieldWidth - 1.5);
@@ -49,10 +45,16 @@ public class ShootingDecider implements Updatable {
         speakerParams.loadParameter(3.9, -5700, 1.2391 / 3.14 * 180);// 20240808
         speakerParams.ready();
 
-        highFerryParams.loadParameter(1.0, -4000.0, 15.0);
-        highFerryParams.loadParameter(3.0, -5000.0, 15.0);
+        highFerryParams.loadParameter(5.0, -2000.0, 10.0);
+        highFerryParams.loadParameter(6.5, -2700.0, 10.0);
+        highFerryParams.loadParameter(8.0, -4000.0, 10.0);
+        highFerryParams.loadParameter(9.5, -5500.0, 10.0);
+        highFerryParams.loadParameter(11.0, -6500.0, 10.0);
         highFerryParams.ready();
         lowFerryParams.loadParameter(1.5, -2000.0, 15.0);
+        lowFerryParams.loadParameter(3.0, -5000.0, 15.0);
+        lowFerryParams.loadParameter(3.0, -5000.0, 15.0);
+        lowFerryParams.loadParameter(3.0, -5000.0, 15.0);
         lowFerryParams.loadParameter(3.0, -5000.0, 15.0);
         lowFerryParams.ready();
     }
@@ -89,7 +91,7 @@ public class ShootingDecider implements Updatable {
                 Display.getInstance().setFerryLocation(target);
                 delta = target.minus(robotPose.getTranslation());
                 OperatorDashboard.getInstance().updateDistanceToTarget(delta.getNorm());
-                launchParam = speakerParams.getParameters(delta.getNorm());
+                launchParam = useMid ? lowFerryParams.getParameters(delta.getNorm()) : highFerryParams.getParameters(delta.getNorm());
                 return new ShootingParameters(delta.getNorm(), launchParam.getFirst(), launchParam.getSecond(),
                         new Rotation2d(delta.getX(), delta.getY()).rotateBy(Rotation2d.fromDegrees(180.0)));
             case SPEAKER:
