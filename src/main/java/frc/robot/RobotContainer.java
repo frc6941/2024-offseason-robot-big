@@ -103,7 +103,7 @@ public class RobotContainer {
     }
 
     private void configureAuto() {
-        NamedCommands.registerCommand("AutoShoot", speakerShot().withTimeout(2.0));
+        NamedCommands.registerCommand("AutoShoot", speakerAutoShot().withTimeout(2.0));
         NamedCommands.registerCommand("Intake", intake());
         NamedCommands.registerCommand("ResetArm", new ResetArmCommand(shooter));
         NamedCommands.registerCommand("AutoPreShoot", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));
@@ -217,6 +217,11 @@ public class RobotContainer {
     }
 
     private Command speakerShot() {
+        return new SpeakerShootCommand(shooter, indexer, beamBreak, indicator, swerve,
+                driverController::getLeftX, driverController::getLeftY);
+    }
+
+    private Command speakerAutoShot() {
         return new SpeakerShootAutoCommand(shooter, indexer, beamBreak, indicator, swerve);
     }
 
