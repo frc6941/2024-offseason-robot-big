@@ -5,16 +5,18 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.FollowPathCommand;
-
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.ResetArmCommand;
+import frc.robot.display.OperatorDashboard;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.shooting.ShootingDecider;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -22,6 +24,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
     ShooterSubsystem shooterSubsystem = new ShooterSubsystem(new ShooterIOTalonFX());
+    OperatorDashboard dashboard = OperatorDashboard.getInstance();
     private Command m_autonomousCommand;
     private RobotContainer robotContainer;
 
@@ -31,7 +34,7 @@ public class Robot extends LoggedRobot {
         DriverStation.silenceJoystickConnectionWarning(true);
         robotContainer.getUpdateManager().startEnableLoop(Constants.LOOPER_DT);
         FollowPathCommand.warmupCommand().schedule();
-        
+
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
         new ResetArmCommand(shooterSubsystem).schedule();
@@ -66,6 +69,7 @@ public class Robot extends LoggedRobot {
         }
         robotContainer.getUpdateManager().invokeStart();
         Swerve.getInstance().auto();
+        Commands.runOnce(() -> dashboard.updateDestination(ShootingDecider.Destination.SPEAKER));
         new ResetArmCommand(shooterSubsystem).schedule();
         CommandScheduler.getInstance().run();
     }

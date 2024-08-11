@@ -2,6 +2,7 @@ package frc.robot.subsystems.indexer;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -42,6 +43,13 @@ public class IndexerIOTalonFX implements IndexerIO {
         inputs.indexVelocity = RadiansPerSecond.of(Units.rotationsToRadians(indexVelocity.getValueAsDouble()));
         inputs.indexPosition = Radians.of(Units.rotationsToRadians(indexPosition.getValueAsDouble()));
         inputs.indexSupplyCurrent = Amps.of(indexSupplyCurrent.getValueAsDouble());
+        indexTalon.getConfigurator().apply(new Slot0Configs()
+                .withKP(inputs.IndexerKP)
+                .withKI(inputs.IndexerKI)
+                .withKD(inputs.IndexerKD)
+                .withKA(inputs.IndexerKA)
+                .withKV(inputs.IndexerKV)
+                .withKS(inputs.IndexerKS));
     }
 
     @Override

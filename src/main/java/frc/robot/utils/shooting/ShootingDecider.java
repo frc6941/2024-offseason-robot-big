@@ -14,27 +14,21 @@ import frc.robot.display.OperatorDashboard;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.FieldLayout;
 import frc.robot.utils.TunableNumber;
+import org.frcteam6941.looper.Updatable;
 
 public class ShootingDecider implements Updatable {
-    public enum Destination {
-        AMP, SPEAKER, FERRY
-    }
-
+    public static final Translation2d kCornerTarget = new Translation2d(1.0, FieldLayout.kFieldWidth - 1.5);
+    public static final Translation2d kMidTarget = new Translation2d((FieldLayout.kFieldLength / 2.0) - 1.0,
+            FieldLayout.kFieldWidth - 0.2);
+    // Ferry Related
+    private static final double kOppoWingToAllianceWall = FieldLayout.distanceFromAllianceWall(FieldLayout.kWingX,
+            true);
+    private static ShootingDecider instance;
     TunableNumber ampAngle;
     TunableNumber ampVelocity;
-
     LaunchParameterTable speakerParams;
     LaunchParameterTable highFerryParams;
     LaunchParameterTable lowFerryParams;
-
-    private static ShootingDecider instance;
-
-    public static ShootingDecider getInstance() {
-        if (instance == null) {
-            instance = new ShootingDecider();
-        }
-        return instance;
-    }
 
     private ShootingDecider() {
         speakerParams = new LaunchParameterTable("Speaker");
@@ -57,12 +51,34 @@ public class ShootingDecider implements Updatable {
         speakerParams.loadParameter(3.9, -5700, 1.2391 / 3.14 * 180);// 20240808
         speakerParams.ready();
 
-        highFerryParams.loadParameter(1.0, -2000.0, 10.0);
+        highFerryParams.loadParameter(1.0, -4000.0, 15.0);
         highFerryParams.loadParameter(3.0, -5000.0, 15.0);
         highFerryParams.ready();
         lowFerryParams.loadParameter(1.5, -2000.0, 15.0);
         lowFerryParams.loadParameter(3.0, -5000.0, 15.0);
         lowFerryParams.ready();
+    }
+
+    public static ShootingDecider getInstance() {
+        if (instance == null) {
+            instance = new ShootingDecider();
+        }
+        return instance;
+    }
+
+    private static boolean inHighFerryZone(Pose2d robot_pose, boolean is_red_alliance) {
+        double x = robot_pose.getTranslation().getX();
+        double y = robot_pose.getTranslation().getY();
+        com.team254.lib.geometry.Translation2d cor_0 = FieldLayout.handleAllianceFlip(
+                new com.team254.lib.geometry.Translation2d(FieldLayout.kWingX, 0.0), is_red_alliance);
+        com.team254.lib.geometry.Translation2d cor_1 = FieldLayout.kCenterNote2;
+        boolean in_x = Util.inRange(x, Math.min(cor_0.x(), cor_1.x()), Math.max(cor_0.x(), cor_1.x()));
+        boolean in_y = Util.inRange(y, Math.min(cor_0.y(), cor_1.y()), Math.max(cor_0.y(), cor_1.y()));
+        return in_x && in_y;
+    }
+
+    private static boolean useMidfieldTarget(double x_coord, boolean is_red_alliance) {
+        return FieldLayout.distanceFromAllianceWall(x_coord, is_red_alliance) - kOppoWingToAllianceWall > 1.0;
     }
 
     @Override
@@ -102,25 +118,7 @@ public class ShootingDecider implements Updatable {
         }
     }
 
-    // Ferry Related
-    private static final double kOppoWingToAllianceWall = FieldLayout.distanceFromAllianceWall(FieldLayout.kWingX,
-            true);
-    public static final Translation2d kCornerTarget = new Translation2d(1.0, FieldLayout.kFieldWidth - 1.5);
-    public static final Translation2d kMidTarget = new Translation2d((FieldLayout.kFieldLength / 2.0) - 1.0,
-            FieldLayout.kFieldWidth - 0.2);
-
-    private static boolean inHighFerryZone(Pose2d robot_pose, boolean is_red_alliance) {
-        double x = robot_pose.getTranslation().getX();
-        double y = robot_pose.getTranslation().getY();
-        com.team254.lib.geometry.Translation2d cor_0 = FieldLayout.handleAllianceFlip(
-                new com.team254.lib.geometry.Translation2d(FieldLayout.kWingX, 0.0), is_red_alliance);
-        com.team254.lib.geometry.Translation2d cor_1 = FieldLayout.kCenterNote2;
-        boolean in_x = Util.inRange(x, Math.min(cor_0.x(), cor_1.x()), Math.max(cor_0.x(), cor_1.x()));
-        boolean in_y = Util.inRange(y, Math.min(cor_0.y(), cor_1.y()), Math.max(cor_0.y(), cor_1.y()));
-        return in_x && in_y;
-    }
-
-    private static boolean useMidfieldTarget(double x_coord, boolean is_red_alliance) {
-        return FieldLayout.distanceFromAllianceWall(x_coord, is_red_alliance) - kOppoWingToAllianceWall > 1.0;
+    public enum Destination {
+        AMP, SPEAKER, FERRY
     }
 }

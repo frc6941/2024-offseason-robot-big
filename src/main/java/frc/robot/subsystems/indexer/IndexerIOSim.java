@@ -2,8 +2,6 @@ package frc.robot.subsystems.indexer;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 import static edu.wpi.first.units.Units.*;
