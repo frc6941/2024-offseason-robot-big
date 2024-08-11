@@ -43,7 +43,7 @@ public class LaunchParameterTable {
         }
     }
 
-    public double[] getParameters(double distance) {
+    public Pair<Double, Double> getParameters(double distance) {
         distance = MathUtil.clamp(distance, interpolatingTable.firstKey().doubleValue(),
                 interpolatingTable.lastKey().doubleValue());
 
@@ -51,11 +51,10 @@ public class LaunchParameterTable {
         var ceiling = interpolatingTable.ceilingEntry(distance);
 
         double k = (distance - floor.getKey()) / (ceiling.getKey() - floor.getKey());
-        return new double[] {
+        return new Pair<Double, Double>(
                 floor.getValue().getFirst()
                         + (ceiling.getValue().getFirst() - floor.getValue().getFirst()) * k,
-                floor.getValue().getSecond() + (ceiling.getValue().getSecond() - floor.getValue().getSecond()) * k 
-        };
+                floor.getValue().getSecond() + (ceiling.getValue().getSecond() - floor.getValue().getSecond()) * k);
     }
 
     public double getFarthestDistance() {

@@ -35,6 +35,7 @@ import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.ShootingParameters.ShootingDecider;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -49,7 +50,10 @@ public class RobotContainer {
     IndicatorSubsystem indicatorSubsystem;
     Limelight limelight = Limelight.getInstance();
     Swerve swerve = Swerve.getInstance();
+    
+    ShootingDecider decider = ShootingDecider.getInstance();
     Display display = Display.getInstance();
+
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
     //    LinearFilter filterX = LinearFilter.singlePoleIIR(0.1, 0.02);
@@ -62,9 +66,11 @@ public class RobotContainer {
 
     public RobotContainer() {
         updateManager = new UpdateManager(
-                swerve,
-                limelight,
-                display);
+            swerve,
+            limelight,
+            display,
+            decider
+        );
         updateManager.registerAll();
 
         configureSubsystems();
