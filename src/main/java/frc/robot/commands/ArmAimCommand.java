@@ -13,10 +13,10 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShootingParameters.ShootingDecider;
 import frc.robot.utils.ShootingParameters.ShootingParameters;
-import frc.robot.utils.ShootingParameters.SpeakerParameterTable;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
@@ -24,15 +24,15 @@ import static edu.wpi.first.units.Units.Radians;
 public class ArmAimCommand extends Command {
     private final ShooterSubsystem shooterSubsystem;
     private final ShootingDecider shootingDecider;
-
+    private final Supplier<ShootingDecider.Destination> destinationSupplier;
 
     public ArmAimCommand(
             ShooterSubsystem shooterSubsystem,
-            
-            ) {
-
+            Supplier<ShootingDecider.Destination> destinationSupplier
+    ) {
+        this.shootingDecider = ShootingDecider.getInstance();
         this.shooterSubsystem = shooterSubsystem;
-      
+        this.destinationSupplier = destinationSupplier;
     }
 
     @Override

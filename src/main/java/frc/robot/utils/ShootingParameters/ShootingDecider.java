@@ -1,5 +1,8 @@
 package frc.robot.utils.ShootingParameters;
 
+import com.team254.lib.util.Util;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -13,7 +16,7 @@ import frc.robot.utils.FieldLayout;
 import frc.robot.utils.TunableNumber;
 
 public class ShootingDecider {
-    enum Destination {
+    public enum Destination {
         AMP, SPEAKER, FERRY
     }
     
@@ -25,12 +28,13 @@ public class ShootingDecider {
     LaunchParameterTable lowFerryParams;
 
     private static ShootingDecider instance;
-    public ShootingDecider getInstance() {
+    public static ShootingDecider getInstance() {
         if(instance == null) {
             instance = new ShootingDecider();
         }
         return instance;
     }
+
     private ShootingDecider() {
         speakerParams = new LaunchParameterTable("Speaker");
         highFerryParams = new LaunchParameterTable("HighFerry");
@@ -59,14 +63,14 @@ public class ShootingDecider {
     }
 
     public ShootingParameters getShootingParameter(Destination destination, Pose2d robotPose) {
-        double distance = robotPose.getTranslation().getNorm();
+        Translation2d target = getTarget(destination, robotPose);
+        double distance = target.minus(robotPose.getTranslation()).getNorm();
         double[] launchParam;
         switch (destination) {
             case AMP:
                 return new ShootingParameters(-1.0, ampVelocity.get(), ampAngle.get(), new Rotation2d());
             case FERRY:
-                launchParam = 
-                double[] results = FerryUtil.getFerryShotParameters(robotPose, DriverStation.getAlliance().get() == Alliance.Red);
+                launchParam = speakerParams.getParameters(distance);
                 return new ShootingParameters(results[1], results[2]);
             case SPEAKER:
                 return speakerParams.getParameters(distance);
@@ -81,9 +85,9 @@ public class ShootingDecider {
                 return new Translation2d(); // don't care
             case FERRY:
                 boolean isRed = DriverStation.getAlliance().get() == Alliance.Red;
-                boolean midfield_target = useMidfieldTarget(robotPose);
+                boolean midfield_target = useMidfieldTarget(robotPose.getX(), isRed);
                 Translation2d target;
-                if (midfield_target) {
+                if (inHighFerryZone(robotPose, isRed) || midfield_target) {
                     target = AllianceFlipUtil.apply(kMidTarget);
                 } else {
                     target = AllianceFlipUtil.apply(kCornerTarget);
@@ -106,9 +110,9 @@ public class ShootingDecider {
     private static boolean inHighFerryZone(Pose2d robot_pose, boolean is_red_alliance) {
 		double x = robot_pose.getTranslation().getX();
 		double y = robot_pose.getTranslation().getY();
-		Translation2d cor_0 =
-				FieldLayout.handleAllianceFlip(new Translation2d(FieldLayout.kWingX, 0.0), is_red_alliance);
-		Translation2d cor_1 = FieldLayout.kCenterNote2;
+		com.team254.lib.geometry.Translation2d cor_0 =
+				FieldLayout.handleAllianceFlip(new com.team254.lib.geometry.Translation2d(FieldLayout.kWingX, 0.0), is_red_alliance);
+		com.team254.lib.geometry.Translation2d cor_1 = FieldLayout.kCenterNote2;
 		boolean in_x = Util.inRange(x, Math.min(cor_0.x(), cor_1.x()), Math.max(cor_0.x(), cor_1.x()));
 		boolean in_y = Util.inRange(y, Math.min(cor_0.y(), cor_1.y()), Math.max(cor_0.y(), cor_1.y()));
 		return in_x && in_y;
