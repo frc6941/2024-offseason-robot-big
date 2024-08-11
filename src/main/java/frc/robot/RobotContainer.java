@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
+import frc.robot.commands.auto.SpeakerShootAutoCommand;
 import frc.robot.display.Display;
 import frc.robot.display.OperatorDashboard;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
@@ -106,7 +107,6 @@ public class RobotContainer {
         NamedCommands.registerCommand("Intake", intake());
         NamedCommands.registerCommand("ResetArm", new ResetArmCommand(shooter));
         NamedCommands.registerCommand("AutoPreShoot", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));
-        NamedCommands.registerCommand("ResetArm", new ResetArmCommand(shooter));
         NamedCommands.registerCommand("AutoPreArm", new ArmAimCommand(shooter, () -> Destination.SPEAKER));
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
@@ -195,6 +195,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return autoChooser.get();
         // return null;
+        // return AutoBuilder.buildAuto("S2-S-A1-A2-A3");
     }
 
     // command composers
@@ -216,8 +217,7 @@ public class RobotContainer {
     }
 
     private Command speakerShot() {
-        return new SpeakerShootCommand(shooter, indexer, beamBreak, indicator, swerve,
-                driverController::getLeftX, driverController::getLeftY);
+        return new SpeakerShootAutoCommand(shooter, indexer, beamBreak, indicator, swerve);
     }
 
     private Command selectShot() {

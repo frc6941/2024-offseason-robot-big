@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.ResetArmCommand;
+import frc.robot.commands.auto.ResetArmAutoCommand;
 import frc.robot.display.OperatorDashboard;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -70,7 +71,7 @@ public class Robot extends LoggedRobot {
         robotContainer.getUpdateManager().invokeStart();
         Swerve.getInstance().auto();
         Commands.runOnce(() -> dashboard.updateDestination(ShootingDecider.Destination.SPEAKER));
-        new ResetArmCommand(shooterSubsystem).schedule();
+        new ResetArmAutoCommand(shooterSubsystem).schedule();
         CommandScheduler.getInstance().run();
     }
 

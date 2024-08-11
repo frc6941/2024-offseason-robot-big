@@ -464,8 +464,14 @@ public class Swerve implements Updatable, Subsystem {
             headingTarget = AngleNormalization.placeInAppropriate0To360Scope(gyro.getYaw().getDegrees(), headingTarget);
             double rotation = headingController.calculate(gyro.getYaw().getDegrees(), new TrapezoidProfile.State(
                     headingTarget, headingVelocityFeedforward));
-            driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), rotation,
-                    driveSignal.isFieldOriented(), driveSignal.isOpenLoop());
+            if (this.state == State.PATH_FOLLOWING) {
+                autoDriveSignal = new HolonomicDriveSignal(autoDriveSignal.getTranslation(), rotation,
+                        autoDriveSignal.isFieldOriented(), autoDriveSignal.isOpenLoop());
+            } else {
+                driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), rotation,
+                        driveSignal.isFieldOriented(), driveSignal.isOpenLoop());
+            }
+
         } else if (overrideRotation != null) {
             driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), overrideRotation,
                     driveSignal.isFieldOriented(), driveSignal.isOpenLoop());

@@ -1,34 +1,23 @@
-package frc.robot.commands;
+package frc.robot.commands.auto;
 
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.shooting.ShootingDecider;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-public class ChassisAimCommand extends Command {
+public class ChassisAimAutoCommand extends Command {
     private final Swerve swerve;
-    private final DoubleSupplier driverX;
-    private final DoubleSupplier driverY;
     private final Supplier<ShootingDecider.Destination> destinationSupplier;
     private final ShootingDecider shootingDecider;
-    private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("DistanceShooting");
 
     LinearFilter filter = LinearFilter.singlePoleIIR(0.2, 0.02);
 
-    public ChassisAimCommand(
+    public ChassisAimAutoCommand(
             Swerve Swerve,
-            Supplier<ShootingDecider.Destination> destinationSupplier,
-            DoubleSupplier driverX,
-            DoubleSupplier driverY) {
+            Supplier<ShootingDecider.Destination> destinationSupplier) {
         this.swerve = Swerve;
-        this.driverX = driverX;
-        this.driverY = driverY;
         this.destinationSupplier = destinationSupplier;
         this.shootingDecider = ShootingDecider.getInstance();
     }
@@ -36,27 +25,21 @@ public class ChassisAimCommand extends Command {
     @Override
     public void initialize() {
         filter.reset();
+        swerve.setLockHeading(true);
     }
 
     @Override
     public void execute() {
-        swerve.drive(
-                new Translation2d(
-                        -driverX.getAsDouble() * Constants.SwerveConstants.maxSpeed.magnitude(),
-                        -driverY.getAsDouble() * Constants.SwerveConstants.maxSpeed.magnitude()),
-                0,
-                true,
-                false);
-
+//        swerve.autoDrive(
+//                new Translation2d(0, 0),
+//                0,
+//                true,
+//                false);
         swerve.setHeadingTarget(filter.calculate(
                 shootingDecider.getShootingParameter(
                                 destinationSupplier.get(),
                                 swerve.getLocalizer().getCoarseFieldPose(0))
                         .getFieldAimingAngle().getDegrees()));
-        distanceLogged.set(shootingDecider.getShootingParameter(
-                destinationSupplier.get(),
-                swerve.getLocalizer().getCoarseFieldPose(0)).getDistance());
-        swerve.setLockHeading(true);
     }
 
     @Override
