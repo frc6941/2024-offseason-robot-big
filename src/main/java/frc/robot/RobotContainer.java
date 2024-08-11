@@ -38,17 +38,17 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.shooting.ShootingDecider;
 import frc.robot.utils.shooting.ShootingDecider.Destination;
 import lombok.Getter;
-
-import org.checkerframework.checker.units.qual.degrees;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Seconds;
+
 public class RobotContainer {
+    private static Map<Destination, Command> shootingCommandMapping;
     IntakerSubsystem intaker;
     IndexerSubsystem indexer;
     ShooterSubsystem shooter;
@@ -56,19 +56,15 @@ public class RobotContainer {
     IndicatorSubsystem indicator;
     Limelight limelight = Limelight.getInstance();
     Swerve swerve = Swerve.getInstance();
-
     ShootingDecider decider = ShootingDecider.getInstance();
     Display display = Display.getInstance();
     OperatorDashboard dashboard = OperatorDashboard.getInstance();
-
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
-
     @Getter
     private UpdateManager updateManager;
     @Getter
     private LoggedDashboardChooser<Command> autoChooser;
-    private static Map<Destination, Command> shootingCommandMapping;
 
     public RobotContainer() {
         configureSubsystems();
@@ -107,7 +103,7 @@ public class RobotContainer {
     }
 
     private void configureAuto() {
-        NamedCommands.registerCommand("AutoShoot",speakerShot().withTimeout(2.0));
+        NamedCommands.registerCommand("AutoShoot", speakerShot().withTimeout(2.0));
         NamedCommands.registerCommand("Intake", intake());
         NamedCommands.registerCommand("ResetArm", new ResetArmCommand(shooter));
         NamedCommands.registerCommand("AutoPreShoot", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));
@@ -138,7 +134,7 @@ public class RobotContainer {
          * D-Pad - Field-Oriented Facing
          * Start Button - Reset Odometry
          * Back Button - Reset Arm
-         * 
+         *
          * Superstructure:
          * X - Speaker Shot
          * Y - Amp Shot
@@ -146,8 +142,8 @@ public class RobotContainer {
          * B - Ferry Shot
          * LB - Intake
          * LT - Outtake
-         * 
-         * 
+         *
+         *
          * ------- Operator Keymap -------
          * Superstructure: (TODO: Consider remove)
          * D-Pad Up - Select Speaker
@@ -156,6 +152,11 @@ public class RobotContainer {
          */
 
         swerve.setDefaultCommand(drive());
+        shooter.setDefaultCommand(Commands.runOnce(() -> {
+            shooter.getIo().setFlyWheelDirectVoltage(Constants.ShooterConstants.shooterConstantVoltage);
+            shooter.getIo().setArmPosition(Radians.zero());
+        }, shooter));
+
         driverController.start().onTrue(resetOdom());
         driverController.leftBumper().whileTrue(
                 intake().andThen(rumbleDriver(1.0)));
@@ -194,6 +195,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return autoChooser.get();
+        // return null;
     }
 
     // command composers
@@ -286,7 +288,7 @@ public class RobotContainer {
                 }));
         driverController.leftBumper().whileTrue(
                 Commands.sequence(
-                        new IntakeCommand(intaker, beamBreak, indicator, shooter).alongWith(
+                        Commands.parallel(new IntakeCommand(intaker, beamBreak, indicator, shooter),
                                 new IndexCommand(indexer, beamBreak)),
                         new RumbleCommand(Seconds.of(1), driverController.getHID(), operatorController.getHID())));
 
@@ -329,7 +331,7 @@ public class RobotContainer {
         driverController.leftTrigger().whileTrue(
                 new IntakeOutCommand(intaker).alongWith(
                         new IndexOutCommand(indexer))); // FIXME: will cause stuck, confirmation on arriving at safe
-                                                        // spot needed.
+        // spot needed.
 
         shootingCommandMapping = new HashMap<Destination, Command>();
         shootingCommandMapping.put(
