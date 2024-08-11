@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,9 +15,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
-import frc.robot.commands.auto.PreArmAutoCommand;
-import frc.robot.commands.auto.SpeakerShootAutoCommand;
 import frc.robot.display.Display;
+import frc.robot.display.OperatorDashboard;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
 import frc.robot.subsystems.beambreak.BeamBreakIOSim;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
@@ -36,203 +36,214 @@ import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.shooting.ShootingDecider;
+import frc.robot.utils.shooting.ShootingDecider.Destination;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import static edu.wpi.first.units.Units.Seconds;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RobotContainer {
-    IntakerSubsystem intakerSubsystem;
-    IndexerSubsystem indexerSubsystem;
-    ShooterSubsystem shooterSubsystem;
-    BeamBreakSubsystem beamBreakSubsystem;
-    IndicatorSubsystem indicatorSubsystem;
+    IntakerSubsystem intaker;
+    IndexerSubsystem indexer;
+    ShooterSubsystem shooter;
+    BeamBreakSubsystem beamBreak;
+    IndicatorSubsystem indicator;
     Limelight limelight = Limelight.getInstance();
     Swerve swerve = Swerve.getInstance();
-    
+
     ShootingDecider decider = ShootingDecider.getInstance();
     Display display = Display.getInstance();
+    OperatorDashboard dashboard = OperatorDashboard.getInstance();
 
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
 
     @Getter
     private UpdateManager updateManager;
+    @Getter
     private LoggedDashboardChooser<Command> autoChooser;
+    private Map<Destination, Command> shootingCommandMapping;
 
     public RobotContainer() {
         updateManager = new UpdateManager(
-            swerve,
-            limelight,
-            display,
-            decider
-        );
+                swerve,
+                limelight,
+                display,
+                decider);
         updateManager.registerAll();
 
         configureSubsystems();
         configureAuto();
         configureBindings();
-        System.out.println("Init Completed!");
     }
 
     public void configureSubsystems() {
         if (RobotBase.isReal()) {
-            intakerSubsystem = new IntakerSubsystem(new IntakerIOTalonFX());
-            indexerSubsystem = new IndexerSubsystem(new IndexerIOTalonFX());
-            shooterSubsystem = new ShooterSubsystem(new ShooterIOTalonFX());
-            beamBreakSubsystem = new BeamBreakSubsystem(new BeamBreakIORev());
-            indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOARGB());
+            intaker = new IntakerSubsystem(new IntakerIOTalonFX());
+            indexer = new IndexerSubsystem(new IndexerIOTalonFX());
+            shooter = new ShooterSubsystem(new ShooterIOTalonFX());
+            beamBreak = new BeamBreakSubsystem(new BeamBreakIORev());
+            indicator = new IndicatorSubsystem(new IndicatorIOARGB());
         } else {
-            intakerSubsystem = new IntakerSubsystem(new IntakerIOSim());
-            indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
-            shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
-            beamBreakSubsystem = new BeamBreakSubsystem(new BeamBreakIOSim());
-            indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOSim());
+            intaker = new IntakerSubsystem(new IntakerIOSim());
+            indexer = new IndexerSubsystem(new IndexerIOSim());
+            shooter = new ShooterSubsystem(new ShooterIOSim());
+            beamBreak = new BeamBreakSubsystem(new BeamBreakIOSim());
+            indicator = new IndicatorSubsystem(new IndicatorIOSim());
         }
+
+        indicator.setDefaultCommand(Commands.run(() -> indicator.setPattern(IndicatorIO.Patterns.NORMAL), indicator));
     }
 
     private void configureAuto() {
-        // FIXME Adapt to autonomous commands! Current adaptation is preliminary.
         NamedCommands.registerCommand("AutoShoot",
-                new SpeakerShootAutoCommand(
-                        shooterSubsystem, indexerSubsystem, beamBreakSubsystem, indicatorSubsystem
-                ));
+                new SpeakerShootCommand(shooter, indexer, beamBreak, indicator, swerve)
+                        .withTimeout(2.0));
         NamedCommands.registerCommand("Intake",
                 Commands.parallel(
-                        new IntakeCommand(intakerSubsystem, beamBreakSubsystem, indicatorSubsystem, shooterSubsystem),
-                        new IndexCommand(indexerSubsystem, beamBreakSubsystem)
-                ));
-        NamedCommands.registerCommand("AutoPreShoot",
-                new PreShootCommand(shooterSubsystem));
-        NamedCommands.registerCommand("ResetArm",
-                new ResetArmCommand(shooterSubsystem));
-        NamedCommands.registerCommand("AutoPreArm",
-                new PreArmAutoCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem));
+                        new IntakeCommand(intaker, beamBreak, indicator, shooter),
+                        new IndexCommand(indexer, beamBreak)));
+        NamedCommands.registerCommand("ResetArm", new ResetArmCommand(shooter));
+        NamedCommands.registerCommand("AutoPreShoot", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));
+        NamedCommands.registerCommand("ResetArm", new ResetArmCommand(shooter));
+        NamedCommands.registerCommand("AutoPreArm", new ArmAimCommand(shooter, () -> Destination.SPEAKER));
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
-        
 
-       autoChooser.addOption(
-               "Flywheel SysId (Quasistatic Forward)",
-               shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-       autoChooser.addOption(
-               "Flywheel SysId (Quasistatic Reverse)",
-               shooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-       autoChooser.addOption(
-               "Flywheel SysId (Dynamic Forward)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-       autoChooser.addOption(
-               "Flywheel SysId (Dynamic Reverse)", shooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        autoChooser.addOption(
+                "Flywheel SysId (Quasistatic Forward)",
+                shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        autoChooser.addOption(
+                "Flywheel SysId (Quasistatic Reverse)",
+                shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        autoChooser.addOption(
+                "Flywheel SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        autoChooser.addOption(
+                "Flywheel SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        dashboard.registerAutoSelector(autoChooser.getSendableChooser());
     }
 
     /**
-     * Bind controller keys to commands
+     * Bind controller keys to commands.
      */
     private void configureBindings() {
-        // Drive mode 1
-        swerve.setDefaultCommand(Commands
-                .runOnce(() -> swerve.drive(
-                                new Translation2d(
-                                        -driverController.getLeftY() * Constants.SwerveConstants.maxSpeed.magnitude(),
-                                        -driverController.getLeftX() * Constants.SwerveConstants.maxSpeed.magnitude()),
-                                -Constants.RobotConstants.driverController.getRightX()
-                                        * Constants.SwerveConstants.maxAngularRate.magnitude(),
-                                true,
-                                false),
-                        swerve));
-        // Drive mode 2
-        // swerve.setDefaultCommand(Commands
-        // .runOnce(() -> swerve.drive(
-        // new Translation2d(
-        // -
-        // driverController.getLeftY()*Constants.SwerveConstants.maxSpeed.magnitude(),
-        // -
-        // driverController.getRightX()*Constants.SwerveConstants.maxSpeed.magnitude()),
-        // (-Constants.RobotConstants.driverController.getRightTriggerAxis()
-        // + Constants.RobotConstants.driverController.getLeftTriggerAxis())
-        // * Constants.SwerveConstants.maxAngularRate.magnitude(),
-        // true,
-        // false),
-        // swerve));
-        // Point Wheel
-//        swerve.setDefaultCommand(Commands.runOnce(() -> swerve.pointWheelsAt(
-//                        new edu.wpi.first.math.geometry.Rotation2d(
-//                                driverController.getLeftX() * Math.PI / 2)),
-//                swerve));
+        /**
+         * ------- Driver Keymap -------
+         * Driving:
+         * Left Joystick - Panning
+         * Right Joystick - Spinning
+         * D-Pad - Field-Oriented Facing
+         * Start Button - Reset Odometry
+         * Back Button - Reset Arm
+         * 
+         * Superstructure:
+         * X - Speaker Shot
+         * Y - Amp Shot
+         * A - Amp Confirmation (TODO: Consider Removing)
+         * B - Ferry Shot
+         * LB - Intake
+         * LT - Outtake
+         * 
+         * 
+         * ------- Operator Keymap -------
+         * Superstructure: (TODO: Consider Removing)
+         * D-Pad Up - Select Speaker
+         * D-Pad Down - Select Amp
+         * D-Pad Left - Select Ferry
+         */
 
-        // driverController.rightTrigger().whileTrue(
-        //         Commands.sequence(
-        //                 new SpeakerShootCommand(
-        //                         shooterSubsystem,
-        //                         indexerSubsystem,
-        //                         beamBreakSubsystem,
-        //                         indicatorSubsystem,
-        //                         swerve,
-        //                         driverController,
-        //                         () -> driverController.getHID().getRightBumper()),
-        //                 new RumbleCommand(Seconds.of(1), driverController.getHID(),
-        //                         operatorController.getHID())));
+        // Driving
+        swerve.setDefaultCommand(
+                Commands.runOnce(() -> {
+                    Translation2d transVel = new Translation2d(
+                            -driverController.getLeftY(),
+                            -driverController.getLeftX()).times(Constants.SwerveConstants.maxSpeed.magnitude());
+                    double rotVel = -Constants.RobotConstants.driverController.getRightX()
+                            * Constants.SwerveConstants.maxAngularRate.magnitude();
+                    swerve.drive(transVel, rotVel, true, false);
+                }, swerve));
+        driverController.start().onTrue(
+                Commands.runOnce(() -> {
+                    swerve.resetHeadingController();
+                    Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();
+                    Pose2d b = new Pose2d(new Translation2d(0, 0), a);
+                    swerve.resetPose(b);
+                }));
+        driverController.leftBumper().whileTrue(
+                Commands.sequence(
+                        new IntakeCommand(intaker, beamBreak, indicator, shooter).alongWith(
+                                new IndexCommand(indexer, beamBreak)),
+                        new RumbleCommand(Seconds.of(1), driverController.getHID(), operatorController.getHID())));
 
         driverController.leftBumper().whileTrue(
                 Commands.sequence(
                         Commands.parallel(
-                                new IntakeCommand(intakerSubsystem, beamBreakSubsystem,
-                                        indicatorSubsystem, shooterSubsystem),
-                                new IndexCommand(indexerSubsystem, beamBreakSubsystem)),
+                                new IntakeCommand(intaker, beamBreak, indicator, shooter),
+                                new IndexCommand(indexer, beamBreak)),
                         new RumbleCommand(Seconds.of(1), driverController.getHID(),
                                 operatorController.getHID())));
-        driverController.start().onTrue(Commands.runOnce(() -> {
-            swerve.resetHeadingController();
-            edu.wpi.first.math.geometry.Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();
-            System.out.println("A = " + a);
-            Pose2d b = new Pose2d(new Translation2d(0, 0), a);
-            swerve.resetPose(b);
-        }));
-        driverController.rightStick().onTrue(new SetFacingCommand(swerve, 0));
-        driverController.povUp().onTrue(new SetFacingCommand(swerve, 0));
-        driverController.povUpRight().onTrue(new SetFacingCommand(swerve, 315));
-        driverController.povRight().onTrue(new SetFacingCommand(swerve, 270));
-        driverController.povDownRight().onTrue(new SetFacingCommand(swerve, 225));
-        driverController.povDown().onTrue(new SetFacingCommand(swerve, 180));
-        driverController.povDownLeft().onTrue(new SetFacingCommand(swerve, 135));
-        driverController.povLeft().onTrue(new SetFacingCommand(swerve, 90));
-        driverController.povUpLeft().onTrue(new SetFacingCommand(swerve, 45));
-        // driverController.x()
-        // 		.onTrue(Commands.runOnce(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL),
-        // 				indicatorSubsystem));
-        indicatorSubsystem.setDefaultCommand(
-                Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.NORMAL), indicatorSubsystem));
 
-        // parameter
-        driverController.b().onTrue(new ResetArmCommand(shooterSubsystem));
-        // driverController.y().whileTrue(new ShooterUpCommand(shooterSubsystem));
-        // driverController.a().whileTrue(new ShooterDownCommand(shooterSubsystem));
-        // driverController.x().whileTrue(new DeliverNoteCommand(indexerSubsystem,
-        // beamBreakSubsystem, indicatorSubsystem));
-        // shooterSubsystem.setDefaultCommand(new
-        // PreShootTestCommand(shooterSubsystem));
-        // indexerSubsystem.setDefaultCommand(new IndexTestCommand(indexerSubsystem));
+        driverController.povUp().whileTrue(new SetFacingCommand(swerve, 0));
+        driverController.povUpRight().whileTrue(new SetFacingCommand(swerve, 315));
+        driverController.povRight().whileTrue(new SetFacingCommand(swerve, 270));
+        driverController.povDownRight().whileTrue(new SetFacingCommand(swerve, 225));
+        driverController.povDown().whileTrue(new SetFacingCommand(swerve, 180));
+        driverController.povDownLeft().whileTrue(new SetFacingCommand(swerve, 135));
+        driverController.povLeft().whileTrue(new SetFacingCommand(swerve, 90));
+        driverController.povUpLeft().whileTrue(new SetFacingCommand(swerve, 45));
 
-        driverController.leftTrigger().whileTrue(new IntakeOutCommand(intakerSubsystem));
-        driverController.leftTrigger().whileTrue(new IndexOutCommand(indexerSubsystem));
+        // superstructure
+        driverController.back().onTrue(new ResetArmCommand(shooter));
+        driverController.x().whileTrue(
+                new SpeakerShootCommand(shooter, indexer, beamBreak, indicator, swerve,
+                        driverController::getLeftX, driverController::getLeftY)
+                .alongWith(Commands.runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.SPEAKER)))
+                .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
+        driverController.y().whileTrue(
+                new AmpShootCommand(shooter, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean())
+                .alongWith(Commands.runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.AMP)))
+                .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID()))
+        );
+        driverController.b().whileTrue(
+                new FerryShootCommand(shooter, indexer, beamBreak, indicator, swerve,
+                        driverController::getLeftX, driverController::getLeftY)
+                .alongWith(Commands.runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.FERRY)))
+                .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
+        driverController.leftTrigger().whileTrue(
+                new IntakeOutCommand(intaker).alongWith(
+                        new IndexOutCommand(indexer))); // FIXME: will cause stuck, confirmation on arriving at safe
+                                                        // spot needed.
 
-        driverController.rightBumper().whileTrue(Commands.sequence(
-                new AutomaticSpeakerShootCommand(
-                        shooterSubsystem,
-                        indexerSubsystem,
-                        beamBreakSubsystem,
-                        indicatorSubsystem,
-                        swerve,
-                        () -> driverController.getLeftX(), () -> driverController.getLeftY()),
-                new RumbleCommand(Seconds.of(1), driverController.getHID())));
+        shootingCommandMapping = new HashMap<Destination, Command>();
+        shootingCommandMapping.put(
+                Destination.FERRY, new FerryShootCommand(shooter, indexer, beamBreak, indicator,
+                        swerve, driverController::getLeftX, driverController::getLeftY));
+        shootingCommandMapping.put(
+                Destination.AMP,
+                new AmpShootCommand(shooter, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean()));
+        shootingCommandMapping.put(
+                Destination.SPEAKER, new SpeakerShootCommand(shooter, indexer, beamBreak, indicator, swerve,
+                        driverController::getLeftX, driverController::getLeftY));
+        
+        driverController.rightBumper().whileTrue(
+                Commands.select(shootingCommandMapping, dashboard::getCurrDestination)
+                        .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
 
+        // operator superstructure commands
+        operatorController.povLeft().onTrue(
+                Commands.runOnce(() -> dashboard.updateDestination(Destination.FERRY)));
+        operatorController.povUp().onTrue(
+                Commands.runOnce(() -> dashboard.updateDestination(Destination.SPEAKER)));
+        operatorController.povDown().onTrue(
+                Commands.runOnce(() -> dashboard.updateDestination(Destination.AMP)));
     }
 
     public Command getAutonomousCommand() {
-        // return new CharacterizationDriveCommand(swerve, 3, 1.5, 6);
-        // return new CharacterizationShooterCommand(shooterSubsystem, 1, 1, 10);
-        // return autoChooser.get();
-        // return AutoBuilder.buildAuto("PIDspin");
         return autoChooser.get();
     }
+
 }

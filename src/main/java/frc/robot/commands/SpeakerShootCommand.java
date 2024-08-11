@@ -9,6 +9,7 @@ import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.shooting.ShootingDecider.Destination;
 
 import java.util.function.DoubleSupplier;
 
@@ -22,14 +23,26 @@ public class SpeakerShootCommand extends ParallelCommandGroup {
             DoubleSupplier driverX,
             DoubleSupplier driverY) {
         addCommands(
-                new ChassisAimCommand( Swerve,null, driverX, driverY),
-                new FlyWheelRampUp(shooterSubsystem,null),
+                new ChassisAimCommand(Swerve, () -> Destination.SPEAKER, driverX, driverY),
+                new ArmAimCommand(shooterSubsystem, () -> Destination.SPEAKER),
+                new FlyWheelRampUp(shooterSubsystem, () -> Destination.SPEAKER),
                 Commands.sequence(
-                        new WaitUntilCommand(() -> (
-                                Swerve.aimingReady(2.5) &&
-                                        shooterSubsystem.aimingReady()
-                        )),
+                        new WaitUntilCommand(() -> (Swerve.aimingReady(2.5) &&
+                                shooterSubsystem.aimingReady())),
                         Commands.runOnce(() -> Timer.delay(0.02), indicatorSubsystem),
                         new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)));
+    }
+
+    public SpeakerShootCommand(
+            ShooterSubsystem shooterSubsystem,
+            IndexerSubsystem indexerSubsystem,
+            BeamBreakSubsystem beamBreakSubsystem,
+            IndicatorSubsystem indicatorSubsystem,
+            Swerve Swerve) {
+        this(shooterSubsystem, indexerSubsystem, beamBreakSubsystem, indicatorSubsystem, Swerve, () -> {
+            return 0;
+        }, () -> {
+            return 0;
+        });
     }
 }

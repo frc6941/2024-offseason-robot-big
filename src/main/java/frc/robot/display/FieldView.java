@@ -25,6 +25,10 @@ public class FieldView {
         mField2d.getObject("Red Speaker").setPose(redSpeaker);
     }
 
+    public void setFerryLocation(Translation2d pos) {
+        mField2d.getObject("FerryLoc").setPose(new Pose2d(pos, new Rotation2d()));
+    }
+
     public void update(Pose2d pose, Pose2d ghost) {
         drawField();
 

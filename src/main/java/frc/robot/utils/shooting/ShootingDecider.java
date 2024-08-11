@@ -10,11 +10,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.display.Display;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.FieldLayout;
 import frc.robot.utils.TunableNumber;
 
-public class ShootingDecider implements Updatable{
+public class ShootingDecider implements Updatable {
     public enum Destination {
         AMP, SPEAKER, FERRY
     }
@@ -41,7 +42,7 @@ public class ShootingDecider implements Updatable{
         lowFerryParams = new LaunchParameterTable("Low Ferry");
 
         ampAngle = new TunableNumber("Amp Angle Degs", 165.0);
-        ampVelocity = new TunableNumber("Amp Velocity Rpm", 3000.0);
+        ampVelocity = new TunableNumber("Amp Velocity Rpm", -3000.0);
 
         speakerParams.loadParameter(1.064, -4500, 0.2574 / 3.14 * 180);// 20240808
         speakerParams.loadParameter(1.245, -4500, 0.5026 / 3.14 * 180);// 20240808
@@ -54,6 +55,14 @@ public class ShootingDecider implements Updatable{
         speakerParams.loadParameter(3.47, -5700, 1.1746 / 3.14 * 180);// 20240808
         speakerParams.loadParameter(3.79, -5700, 1.2322 / 3.14 * 180);//
         speakerParams.loadParameter(3.9, -5700, 1.2391 / 3.14 * 180);// 20240808
+        speakerParams.ready();
+
+        highFerryParams.loadParameter(1.0, -2000.0, 10.0);
+        highFerryParams.loadParameter(3.0, -5000.0, 15.0);
+        highFerryParams.ready();
+        lowFerryParams.loadParameter(1.5, -2000.0, 15.0);
+        lowFerryParams.loadParameter(3.0, -5000.0, 15.0);
+        lowFerryParams.ready();
     }
 
     @Override
@@ -66,18 +75,16 @@ public class ShootingDecider implements Updatable{
     public ShootingParameters getShootingParameter(Destination destination, Pose2d robotPose) {
         Translation2d target, delta;
         Pair<Double, Double> launchParam;
-        
+
         switch (destination) {
             case AMP:
-                return new ShootingParameters(-1.0, ampVelocity.get(), ampAngle.get(), new Rotation2d());
+                return new ShootingParameters(Double.NaN, ampVelocity.get(), ampAngle.get(), new Rotation2d());
             case FERRY:
                 boolean isRed = DriverStation.getAlliance().get() == Alliance.Red;
-                boolean inHighFerryZone = inHighFerryZone(robotPose, isRed) || useMidfieldTarget(robotPose.getX(), isRed);
-                if (inHighFerryZone) {
-                    target = AllianceFlipUtil.apply(kMidTarget);
-                } else {
-                    target = AllianceFlipUtil.apply(kCornerTarget);
-                }
+                boolean useMid = inHighFerryZone(robotPose, isRed)
+                        || useMidfieldTarget(robotPose.getX(), isRed);
+                target = useMid ? AllianceFlipUtil.apply(kMidTarget) : AllianceFlipUtil.apply(kCornerTarget);
+                Display.getInstance().setFerryLocation(target);
                 delta = target.minus(robotPose.getTranslation());
                 launchParam = speakerParams.getParameters(delta.getNorm());
                 return new ShootingParameters(delta.getNorm(), launchParam.getFirst(), launchParam.getSecond(),

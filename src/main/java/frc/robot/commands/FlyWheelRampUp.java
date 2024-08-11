@@ -1,15 +1,10 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.shooting.ShootingDecider;
-
-import static frc.robot.Constants.ShooterConstants.defaultShootRPM;
 
 import java.util.function.Supplier;
 
@@ -18,18 +13,14 @@ public class FlyWheelRampUp extends Command {
     private final Supplier<ShootingDecider.Destination> destinationSupplier;
     private final ShootingDecider shootingDecider;
 
-
-
     public FlyWheelRampUp(
-        ShooterSubsystem shooterSubsystem,
-        Supplier<ShootingDecider.Destination> destinationSupplier
-        
+            ShooterSubsystem shooterSubsystem,
+            Supplier<ShootingDecider.Destination> destinationSupplier
 
     ) {
         this.shooterSubsystem = shooterSubsystem;
         this.destinationSupplier = destinationSupplier;
         this.shootingDecider = ShootingDecider.getInstance();
-
 
     }
 
@@ -39,13 +30,11 @@ public class FlyWheelRampUp extends Command {
 
     @Override
     public void execute() {
-
-
         shooterSubsystem.getIo().setFlyWheelVelocity(
                 shootingDecider.getShootingParameter(
-                    destinationSupplier.get(), 
-                    Swerve.getInstance().getLocalizer().getCoarseFieldPose(0)
-                ).getShootingVelocity());
+                        destinationSupplier.get(),
+                        Swerve.getInstance().getLocalizer().getCoarseFieldPose(0)
+        ).getShootingVelocity());
     }
 
     @Override

@@ -1,15 +1,12 @@
 package frc.robot.commands;
 
+import static frc.robot.Constants.IndexerConstants.triggerRPM;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
-
-import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Constants.IndexerConstants.indexRPM;
-import static frc.robot.Constants.IndexerConstants.indexVoltage;
-import static frc.robot.Constants.IndexerConstants.triggerRPM;
 
 public class DeliverNoteCommand extends Command {
 	private final IndexerSubsystem indexerSubsystem;

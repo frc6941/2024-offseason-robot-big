@@ -9,6 +9,7 @@ import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.shooting.ShootingDecider.Destination;
 
 import java.util.function.DoubleSupplier;
 
@@ -22,16 +23,14 @@ public class FerryShootCommand extends ParallelCommandGroup {
             DoubleSupplier driverX,
             DoubleSupplier driverY) {
         addCommands(
-                // new SpeakerAimingCommand(shooterSubsystem, indicatorSubsystem, beamBreakSubsystem, Swerve, driverX, driverY),
-                // new PreShootCommand(shooterSubsystem),
-                Commands.sequence(
-                        new ArmAimCommand(shooterSubsystem, null),
-                        new FlyWheelRampUp(shooterSubsystem, null),        
-                        new WaitUntilCommand(() -> (
-                                Swerve.aimingReady(2.5) &&
-                                        shooterSubsystem.aimingReady()
-                        )),
-                        Commands.runOnce(() -> Timer.delay(0.02), indicatorSubsystem),
-                        new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)));
+                Commands.parallel(
+                        new ChassisAimCommand(Swerve, () -> Destination.FERRY, driverX, driverY),
+                        new ArmAimCommand(shooterSubsystem, () -> Destination.FERRY),
+                        new FlyWheelRampUp(shooterSubsystem, () -> Destination.FERRY),
+                        new WaitUntilCommand(() -> (Swerve.aimingReady(2.5) &&
+                                shooterSubsystem.aimingReady())).andThen(
+                                        Commands.runOnce(() -> Timer.delay(0.02), indicatorSubsystem),
+                                        new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem,
+                                                indicatorSubsystem))));
     }
 }

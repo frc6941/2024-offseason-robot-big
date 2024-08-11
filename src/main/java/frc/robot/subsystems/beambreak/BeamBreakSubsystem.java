@@ -1,6 +1,7 @@
 package frc.robot.subsystems.beambreak;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.display.OperatorDashboard;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
@@ -15,6 +16,10 @@ public class BeamBreakSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        OperatorDashboard.getInstance().updateNotePathStatus(
+                inputs.isIntakerBeamBreakOn,
+                inputs.isIndexerBeamBreakOn,
+                inputs.isShooterBeamBreakOn);
         io.updateInputs(inputs);
         Logger.processInputs("Beam Break", inputs);
     }

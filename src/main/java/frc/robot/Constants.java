@@ -59,13 +59,12 @@ public class Constants {
         public final static double indexRPM = 1000;
         public final static double triggerRPM = 3500;
 
-
         public static class indexerGainsClass {
             public static final TunableNumber INDEXER_KP = new TunableNumber("INDEXER PID/kp", 0.25);
             public static final TunableNumber INDEXER_KI = new TunableNumber("INDEXER PID/ki", 0.0);
             public static final TunableNumber INDEXER_KD = new TunableNumber("INDEXER PID/kd", 0.001);
             public static final TunableNumber INDEXER_KA = new TunableNumber("INDEXER PID/ka", 0.0037512677);
-            public static final TunableNumber INDEXER_KV = new TunableNumber("INDEXER PID/kv", 0.115);//0.107853495
+            public static final TunableNumber INDEXER_KV = new TunableNumber("INDEXER PID/kv", 0.115);// 0.107853495
             public static final TunableNumber INDEXER_KS = new TunableNumber("INDEXER PID/ks", 0.28475008);
         }
     }
@@ -127,7 +126,7 @@ public class Constants {
         public static final double shooterUpDownVoltage = -2.0 / 12 * 6380;
         public static final double shooterIndexVoltage = 13.0 / 12 * 6380;
         public static Measure<Angle> speakerArmOffsetNear = Degrees.of(17);
-        public static Measure<Angle> speakerArmOffset = Degrees.of(44);//44
+        public static Measure<Angle> speakerArmOffset = Degrees.of(44);// 44
         public static Measure<Angle> speakerArmOffsetFar = Degrees.of(58.5);
         public static Measure<Angle> speakerArmOffsetMax = Degrees.of(64);
 
@@ -136,7 +135,7 @@ public class Constants {
             public static final TunableNumber SHOOTER_KI = new TunableNumber("SHOOTER PID/ki", 0);
             public static final TunableNumber SHOOTER_KD = new TunableNumber("SHOOTER PID/kd", 0.001);
             public static final TunableNumber SHOOTER_KA = new TunableNumber("SHOOTER PID/ka", 0.0037512677);
-            public static final TunableNumber SHOOTER_KV = new TunableNumber("SHOOTER PID/kv", 0.115);//0.107853495
+            public static final TunableNumber SHOOTER_KV = new TunableNumber("SHOOTER PID/kv", 0.115);// 0.107853495
             public static final TunableNumber SHOOTER_KS = new TunableNumber("SHOOTER PID/ks", 0.28475008);
         }
     }
@@ -155,7 +154,7 @@ public class Constants {
     public static class VisionConstants {
         public static final String AIM_LIMELIGHT_NAME = "limelight";
 
-        public static double REJECT_ANGULAR_SPEED = 360;//degree
+        public static double REJECT_ANGULAR_SPEED = 360;// degree
         public static double REJECT_LINEAR_SPEED = 2.5;// m/s
     }
 
@@ -176,8 +175,8 @@ public class Constants {
         public static final double podiumX = edu.wpi.first.math.util.Units.inchesToMeters(126.75);
         public static final double startingLineX = edu.wpi.first.math.util.Units.inchesToMeters(74.111);
 
-        public static final Translation2d ampCenter =
-                new Translation2d(edu.wpi.first.math.util.Units.inchesToMeters(72.455), fieldWidth);
+        public static final Translation2d ampCenter = new Translation2d(
+                edu.wpi.first.math.util.Units.inchesToMeters(72.455), fieldWidth);
         public static final double aprilTagWidth = edu.wpi.first.math.util.Units.inchesToMeters(6.50);
 
         /**
@@ -199,8 +198,8 @@ public class Constants {
 
             static {
                 for (int i = 0; i < centerlineTranslations.length; i++) {
-                    centerlineTranslations[i] =
-                            new Translation2d(centerlineX, centerlineFirstY + (i * centerlineSeparationY));
+                    centerlineTranslations[i] = new Translation2d(centerlineX,
+                            centerlineFirstY + (i * centerlineSeparationY));
                 }
             }
 
@@ -217,84 +216,77 @@ public class Constants {
         public static final class Speaker {
 
             // corners (blue alliance origin)
-            public static final Translation3d topRightSpeaker =
-                    new Translation3d(
-                            edu.wpi.first.math.util.Units.inchesToMeters(18.055),
-                            edu.wpi.first.math.util.Units.inchesToMeters(238.815),
-                            edu.wpi.first.math.util.Units.inchesToMeters(83.091));
+            public static final Translation3d topRightSpeaker = new Translation3d(
+                    edu.wpi.first.math.util.Units.inchesToMeters(18.055),
+                    edu.wpi.first.math.util.Units.inchesToMeters(238.815),
+                    edu.wpi.first.math.util.Units.inchesToMeters(83.091));
 
-            public static final Translation3d topLeftSpeaker =
-                    new Translation3d(
-                            edu.wpi.first.math.util.Units.inchesToMeters(18.055),
-                            edu.wpi.first.math.util.Units.inchesToMeters(197.765),
-                            edu.wpi.first.math.util.Units.inchesToMeters(83.091));
+            public static final Translation3d topLeftSpeaker = new Translation3d(
+                    edu.wpi.first.math.util.Units.inchesToMeters(18.055),
+                    edu.wpi.first.math.util.Units.inchesToMeters(197.765),
+                    edu.wpi.first.math.util.Units.inchesToMeters(83.091));
 
-            public static final Translation3d bottomRightSpeaker =
-                    new Translation3d(0.0, edu.wpi.first.math.util.Units.inchesToMeters(238.815), edu.wpi.first.math.util.Units.inchesToMeters(78.324));
-            public static final Translation3d bottomLeftSpeaker =
-                    new Translation3d(0.0, edu.wpi.first.math.util.Units.inchesToMeters(197.765), edu.wpi.first.math.util.Units.inchesToMeters(78.324));
+            public static final Translation3d bottomRightSpeaker = new Translation3d(0.0,
+                    edu.wpi.first.math.util.Units.inchesToMeters(238.815),
+                    edu.wpi.first.math.util.Units.inchesToMeters(78.324));
+            public static final Translation3d bottomLeftSpeaker = new Translation3d(0.0,
+                    edu.wpi.first.math.util.Units.inchesToMeters(197.765),
+                    edu.wpi.first.math.util.Units.inchesToMeters(78.324));
 
             /**
              * Center of the speaker opening (blue alliance)
              */
-            public static final Translation3d centerSpeakerOpening =
-                    bottomLeftSpeaker.interpolate(topRightSpeaker, 0.5);
+            public static final Translation3d centerSpeakerOpening = bottomLeftSpeaker.interpolate(topRightSpeaker,
+                    0.5);
         }
 
         public static final class Subwoofer {
-            public static final Pose2d ampFaceCorner =
-                    new Pose2d(
-                            edu.wpi.first.math.util.Units.inchesToMeters(35.775),
-                            edu.wpi.first.math.util.Units.inchesToMeters(239.366),
-                            Rotation2d.fromDegrees(-120));
+            public static final Pose2d ampFaceCorner = new Pose2d(
+                    edu.wpi.first.math.util.Units.inchesToMeters(35.775),
+                    edu.wpi.first.math.util.Units.inchesToMeters(239.366),
+                    Rotation2d.fromDegrees(-120));
 
-            public static final Pose2d sourceFaceCorner =
-                    new Pose2d(
-                            edu.wpi.first.math.util.Units.inchesToMeters(35.775),
-                            edu.wpi.first.math.util.Units.inchesToMeters(197.466),
-                            Rotation2d.fromDegrees(120));
+            public static final Pose2d sourceFaceCorner = new Pose2d(
+                    edu.wpi.first.math.util.Units.inchesToMeters(35.775),
+                    edu.wpi.first.math.util.Units.inchesToMeters(197.466),
+                    Rotation2d.fromDegrees(120));
 
-            public static final Pose2d centerFace =
-                    new Pose2d(
-                            edu.wpi.first.math.util.Units.inchesToMeters(35.775),
-                            edu.wpi.first.math.util.Units.inchesToMeters(218.416),
-                            Rotation2d.fromDegrees(180));
+            public static final Pose2d centerFace = new Pose2d(
+                    edu.wpi.first.math.util.Units.inchesToMeters(35.775),
+                    edu.wpi.first.math.util.Units.inchesToMeters(218.416),
+                    Rotation2d.fromDegrees(180));
         }
 
         public static final class Stage {
-            public static final Pose2d center =
-                    new Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(192.55), edu.wpi.first.math.util.Units.inchesToMeters(161.638), new Rotation2d());
-            public static final Pose2d podiumLeg =
-                    new Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(126.75), edu.wpi.first.math.util.Units.inchesToMeters(161.638), new Rotation2d());
-            public static final Pose2d ampLeg =
-                    new Pose2d(
-                            edu.wpi.first.math.util.Units.inchesToMeters(220.873),
-                            edu.wpi.first.math.util.Units.inchesToMeters(212.425),
-                            Rotation2d.fromDegrees(-30));
-            public static final Pose2d sourceLeg =
-                    new Pose2d(
-                            edu.wpi.first.math.util.Units.inchesToMeters(220.873),
-                            edu.wpi.first.math.util.Units.inchesToMeters(110.837),
-                            Rotation2d.fromDegrees(30));
+            public static final Pose2d center = new Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(192.55),
+                    edu.wpi.first.math.util.Units.inchesToMeters(161.638), new Rotation2d());
+            public static final Pose2d podiumLeg = new Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(126.75),
+                    edu.wpi.first.math.util.Units.inchesToMeters(161.638), new Rotation2d());
+            public static final Pose2d ampLeg = new Pose2d(
+                    edu.wpi.first.math.util.Units.inchesToMeters(220.873),
+                    edu.wpi.first.math.util.Units.inchesToMeters(212.425),
+                    Rotation2d.fromDegrees(-30));
+            public static final Pose2d sourceLeg = new Pose2d(
+                    edu.wpi.first.math.util.Units.inchesToMeters(220.873),
+                    edu.wpi.first.math.util.Units.inchesToMeters(110.837),
+                    Rotation2d.fromDegrees(30));
 
-            public static final Pose2d centerPodiumAmpChain =
-                    new Pose2d(
-                            podiumLeg.getTranslation().interpolate(ampLeg.getTranslation(), 0.5),
-                            Rotation2d.fromDegrees(120.0));
-            public static final double centerToChainDistance =
-                    center.getTranslation().getDistance(centerPodiumAmpChain.getTranslation());
-            public static final Pose2d centerAmpSourceChain =
-                    new Pose2d(
-                            ampLeg.getTranslation().interpolate(sourceLeg.getTranslation(), 0.5), new Rotation2d());
-            public static final Pose2d centerSourcePodiumChain =
-                    new Pose2d(
-                            sourceLeg.getTranslation().interpolate(podiumLeg.getTranslation(), 0.5),
-                            Rotation2d.fromDegrees(240.0));
+            public static final Pose2d centerPodiumAmpChain = new Pose2d(
+                    podiumLeg.getTranslation().interpolate(ampLeg.getTranslation(), 0.5),
+                    Rotation2d.fromDegrees(120.0));
+            public static final double centerToChainDistance = center.getTranslation()
+                    .getDistance(centerPodiumAmpChain.getTranslation());
+            public static final Pose2d centerAmpSourceChain = new Pose2d(
+                    ampLeg.getTranslation().interpolate(sourceLeg.getTranslation(), 0.5), new Rotation2d());
+            public static final Pose2d centerSourcePodiumChain = new Pose2d(
+                    sourceLeg.getTranslation().interpolate(podiumLeg.getTranslation(), 0.5),
+                    Rotation2d.fromDegrees(240.0));
         }
 
         public static final class Amp {
-            public static final Translation2d ampTapeTopCorner =
-                    new Translation2d(edu.wpi.first.math.util.Units.inchesToMeters(130.0), edu.wpi.first.math.util.Units.inchesToMeters(305.256));
+            public static final Translation2d ampTapeTopCorner = new Translation2d(
+                    edu.wpi.first.math.util.Units.inchesToMeters(130.0),
+                    edu.wpi.first.math.util.Units.inchesToMeters(305.256));
             public static final double ampBottomY = fieldWidth - edu.wpi.first.math.util.Units.inchesToMeters(17.75);
         }
     }
@@ -344,11 +336,11 @@ public class Constants {
         /**
          * Theoretical free speed (m/s) at 12v applied output;
          */
-        public static final Measure<Velocity<Distance>> speedAt12Volts = MetersPerSecond.of(6.0);
+        public static final Measure<Velocity<Distance>> speedAt12Volts = MetersPerSecond.of(4.5);
         public static final KinematicLimits DRIVETRAIN_UNCAPPED = new KinematicLimits(
                 maxSpeed.magnitude(),
-                50.0,
-                5000);// maxAngularRate.magnitude()
+                25.0,
+                5000);
         public static final SimpleMotorFeedforward DRIVETRAIN_FEEDFORWARD = new SimpleMotorFeedforward(
                 0.69522, 2.3623, 0.19367);
         /**
@@ -508,9 +500,9 @@ public class Constants {
                 backRightYPos.magnitude(),
                 true);
 
-        public static SwerveModuleConstants[] modules = {FrontLeft, FrontRight, BackLeft, BackRight};
+        public static SwerveModuleConstants[] modules = { FrontLeft, FrontRight, BackLeft, BackRight };
 
-        public static final Translation2d[] modulePlacements = new Translation2d[]{
+        public static final Translation2d[] modulePlacements = new Translation2d[] {
                 new Translation2d(SwerveConstants.FrontLeft.LocationX,
                         SwerveConstants.FrontLeft.LocationY),
                 new Translation2d(SwerveConstants.FrontRight.LocationX,
@@ -543,7 +535,7 @@ public class Constants {
             public static final TunableNumber HEADING_KP = new TunableNumber("HEADING PID/kp", 0.08);
             public static final TunableNumber HEADING_KI = new TunableNumber("HEADING PID/ki", 0.0002);
             public static final TunableNumber HEADING_KD = new TunableNumber("HEADING PID/kd", 0.002);
-            //TODO:Fixme
+            // TODO:Fixme
         }
     }
 

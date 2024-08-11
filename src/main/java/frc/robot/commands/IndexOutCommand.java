@@ -4,8 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 
-import static edu.wpi.first.units.Units.Volts;
-
 public class IndexOutCommand extends Command {
 	private final IndexerSubsystem indexerSubsystem;
 

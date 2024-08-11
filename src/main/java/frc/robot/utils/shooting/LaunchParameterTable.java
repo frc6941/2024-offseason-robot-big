@@ -4,7 +4,8 @@ import frc.robot.utils.TunableNumber;
 
 import java.util.ArrayList;
 import java.util.List;
-import edu.wpi.first.math.MathUtil;
+
+import edu.wpi.first.hal.util.BoundaryException;
 import edu.wpi.first.math.Pair;
 
 import java.util.NavigableMap;
@@ -17,10 +18,9 @@ public class LaunchParameterTable {
 
     public LaunchParameterTable(String prefix) {
         this.prefix = prefix;
-        readyTuning();
     }
 
-    private void readyTuning() {
+    public void ready() {
         int counter = 1;
         for (Double key : interpolatingTable.keySet()) {
             parameters.add(new ParametersBinding(
@@ -36,25 +36,37 @@ public class LaunchParameterTable {
     }
 
     public void update() {
-        interpolatingTable.clear();
-        for (ParametersBinding bind : parameters) {
-            interpolatingTable.put(bind.distance.get(),
-                    new Pair<Double, Double>(bind.shootingVelocity.get(), bind.shootingAngle.get()));
+        synchronized (interpolatingTable) {
+            interpolatingTable.clear();
+            for (ParametersBinding bind : parameters) {
+                interpolatingTable.put(bind.distance.get(),
+                        new Pair<Double, Double>(bind.shootingVelocity.get(), bind.shootingAngle.get()));
+            }
         }
+
     }
 
     public Pair<Double, Double> getParameters(double distance) {
-        distance = MathUtil.clamp(distance, interpolatingTable.firstKey().doubleValue(),
-                interpolatingTable.lastKey().doubleValue());
+        synchronized (interpolatingTable) {
+            if (interpolatingTable.size() <= 1) {
+                throw new BoundaryException("not enought points, cannot interpolate.");
+            }
+            if(distance < interpolatingTable.firstKey()) {
+                return interpolatingTable.firstEntry().getValue();
+            }
+            if(distance > interpolatingTable.lastKey()) {
+                return interpolatingTable.lastEntry().getValue();
+            }
 
-        var floor = interpolatingTable.floorEntry(distance);
-        var ceiling = interpolatingTable.ceilingEntry(distance);
+            var floor = interpolatingTable.floorEntry(distance);
+            var ceiling = interpolatingTable.ceilingEntry(distance);
 
-        double k = (distance - floor.getKey()) / (ceiling.getKey() - floor.getKey());
-        return new Pair<Double, Double>(
-                floor.getValue().getFirst()
-                        + (ceiling.getValue().getFirst() - floor.getValue().getFirst()) * k,
-                floor.getValue().getSecond() + (ceiling.getValue().getSecond() - floor.getValue().getSecond()) * k);
+            double k = (distance - floor.getKey()) / (ceiling.getKey() - floor.getKey());
+            return new Pair<Double, Double>(
+                    floor.getValue().getFirst()
+                            + (ceiling.getValue().getFirst() - floor.getValue().getFirst()) * k,
+                    floor.getValue().getSecond() + (ceiling.getValue().getSecond() - floor.getValue().getSecond()) * k);
+        }
     }
 
     public double getFarthestDistance() {

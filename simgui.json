@@ -2,11 +2,18 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Operator/Auto Selector": "String Chooser",
       "/SmartDashboard/AutoData": "String Chooser",
+      "/SmartDashboard/Chooser": "String Chooser",
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
       "/SmartDashboard/AutoData": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Chooser": {
         "window": {
           "visible": true
         }
@@ -24,10 +31,17 @@
       }
     }
   },
+  "NetworkTables": {
+    "transitory": {
+      "AdvantageKit": {
+        "Shooter": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  },
   "NetworkTables Info": {
-    "Clients": {
-      "open": true
-    },
     "visible": true
   }
 }
