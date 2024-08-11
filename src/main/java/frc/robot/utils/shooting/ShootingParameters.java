@@ -1,4 +1,4 @@
-package frc.robot.utils.ShootingParameters;
+package frc.robot.utils.shooting;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import lombok.Data;

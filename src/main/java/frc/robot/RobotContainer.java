@@ -35,7 +35,7 @@ import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.utils.ShootingParameters.ShootingDecider;
+import frc.robot.utils.shooting.ShootingDecider;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -56,9 +56,6 @@ public class RobotContainer {
 
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
-    //    LinearFilter filterX = LinearFilter.singlePoleIIR(0.1, 0.02);
-//    LinearFilter filterY = LinearFilter.singlePoleIIR(0.1, 0.02);
-//    LinearFilter filterOmega = LinearFilter.singlePoleIIR(0.1, 0.02);
 
     @Getter
     private UpdateManager updateManager;

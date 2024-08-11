@@ -1,4 +1,4 @@
-package frc.robot.utils.ShootingParameters;
+package frc.robot.utils.shooting;
 
 import org.frcteam6941.looper.Updatable;
 
