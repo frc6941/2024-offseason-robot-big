@@ -55,13 +55,11 @@ public class Swerve implements Updatable, Subsystem {
     // Logging
     private final NetworkTable dataTable = NetworkTableInstance.getDefault().getTable("Swerve");
     // Snap Rotation Controller
-    private ProfiledPIDController headingController;
+    private final ProfiledPIDController headingController;
     private boolean isLockHeading;
     /**
      * -- GETTER --
      * Get the lock heading target for the swerve drive.
-     *
-     * @return The desired heading target from 0 to 360 in degrees.
      */
     @Getter
     private double headingTarget = 0.0;
@@ -74,7 +72,7 @@ public class Swerve implements Updatable, Subsystem {
     // Control Targets
     private HolonomicDriveSignal driveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
     private HolonomicDriveSignal autoDriveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
-    ;
+
     private SwerveSetpoint setpoint;
     private SwerveSetpoint previousSetpoint;
     @Getter
@@ -465,7 +463,7 @@ public class Swerve implements Updatable, Subsystem {
             if (this.state == State.PATH_FOLLOWING) {
                 autoDriveSignal = new HolonomicDriveSignal(autoDriveSignal.getTranslation(), rotation,
                         autoDriveSignal.isFieldOriented(), autoDriveSignal.isOpenLoop());
-                System.out.println(autoDriveSignal.toString());
+                System.out.println(autoDriveSignal);
                 //FIXME: path following
             } else {
                 driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), rotation,

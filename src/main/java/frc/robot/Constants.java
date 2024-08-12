@@ -15,7 +15,6 @@ import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.utils.TunableNumber;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -105,11 +104,6 @@ public class Constants {
                 .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
                 .withSensorToMechanismRatio(8d / 64 * 16 / 64);
         public static final double pullVoltage = -8.0 / 12 * 6380;
-        public final static Measure<Angle> ampDeployAngle = Degrees.of(165);
-        //TODO: Arm PID
-        public static final LoggedDashboardNumber ArmP = new LoggedDashboardNumber("arm p", 400);
-        public static final LoggedDashboardNumber ArmI = new LoggedDashboardNumber("arm i", 200);
-        public static final LoggedDashboardNumber ArmD = new LoggedDashboardNumber("arm d", 15);
 
         public static class armGainsClass {
             public static final TunableNumber ARM_KP = new TunableNumber("ARM PID/kp", 400);
@@ -139,6 +133,7 @@ public class Constants {
         public static double REJECT_LINEAR_SPEED = 2.5;// m/s
     }
 
+    @SuppressWarnings("unused")
     public static class FieldConstants {
         public static final double fieldLength = edu.wpi.first.math.util.Units.inchesToMeters(651.223);
         public static final double fieldWidth = edu.wpi.first.math.util.Units.inchesToMeters(323.277);
@@ -307,13 +302,6 @@ public class Constants {
                 5000);
         public static final SimpleMotorFeedforward DRIVETRAIN_FEEDFORWARD = new SimpleMotorFeedforward(
                 0.69522, 2.3623, 0.19367);
-        /**
-         * Spin PID
-         */
-        public static final Slot0Configs headingGains = new Slot0Configs()
-                .withKP(0.04)
-                .withKI(0)
-                .withKD(0);
         public static final double statorCurrent = 110;
         public static final double supplyCurrent = 50;
         /**

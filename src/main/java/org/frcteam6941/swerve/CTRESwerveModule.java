@@ -8,8 +8,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
 
 public class CTRESwerveModule implements SwerveModuleBase {
-    private int moduleNumber;
-    private CTRESwerveIO module;
+    private final int moduleNumber;
+    private final CTRESwerveIO module;
 
     // edu.wpi.first.math.geometry.Rotation2d angleLowSpeed = new edu.wpi.first.math.geometry.Rotation2d(0, 0);
     // boolean lowSpeed = false;

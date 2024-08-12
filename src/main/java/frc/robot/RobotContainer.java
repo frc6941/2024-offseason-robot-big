@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
 import frc.robot.display.OperatorDashboard;
+import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
@@ -41,7 +41,6 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.shooting.ShootingDecider;
 import frc.robot.utils.shooting.ShootingDecider.Destination;
 import lombok.Getter;
-
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -49,10 +48,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static edu.wpi.first.units.Units.Seconds;
-import frc.robot.subsystems.arm.ArmIOSim;
 
 public class RobotContainer {
     private static Map<Destination, Command> shootingCommandMapping;
+    @Getter
+    private final UpdateManager updateManager;
     IntakerSubsystem intaker;
     IndexerSubsystem indexer;
     ShooterSubsystem shooter;
@@ -67,8 +67,6 @@ public class RobotContainer {
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
     @Getter
-    private UpdateManager updateManager;
-    @Getter
     private LoggedDashboardChooser<Command> autoChooser;
 
     public RobotContainer() {
@@ -80,7 +78,7 @@ public class RobotContainer {
                 decider);
         updateManager.registerAll();
 
-        shootingCommandMapping = new HashMap<Destination, Command>();
+        shootingCommandMapping = new HashMap<>();
         shootingCommandMapping.put(Destination.FERRY, ferryShot());
         shootingCommandMapping.put(Destination.AMP, ampShot());
         shootingCommandMapping.put(Destination.SPEAKER, speakerShot());
@@ -103,7 +101,7 @@ public class RobotContainer {
             shooter = new ShooterSubsystem(new ShooterIOSim());
             beamBreak = new BeamBreakSubsystem(new BeamBreakIOSim());
             indicator = new IndicatorSubsystem(new IndicatorIOSim());
-                arm = new ArmSubsystem(new ArmIOSim());
+            arm = new ArmSubsystem(new ArmIOSim());
 
         }
 
@@ -133,7 +131,7 @@ public class RobotContainer {
     }
 
     public void configureBindings() {
-        /**
+        /*
          * ------- Driver Keymap -------
          * Driving:
          * Left Joystick - Panning
@@ -346,7 +344,7 @@ public class RobotContainer {
                         new IndexOutCommand(indexer))); // FIXME: will cause stuck, confirmation on arriving at safe
         // spot needed.
 
-        shootingCommandMapping = new HashMap<Destination, Command>();
+        shootingCommandMapping = new HashMap<>();
         shootingCommandMapping.put(
                 Destination.FERRY, new FerryShootCommand(shooter, arm, indexer, beamBreak, indicator,
                         swerve, driverController::getLeftX, driverController::getLeftY));

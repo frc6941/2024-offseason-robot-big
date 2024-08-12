@@ -15,6 +15,7 @@ import java.util.Optional;
 public class SwerveSetpointGenerator {
     private final SwerveDriveKinematics kinematics;
     private final Translation2d[] modules;
+
     public SwerveSetpointGenerator(Translation2d[] modules) {
         this.modules = modules;
         this.kinematics = new SwerveDriveKinematics(modules);
@@ -92,9 +93,7 @@ public class SwerveSetpointGenerator {
             return 1.0;
         }
         double offset = f_0 + Math.signum(diff) * max_vel_step;
-        Function2d func = (x, y) -> {
-            return Math.hypot(x, y) - offset;
-        };
+        Function2d func = (x, y) -> Math.hypot(x, y) - offset;
         return findRoot(func, x_0, y_0, f_0 - offset, x_1, y_1, f_1 - offset, max_iterations);
     }
 
@@ -274,7 +273,7 @@ public class SwerveSetpointGenerator {
 
     @FunctionalInterface
     private interface Function2d {
-        public double f(double x, double y);
+        double f(double x, double y);
     }
 
     public static class KinematicLimits {
