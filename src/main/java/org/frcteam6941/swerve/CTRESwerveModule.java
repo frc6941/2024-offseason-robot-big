@@ -1,7 +1,5 @@
 package org.frcteam6941.swerve;
 
-import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -18,17 +16,6 @@ public class CTRESwerveModule implements SwerveModuleBase {
     public CTRESwerveModule(int id, SwerveModuleConstants constants, String canbusName) {
         moduleNumber = id;
         module = new CTRESwerveIO(constants, canbusName);
-
-        // FIXME: not sure if needed. if does, do change the initMotorConfigs() in CTREModuleIO.
-        module.getDriveMotor().getConfigurator().apply(new ClosedLoopRampsConfigs()
-                .withVoltageClosedLoopRampPeriod(Constants.SwerveConstants.VOLTAGE_CLOSED_LOOP_RAMP_PERIOD));
-        module.getDriveMotor().getConfigurator()
-                .apply(new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(110)
-                        .withStatorCurrentLimitEnable(true)
-                        .withSupplyCurrentLimit(50)//90
-                        .withSupplyTimeThreshold(0)
-                        .withSupplyCurrentLimitEnable(true));//0.5
     }
 
     @Override

@@ -37,8 +37,6 @@ import org.frcteam6941.utils.AngleNormalization;
 
 import static frc.robot.Constants.SwerveConstants.speedAt12Volts;
 
-// FIXME: do odometry even when disabled
-
 /**
  * Rectangular Swerve Drivetrain.
  */

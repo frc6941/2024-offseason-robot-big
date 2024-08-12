@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
 import lombok.Getter;
 
 public class CTRESwerveIO {
@@ -185,8 +186,13 @@ public class CTRESwerveIO {
 
         driveConfigs.TorqueCurrent.PeakForwardTorqueCurrent = constants.SlipCurrent;
         driveConfigs.TorqueCurrent.PeakReverseTorqueCurrent = -constants.SlipCurrent;
-        driveConfigs.CurrentLimits.StatorCurrentLimit = constants.SlipCurrent;
+        driveConfigs.CurrentLimits.StatorCurrentLimit = Constants.SwerveConstants.statorCurrent;
         driveConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        driveConfigs.CurrentLimits.SupplyCurrentLimit = Constants.SwerveConstants.supplyCurrent;
+        driveConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+        driveConfigs.CurrentLimits.SupplyTimeThreshold = 0;
+
+        driveConfigs.ClosedLoopRamps.VoltageClosedLoopRampPeriod = Constants.SwerveConstants.VOLTAGE_CLOSED_LOOP_RAMP_PERIOD;
 
         StatusCode response = driveMotor.getConfigurator().apply(driveConfigs);
         if (!response.isOK()) {

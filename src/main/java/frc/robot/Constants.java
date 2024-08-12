@@ -1,14 +1,12 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.*;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -52,9 +50,6 @@ public class Constants {
 
         public static final MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs()
                 .withNeutralMode(NeutralModeValue.Brake);
-        public final static Measure<Voltage> indexVoltage = Volts.of(5);
-        public final static Measure<Voltage> trapIndexVoltage = Volts.of(2);
-        public final static Measure<Voltage> indexShootVoltage = Volts.of(-16);
 
         public final static double indexRPM = 1000;
         public final static double triggerRPM = 3500;
@@ -80,14 +75,6 @@ public class Constants {
         public static final int RIGHT_SHOOTER_MOTOR_ID = 42;
 
         public static final Measure<Voltage> shooterConstantVoltage = Volts.of(2);
-        public static final double defaultShootRPM = -9.0 / 12 * 6380;
-        public static final Measure<Voltage> ampShootingVoltage = Volts.of(-8);
-        public static final double shortShootVoltage = -8.0 / 12 * 6380;
-        public static final Measure<Distance> shortShootMaxDistance = Meters.of(2.7);
-        public static final Measure<Distance> shootMaxDistance = Meters.of(3.7);
-        public static final double farShootVoltage = -11.0 / 12 * 6380;
-        public static final double shooterUpDownVoltage = -2.0 / 12 * 6380;
-        public static final double shooterIndexVoltage = 13.0 / 12 * 6380;
 
         public static class shooterGainsClass {
             public static final TunableNumber SHOOTER_KP = new TunableNumber("SHOOTER PID/kp", 0.2);
@@ -102,6 +89,27 @@ public class Constants {
     public static class ArmConstants {
         public static final int ARM_MOTOR_ID = 43;
         public static final int PULLER_MOTOR_ID = 44;
+        public static final Measure<Current> armZeroCurrent = Amps.of(1.0);
+        public static final Measure<Voltage> armZeroVoltage = Volts.of(-2);
+        public static final ClosedLoopRampsConfigs rampConfigs = new ClosedLoopRampsConfigs()
+                .withVoltageClosedLoopRampPeriod(0.3);
+        public static final MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs()
+                .withMotionMagicAcceleration(2.5)
+                .withMotionMagicCruiseVelocity(1);
+        public static final MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs()
+                .withNeutralMode(NeutralModeValue.Brake);
+        public static final FeedbackConfigs feedbackConfigs = new FeedbackConfigs()
+                .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
+                .withSensorToMechanismRatio(90d / 24 * 90 / 24 * 84 / 14);
+        public static final FeedbackConfigs pullerfeedbackConfigs = new FeedbackConfigs()
+                .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
+                .withSensorToMechanismRatio(8d / 64 * 16 / 64);
+        public static final double pullVoltage = -8.0 / 12 * 6380;
+        public final static Measure<Angle> ampDeployAngle = Degrees.of(165);
+        //TODO: Arm PID
+        public static final LoggedDashboardNumber ArmP = new LoggedDashboardNumber("arm p", 400);
+        public static final LoggedDashboardNumber ArmI = new LoggedDashboardNumber("arm i", 200);
+        public static final LoggedDashboardNumber ArmD = new LoggedDashboardNumber("arm d", 15);
 
         public static class armGainsClass {
             public static final TunableNumber ARM_KP = new TunableNumber("ARM PID/kp", 400);
@@ -111,38 +119,6 @@ public class Constants {
             public static final TunableNumber ARM_KV = new TunableNumber("ARM PID/kv", 0);// 0.107853495
             public static final TunableNumber ARM_KS = new TunableNumber("ARM PID/ks", 0.25);
         }
-
-        public static final Measure<Current> armZeroCurrent = Amps.of(1.0);
-        public static final Measure<Voltage> armZeroVoltage = Volts.of(-2);
-
-        public static final ClosedLoopRampsConfigs rampConfigs = new ClosedLoopRampsConfigs()
-                .withVoltageClosedLoopRampPeriod(0.3);
-
-        public static final MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs()
-                .withMotionMagicAcceleration(2.5)
-                .withMotionMagicCruiseVelocity(1);
-
-        public static final MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs()
-                .withNeutralMode(NeutralModeValue.Brake);
-
-        public static final FeedbackConfigs feedbackConfigs = new FeedbackConfigs()
-                .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
-                .withSensorToMechanismRatio(90d / 24 * 90 / 24 * 84 / 14);
-        public static final FeedbackConfigs pullerfeedbackConfigs = new FeedbackConfigs()
-                .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
-                .withSensorToMechanismRatio(8d / 64 * 16 / 64);
-
-        public static final double pullVoltage = -8.0 / 12 * 6380;
-        public final static Measure<Angle> ampDeployAngle = Degrees.of(165);
-        public static Measure<Angle> speakerArmOffsetNear = Degrees.of(17);
-        public static Measure<Angle> speakerArmOffset = Degrees.of(44);// 44
-        public static Measure<Angle> speakerArmOffsetFar = Degrees.of(58.5);
-        public static Measure<Angle> speakerArmOffsetMax = Degrees.of(64);
-
-        //TODO: Arm PID
-        public static final LoggedDashboardNumber ArmP = new LoggedDashboardNumber("arm p", 400);
-        public static final LoggedDashboardNumber ArmI = new LoggedDashboardNumber("arm i", 200);
-        public static final LoggedDashboardNumber ArmD = new LoggedDashboardNumber("arm d", 15);
     }
 
     public static class BeamBreakConstants {
@@ -163,17 +139,7 @@ public class Constants {
         public static double REJECT_LINEAR_SPEED = 2.5;// m/s
     }
 
-    public static class Logger {
-        public static final boolean ENABLE_DEBUG = true;
-
-        public static void debug(String... texts) {
-            if (ENABLE_DEBUG) {
-                System.out.println(String.join(" ", texts));
-            }
-        }
-    }
-
-    public class FieldConstants {
+    public static class FieldConstants {
         public static final double fieldLength = edu.wpi.first.math.util.Units.inchesToMeters(651.223);
         public static final double fieldWidth = edu.wpi.first.math.util.Units.inchesToMeters(323.277);
         public static final double wingX = edu.wpi.first.math.util.Units.inchesToMeters(229.201);
@@ -297,7 +263,7 @@ public class Constants {
         }
     }
 
-    public class RobotConstants {
+    public static class RobotConstants {
 
         public static final CommandXboxController driverController = new CommandXboxController(0);
         public static final CommandXboxController operatorController = new CommandXboxController(1);
@@ -305,7 +271,7 @@ public class Constants {
 
     }
 
-    public class SwerveConstants {
+    public static class SwerveConstants {
 
         public static final TunableNumber LongShotAngle = new TunableNumber("Long shot angle", 25);
 
@@ -314,11 +280,6 @@ public class Constants {
         public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.0003;// 0.0003
 
         public static final int PIGEON_ID = 1;
-
-        public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
-                .withCANbusName(RobotConstants.CAN_BUS_NAME)
-                .withPigeon2Id(PIGEON_ID)
-                .withPigeon2Configs(null); // optional
 
         /**
          * The max speed of the swerve (should not larger than speedAt12Volts)
@@ -331,9 +292,6 @@ public class Constants {
 
         public static final double deadband = maxSpeed.magnitude() * 0.07;
         public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.07;
-
-        public static final SlewRateLimiter xLimiter = new SlewRateLimiter(3, -3.25, 0);
-        public static final SlewRateLimiter yLimiter = new SlewRateLimiter(3, -3.25, 0);
 
         /**
          * Gearing between the drive motor output shaft and the wheel.
@@ -356,6 +314,8 @@ public class Constants {
                 .withKP(0.04)
                 .withKI(0)
                 .withKD(0);
+        public static final double statorCurrent = 110;
+        public static final double supplyCurrent = 50;
         /**
          * Gearing between the steer motor output shaft and the azimuth gear.
          */
@@ -505,8 +465,6 @@ public class Constants {
                 backRightXPos.magnitude(),
                 backRightYPos.magnitude(),
                 true);
-
-        public static SwerveModuleConstants[] modules = {FrontLeft, FrontRight, BackLeft, BackRight};
 
         public static final Translation2d[] modulePlacements = new Translation2d[]{
                 new Translation2d(SwerveConstants.FrontLeft.LocationX,

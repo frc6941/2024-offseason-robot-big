@@ -1,34 +1,20 @@
 package org.frcteam6941.swerve;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import com.team254.lib.geometry.Twist2d;
 import com.team254.lib.util.Util;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
-public class SwerveSetpointGenerator {
-    public static class KinematicLimits {
-        public double kMaxDriveVelocity; // m/s
-        public double kMaxDriveAcceleration; // m/s^2
-        public double kMaxSteeringVelocity; // rad/s
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-        public KinematicLimits(double kMaxDriveVelocity, double kMaxDriveAcceleration, double kMaxSteeringVelocity) {
-            this.kMaxDriveVelocity = kMaxDriveVelocity;
-            this.kMaxDriveAcceleration = kMaxDriveAcceleration;
-            this.kMaxSteeringVelocity = kMaxSteeringVelocity;
-        }
-    }
-    
+public class SwerveSetpointGenerator {
     private final SwerveDriveKinematics kinematics;
     private final Translation2d[] modules;
-
     public SwerveSetpointGenerator(Translation2d[] modules) {
         this.modules = modules;
         this.kinematics = new SwerveDriveKinematics(modules);
@@ -55,22 +41,18 @@ public class SwerveSetpointGenerator {
         }
     }
 
-    @FunctionalInterface
-    private interface Function2d {
-        public double f(double x, double y);
-    }
-
     /**
      * Find the root of the generic 2D parametric function 'func' ugetSing the regula falsi technique. This is a pretty naive way to
      * do root finding, but it's usually faster than simple bisection while being robust in ways that e.g. the Newton-Raphson
      * method isn't.
-     * @param func The Function2d to take the root of.
-     * @param x_0 x value of the lower bracket.
-     * @param y_0 y value of the lower bracket.
-     * @param f_0 value of 'func' at x_0, y_0 (passed in by caller to save a call to 'func' during recursion)
-     * @param x_1 x value of the upper bracket.
-     * @param y_1 y value of the upper bracket.
-     * @param f_1 value of 'func' at x_1, y_1 (passed in by caller to save a call to 'func' during recursion)
+     *
+     * @param func            The Function2d to take the root of.
+     * @param x_0             x value of the lower bracket.
+     * @param y_0             y value of the lower bracket.
+     * @param f_0             value of 'func' at x_0, y_0 (passed in by caller to save a call to 'func' during recursion)
+     * @param x_1             x value of the upper bracket.
+     * @param y_1             y value of the upper bracket.
+     * @param f_1             value of 'func' at x_1, y_1 (passed in by caller to save a call to 'func' during recursion)
      * @param iterations_left Number of iterations of root finding left.
      * @return The parameter value 's' that interpolating between 0 and 1 that corresponds to the (approximate) root.
      */
@@ -99,7 +81,7 @@ public class SwerveSetpointGenerator {
             return 1.0;
         }
         double offset = f_0 + Math.signum(diff) * max_deviation;
-        Function2d func = (x,y) -> unwrapAngle(f_0, Math.atan2(y, x)) - offset;
+        Function2d func = (x, y) -> unwrapAngle(f_0, Math.atan2(y, x)) - offset;
         return findRoot(func, x_0, y_0, f_0 - offset, x_1, y_1, f_1 - offset, max_iterations);
     }
 
@@ -110,7 +92,7 @@ public class SwerveSetpointGenerator {
             return 1.0;
         }
         double offset = f_0 + Math.signum(diff) * max_vel_step;
-        Function2d func = (x,y) -> {
+        Function2d func = (x, y) -> {
             return Math.hypot(x, y) - offset;
         };
         return findRoot(func, x_0, y_0, f_0 - offset, x_1, y_1, f_1 - offset, max_iterations);
@@ -119,11 +101,11 @@ public class SwerveSetpointGenerator {
     /**
      * Generate a new setpoint.
      *
-     * @param limits The kinematic limits to respect for this setpoint.
+     * @param limits       The kinematic limits to respect for this setpoint.
      * @param prevSetpoint The previous setpoint motion. Normally, you'd pass in the previous iteration setpoint instead of the actual
      *                     measured/estimated kinematic state.
      * @param desiredState The desired state of motion, such as from the driver sticks or a path following algorithm.
-     * @param dt The loop time.
+     * @param dt           The loop time.
      * @return A Setpoint object that satisfies all of the KinematicLimits while converging to desiredState quickly.
      */
     public SwerveSetpoint generateSetpoint(final KinematicLimits limits, final SwerveSetpoint prevSetpoint, ChassisSpeeds desiredState, double dt) {
@@ -173,8 +155,8 @@ public class SwerveSetpointGenerator {
             }
         }
         if (all_modules_should_flip &&
-            !AdaptUtil.toTwist2d(prevSetpoint.mChassisSpeeds).epsilonEquals(Twist2d.identity(), Util.kEpsilon) &&
-            !AdaptUtil.toTwist2d(desiredState).epsilonEquals(Twist2d.identity(), Util.kEpsilon)) {
+                !AdaptUtil.toTwist2d(prevSetpoint.mChassisSpeeds).epsilonEquals(Twist2d.identity(), Util.kEpsilon) &&
+                !AdaptUtil.toTwist2d(desiredState).epsilonEquals(Twist2d.identity(), Util.kEpsilon)) {
             // It will (likely) be faster to stop the robot, rotate the modules in place to the complement of the desired
             // angle, and accelerate again.
             return generateSetpoint(limits, prevSetpoint, new ChassisSpeeds(), dt);
@@ -212,7 +194,7 @@ public class SwerveSetpointGenerator {
                 }
 
                 var necessaryRotation = prevSetpoint.mModuleStates[i].angle.unaryMinus().rotateBy(
-                    desiredModuleState[i].angle);
+                        desiredModuleState[i].angle);
                 if (flipHeading(necessaryRotation)) {
                     necessaryRotation = necessaryRotation.rotateBy(Rotation2d.fromDegrees(180.0));
                 }
@@ -227,9 +209,9 @@ public class SwerveSetpointGenerator {
                 } else {
                     // Adjust steering by max_theta_step.
                     overrideSteering.set(i, Optional.of(prevSetpoint.mModuleStates[i].angle.rotateBy(
-                        new Rotation2d(
-                            Math.signum(necessaryRotation.getRadians()) * max_theta_step
-                        )
+                            new Rotation2d(
+                                    Math.signum(necessaryRotation.getRadians()) * max_theta_step
+                            )
                     )));
                     min_s = 0.0;
                     continue;
@@ -242,8 +224,8 @@ public class SwerveSetpointGenerator {
 
             final int kMaxIterations = 8;
             double s = findSteeringMaxS(prev_vx[i], prev_vy[i], prev_heading[i].getRadians(),
-                                        desired_vx[i], desired_vy[i], desired_heading[i].getRadians(),
-                                        max_theta_step, kMaxIterations);
+                    desired_vx[i], desired_vy[i], desired_heading[i].getRadians(),
+                    max_theta_step, kMaxIterations);
             min_s = Math.min(min_s, s);
         }
 
@@ -258,19 +240,19 @@ public class SwerveSetpointGenerator {
             double vy_min_s = min_s == 1.0 ? desired_vy[i] : (desired_vy[i] - prev_vy[i]) * min_s + prev_vy[i];
             // Find the max s for this drive wheel. Search on the interval between 0 and min_s, because we already know we can't go faster
             // than that.
-            // TODO(for efficiency, do all this on v^2 to save a bunch of sqrts)
-            // TODO(be smarter about root finding, getSince this is just a quadratic in s: ((xf-x0)*s+x0)^2+((yf-y0)*s+y0)^2)
+            // TODOA(for efficiency, do all this on v^2 to save a bunch of sqrts)
+            // TODOA(be smarter about root finding, getSince this is just a quadratic in s: ((xf-x0)*s+x0)^2+((yf-y0)*s+y0)^2)
             final int kMaxIterations = 10;
             double s = min_s * findDriveMaxS(prev_vx[i], prev_vy[i], Math.hypot(prev_vx[i], prev_vy[i]),
-                                             vx_min_s, vy_min_s, Math.hypot(vx_min_s, vy_min_s),
-                                             max_vel_step, kMaxIterations);
+                    vx_min_s, vy_min_s, Math.hypot(vx_min_s, vy_min_s),
+                    max_vel_step, kMaxIterations);
             min_s = Math.min(min_s, s);
         }
 
         ChassisSpeeds retSpeeds = new ChassisSpeeds(
-            prevSetpoint.mChassisSpeeds.vxMetersPerSecond + min_s * dx,
-            prevSetpoint.mChassisSpeeds.vyMetersPerSecond + min_s * dy,
-            prevSetpoint.mChassisSpeeds.omegaRadiansPerSecond + min_s * dtheta);
+                prevSetpoint.mChassisSpeeds.vxMetersPerSecond + min_s * dx,
+                prevSetpoint.mChassisSpeeds.vyMetersPerSecond + min_s * dy,
+                prevSetpoint.mChassisSpeeds.omegaRadiansPerSecond + min_s * dtheta);
         var retStates = kinematics.toSwerveModuleStates(retSpeeds);
         for (int i = 0; i < modules.length; ++i) {
             final var maybeOverride = overrideSteering.get(i);
@@ -288,5 +270,22 @@ public class SwerveSetpointGenerator {
             }
         }
         return new SwerveSetpoint(retSpeeds, retStates);
+    }
+
+    @FunctionalInterface
+    private interface Function2d {
+        public double f(double x, double y);
+    }
+
+    public static class KinematicLimits {
+        public double kMaxDriveVelocity; // m/s
+        public double kMaxDriveAcceleration; // m/s^2
+        public double kMaxSteeringVelocity; // rad/s
+
+        public KinematicLimits(double kMaxDriveVelocity, double kMaxDriveAcceleration, double kMaxSteeringVelocity) {
+            this.kMaxDriveVelocity = kMaxDriveVelocity;
+            this.kMaxDriveAcceleration = kMaxDriveAcceleration;
+            this.kMaxSteeringVelocity = kMaxSteeringVelocity;
+        }
     }
 }
