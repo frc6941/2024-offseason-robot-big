@@ -23,21 +23,18 @@ public class IndexCommand extends Command {
 
     @Override
     public void execute() {
-        if  (beamBreakSubsystem.getInputs().isIndexerBeamBreakOn){
-            return;
-        }
-
+   
         indexerSubsystem.getIo()
                 .setIndexRPM(Constants.IndexerConstants.indexRPM);
     }
 
     @Override
     public void end(boolean interrupted) {
-        indexerSubsystem.getIo().setIndexRPM(0);
+        beamBreakSubsystem.hasNote();
     }
 
     @Override
     public boolean isFinished() {
-        return beamBreakSubsystem.getInputs().isIndexerBeamBreakOn;
+        return beamBreakSubsystem.hasNote();
     }
 }

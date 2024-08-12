@@ -30,6 +30,7 @@ public class DeliverNoteCommand extends Command {
 	@Override
 	public void end(boolean interrupted) {
 		indexerSubsystem.getIo().setIndexRPM(0);
+		beamBreakSubsystem.noteCleared();
 		if (interrupted)
 			return;
 		indicatorSubsystem
