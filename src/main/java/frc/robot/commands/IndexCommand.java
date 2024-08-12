@@ -23,6 +23,10 @@ public class IndexCommand extends Command {
 
     @Override
     public void execute() {
+        if  (beamBreakSubsystem.getInputs().isIndexerBeamBreakOn){
+            return;
+        }
+
         indexerSubsystem.getIo()
                 .setIndexRPM(Constants.IndexerConstants.indexRPM);
     }

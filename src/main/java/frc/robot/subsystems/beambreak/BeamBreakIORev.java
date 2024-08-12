@@ -11,6 +11,7 @@ public class BeamBreakIORev implements BeamBreakIO {
     private final BeamBreak shooterBeamBreak =
             new BeamBreak(Constants.BeamBreakConstants.SHOOTER_BEAM_BREAK_ID);
 
+
     @Override
     public void updateInputs(BeamBreakIOInputs inputs) {
         inputs.isIntakerBeamBreakOn = intakerBeamBreak.get();

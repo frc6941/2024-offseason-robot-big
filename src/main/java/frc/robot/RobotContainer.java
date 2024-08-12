@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
 import frc.robot.display.OperatorDashboard;
+import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.beambreak.BeamBreakIORev;
 import frc.robot.subsystems.beambreak.BeamBreakIOSim;
@@ -39,6 +41,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.shooting.ShootingDecider;
 import frc.robot.utils.shooting.ShootingDecider.Destination;
 import lombok.Getter;
+
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -46,6 +49,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static edu.wpi.first.units.Units.Seconds;
+import frc.robot.subsystems.arm.ArmIOSim;
 
 public class RobotContainer {
     private static Map<Destination, Command> shootingCommandMapping;
@@ -92,12 +96,15 @@ public class RobotContainer {
             shooter = new ShooterSubsystem(new ShooterIOTalonFX());
             beamBreak = new BeamBreakSubsystem(new BeamBreakIORev());
             indicator = new IndicatorSubsystem(new IndicatorIOARGB());
+            arm = new ArmSubsystem(new ArmIOTalonFX());
         } else {
             intaker = new IntakerSubsystem(new IntakerIOSim());
             indexer = new IndexerSubsystem(new IndexerIOSim());
             shooter = new ShooterSubsystem(new ShooterIOSim());
             beamBreak = new BeamBreakSubsystem(new BeamBreakIOSim());
             indicator = new IndicatorSubsystem(new IndicatorIOSim());
+                arm = new ArmSubsystem(new ArmIOSim());
+
         }
 
         indicator.setDefaultCommand(Commands.run(() -> indicator.setPattern(IndicatorIO.Patterns.NORMAL), indicator));

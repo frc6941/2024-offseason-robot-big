@@ -8,6 +8,7 @@ public interface BeamBreakIO {
         public boolean isIntakerBeamBreakOn;
         public boolean isIndexerBeamBreakOn;
         public boolean isShooterBeamBreakOn;
+        public boolean indexHasNote;
     }
 
     void updateInputs(BeamBreakIOInputs inputs);
