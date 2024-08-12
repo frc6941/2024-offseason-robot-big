@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.display.OperatorDashboard;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
@@ -36,6 +37,7 @@ public class ArmSubsystem extends SubsystemBase {
     public boolean armAimingReady() {
         var positionReady = Math.abs(inputs.armPosition.magnitude() - inputs.targetArmPosition.magnitude()) < 0.007 && Math.abs(inputs.armPosition.magnitude()) > 0.007;
         SmartDashboard.putBoolean("positionReady", positionReady);
-        return positionReady;//FIXME
+        OperatorDashboard.getInstance().updateArmReady(positionReady);
+        return positionReady;
     }
 }

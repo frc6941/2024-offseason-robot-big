@@ -74,6 +74,10 @@ public class Constants {
         public static final int RIGHT_SHOOTER_MOTOR_ID = 42;
 
         public static final Measure<Voltage> shooterConstantVoltage = Volts.of(2);
+        public static final TunableNumber skewValue = new TunableNumber("Shooter skew", 0);
+        public static double kToFFactor = 0.2;
+        public static boolean useSmartDashboardForSkew = false;
+        public static boolean useShootOnMove = true;
 
         public static class shooterGainsClass {
             public static final TunableNumber SHOOTER_KP = new TunableNumber("SHOOTER PID/kp", 0.2);
@@ -487,7 +491,7 @@ public class Constants {
             public static final TunableNumber HEADING_KP = new TunableNumber("HEADING PID/kp", 0.08);
             public static final TunableNumber HEADING_KI = new TunableNumber("HEADING PID/ki", 0.0002);
             public static final TunableNumber HEADING_KD = new TunableNumber("HEADING PID/kd", 0.002);
-            // TODO:Fixme
+            // TODO
         }
     }
 }

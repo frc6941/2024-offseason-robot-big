@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.shooting.ShootingDecider;
+import frc.robot.utils.shooting.ShootingParameters;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import java.util.function.DoubleSupplier;
@@ -62,14 +63,12 @@ public class ChassisAimCommand extends Command {
             swerve.autoDrive(new Translation2d(0, 0), 0, true, false);
         }
 
-        swerve.setHeadingTarget(filter.calculate(
-                shootingDecider.getShootingParameter(
-                                destinationSupplier.get(),
-                                swerve.getLocalizer().getCoarseFieldPose(0))
-                        .getFieldAimingAngle().getDegrees()));
-        distanceLogged.set(shootingDecider.getShootingParameter(
+        ShootingParameters parameter = shootingDecider.getShootingParameter(
                 destinationSupplier.get(),
-                swerve.getLocalizer().getCoarseFieldPose(0)).getDistance());
+                swerve.getLocalizer().getCoarseFieldPose(0),
+                swerve.getChassisTwist());
+        swerve.setHeadingTarget(filter.calculate(parameter.getFieldAimingAngle().getDegrees()));
+        distanceLogged.set(parameter.getDistance());
         swerve.setLockHeading(true);
     }
 

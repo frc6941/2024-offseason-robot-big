@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
+import frc.robot.display.OperatorDashboard;
 import frc.robot.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -235,6 +236,15 @@ public class Swerve implements Updatable, Subsystem {
         for (SwerveModuleBase mod : swerveMods) {
             mod.setDesiredState(setpoint.mModuleStates[mod.getModuleNumber()], driveSignal.isOpenLoop(), false);
         }
+    }
+
+    public com.team254.lib.geometry.Twist2d getChassisTwist() {
+        ChassisSpeeds speeds = getChassisSpeeds();
+        return new com.team254.lib.geometry.Twist2d(
+                speeds.vxMetersPerSecond * Constants.LOOPER_DT,
+                speeds.vyMetersPerSecond * Constants.LOOPER_DT,
+                speeds.omegaRadiansPerSecond * Constants.LOOPER_DT
+        );
     }
 
     @Synchronized
@@ -464,8 +474,6 @@ public class Swerve implements Updatable, Subsystem {
             if (this.state == State.PATH_FOLLOWING) {
                 autoDriveSignal = new HolonomicDriveSignal(autoDriveSignal.getTranslation(), rotation,
                         autoDriveSignal.isFieldOriented(), autoDriveSignal.isOpenLoop());
-                System.out.println(autoDriveSignal);
-                //FIXME: path following
             } else {
                 driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), rotation,
                         driveSignal.isFieldOriented(), driveSignal.isOpenLoop());
@@ -545,8 +553,10 @@ public class Swerve implements Updatable, Subsystem {
     }
 
     public boolean aimingReady(double offset) {
-        SmartDashboard.putBoolean("SwerveReady", Math.abs(gyro.getYaw().getDegrees() - headingTarget) < offset);
-        return Math.abs(gyro.getYaw().getDegrees() - headingTarget) < offset;
+        var dtReady = Math.abs(gyro.getYaw().getDegrees() - headingTarget) < offset;
+        SmartDashboard.putBoolean("SwerveReady", dtReady);
+        OperatorDashboard.getInstance().updateDrivetrainReady(dtReady);
+        return dtReady;
     }
 
     public enum State {
