@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.428375244140625,
+      "y": 5.632721424102783
+    },
+    "rotation": 5.159112812912489e-26
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -8,18 +14,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoShoot"
+            "pathName": "A1-A2test"
           }
         }
       ]
     }
   },
   "folder": null,
-  "choreoAuto": false
+  "choreoAuto": true
 }

@@ -3,7 +3,7 @@ package frc.robot.utils.shooting;
 import com.team254.lib.util.PolynomialRegression;
 
 public class ShootingPolynomialParameters {
-    //TODO: replace ShootingParameters
+    //TODO: DELETE THIS FILE if unused
     double[][] distance = {
 //			{1.1, 23},//20240804
 //			{1.75, 42},//20240804

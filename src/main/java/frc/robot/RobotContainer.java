@@ -112,21 +112,24 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoShoot", speakerAutoShot().withTimeout(2.0));
         NamedCommands.registerCommand("Intake", intake());
         NamedCommands.registerCommand("ResetArm", new ResetArmCommand(arm));
-        NamedCommands.registerCommand("AutoPreShoot", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));
+        NamedCommands.registerCommand("FlyWheelRampUp", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));//READ ME change all "Preshoot" in auto files
         NamedCommands.registerCommand("AutoPreArm", new ArmAimCommand(arm, () -> Destination.SPEAKER));
+        NamedCommands.registerCommand("ChassisAim",new ChassisAimCommand(swerve, () -> Destination.SPEAKER, () -> 0, () -> 0)); 
+        NamedCommands.registerCommand("Shoot",new DeliverNoteCommand(indexer, beamBreak, indicator)); 
+
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
 
-        autoChooser.addOption(
-                "Flywheel SysId (Quasistatic Forward)",
-                shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Flywheel SysId (Quasistatic Reverse)",
-                shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption(
-                "Flywheel SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Flywheel SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        // autoChooser.addOption(
+        //         "Flywheel SysId (Quasistatic Forward)",
+        //         shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        // autoChooser.addOption(
+        //         "Flywheel SysId (Quasistatic Reverse)",
+        //         shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        // autoChooser.addOption(
+        //         "Flywheel SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        // autoChooser.addOption(
+        //         "Flywheel SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
         dashboard.registerAutoSelector(autoChooser.getSendableChooser());
     }
 

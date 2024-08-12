@@ -77,7 +77,7 @@ public class Constants {
         public static final TunableNumber skewValue = new TunableNumber("Shooter skew", 0);
         public static double kToFFactor = 0.2;
         public static boolean useSmartDashboardForSkew = false;
-        public static boolean useShootOnMove = true;
+        public static boolean useShootOnMove = false;
 
         public static class shooterGainsClass {
             public static final TunableNumber SHOOTER_KP = new TunableNumber("SHOOTER PID/kp", 0.2);
@@ -97,8 +97,8 @@ public class Constants {
         public static final ClosedLoopRampsConfigs rampConfigs = new ClosedLoopRampsConfigs()
                 .withVoltageClosedLoopRampPeriod(0.3);
         public static final MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs()
-                .withMotionMagicAcceleration(2.5)
-                .withMotionMagicCruiseVelocity(1);
+                .withMotionMagicAcceleration(2.5)//?
+                .withMotionMagicCruiseVelocity(1);//too low
         public static final MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs()
                 .withNeutralMode(NeutralModeValue.Brake);
         public static final FeedbackConfigs feedbackConfigs = new FeedbackConfigs()
@@ -110,7 +110,7 @@ public class Constants {
         public static final double pullVoltage = -8.0 / 12 * 6380;
 
         public static class armGainsClass {
-            public static final TunableNumber ARM_KP = new TunableNumber("ARM PID/kp", 400);
+            public static final TunableNumber ARM_KP = new TunableNumber("ARM PID/kp", 400);//todo change it 
             public static final TunableNumber ARM_KI = new TunableNumber("ARM PID/ki", 200);
             public static final TunableNumber ARM_KD = new TunableNumber("ARM PID/kd", 15);
             public static final TunableNumber ARM_KA = new TunableNumber("ARM PID/ka", 0);
