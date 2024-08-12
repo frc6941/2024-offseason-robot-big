@@ -17,20 +17,30 @@ public class ChassisAimCommand extends Command {
     private final DoubleSupplier driverY;
     private final Supplier<ShootingDecider.Destination> destinationSupplier;
     private final ShootingDecider shootingDecider;
-    private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("DistanceShooting");
-
+    private final boolean isAuto;
     LinearFilter filter = LinearFilter.singlePoleIIR(0.2, 0.02);
+    private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("DistanceShooting");
 
     public ChassisAimCommand(
             Swerve Swerve,
             Supplier<ShootingDecider.Destination> destinationSupplier,
             DoubleSupplier driverX,
             DoubleSupplier driverY) {
+        this(Swerve, destinationSupplier, driverX, driverY, false);
+    }
+
+    public ChassisAimCommand(
+            Swerve Swerve,
+            Supplier<ShootingDecider.Destination> destinationSupplier,
+            DoubleSupplier driverX,
+            DoubleSupplier driverY,
+            boolean isAuto) {
         this.swerve = Swerve;
         this.driverX = driverX;
         this.driverY = driverY;
         this.destinationSupplier = destinationSupplier;
         this.shootingDecider = ShootingDecider.getInstance();
+        this.isAuto = isAuto;
     }
 
     @Override
@@ -40,13 +50,17 @@ public class ChassisAimCommand extends Command {
 
     @Override
     public void execute() {
-        swerve.drive(
-                new Translation2d(
-                        -driverX.getAsDouble() * Constants.SwerveConstants.maxSpeed.magnitude(),
-                        -driverY.getAsDouble() * Constants.SwerveConstants.maxSpeed.magnitude()),
-                0,
-                true,
-                false);
+        if (!isAuto) {
+            swerve.drive(
+                    new Translation2d(
+                            -driverX.getAsDouble() * Constants.SwerveConstants.maxSpeed.magnitude(),
+                            -driverY.getAsDouble() * Constants.SwerveConstants.maxSpeed.magnitude()),
+                    0,
+                    true,
+                    false);
+        } else {
+            swerve.autoDrive(new Translation2d(0, 0), 0, true, false);
+        }
 
         swerve.setHeadingTarget(filter.calculate(
                 shootingDecider.getShootingParameter(

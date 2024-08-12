@@ -23,9 +23,10 @@ public class SpeakerShootCommand extends ParallelCommandGroup {
             IndicatorSubsystem indicatorSubsystem,
             Swerve Swerve,
             DoubleSupplier driverX,
-            DoubleSupplier driverY) {
+            DoubleSupplier driverY,
+            boolean isAuto) {
         addCommands(
-                new ChassisAimCommand(Swerve, () -> Destination.SPEAKER, driverX, driverY),
+                new ChassisAimCommand(Swerve, () -> Destination.SPEAKER, driverX, driverY, isAuto),
                 new ArmAimCommand(armSubsystem, () -> Destination.SPEAKER),
                 new FlyWheelRampUp(shooterSubsystem, () -> Destination.SPEAKER),
                 Commands.sequence(
@@ -44,6 +45,6 @@ public class SpeakerShootCommand extends ParallelCommandGroup {
             BeamBreakSubsystem beamBreakSubsystem,
             IndicatorSubsystem indicatorSubsystem,
             Swerve Swerve) {
-        this(shooterSubsystem, armSubsystem, indexerSubsystem, beamBreakSubsystem, indicatorSubsystem, Swerve, () -> 0, () -> 0);
+        this(shooterSubsystem, armSubsystem, indexerSubsystem, beamBreakSubsystem, indicatorSubsystem, Swerve, () -> 0, () -> 0, true);
     }
 }

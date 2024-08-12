@@ -11,7 +11,9 @@ public class ResetArmAutoCommand extends Command {
 
     public ResetArmAutoCommand(ArmSubsystem armSubsystem) {
         this.armSubsystem = armSubsystem;
+        armSubsystem.getIo().setArmHome(Radians.zero());
         armSubsystem.getIo().setHomed(true);
+        // FIXME: wtf?
         Constants.armPosition = Radians.of(0);
     }
 }

@@ -224,7 +224,7 @@ public class RobotContainer {
 
     private Command speakerShot() {
         return new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve,
-                driverController::getLeftX, driverController::getLeftY);
+                driverController::getLeftX, driverController::getLeftY, false);
     }
 
     private Command speakerAutoShot() {
@@ -324,7 +324,7 @@ public class RobotContainer {
         driverController.back().onTrue(new ResetArmCommand(arm));
         driverController.x().whileTrue(
                 new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve,
-                        driverController::getLeftX, driverController::getLeftY)
+                        driverController::getLeftX, driverController::getLeftY, false)
                         .alongWith(Commands
                                 .runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.SPEAKER)))
                         .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
@@ -353,7 +353,7 @@ public class RobotContainer {
                 new AmpShootCommand(shooter, arm, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean()));
         shootingCommandMapping.put(
                 Destination.SPEAKER, new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve,
-                        driverController::getLeftX, driverController::getLeftY));
+                        driverController::getLeftX, driverController::getLeftY, false));
 
         driverController.rightBumper().whileTrue(
                 Commands.select(shootingCommandMapping, dashboard::getCurrDestination)

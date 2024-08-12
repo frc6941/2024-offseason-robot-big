@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.378968596458435,
-      "y": 5.570969581604004
+      "x": 1.37,
+      "y": 5.55802417487188
     },
-    "rotation": -2.7754019216079233e-17
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -22,22 +22,16 @@
           "data": {
             "commands": [
               {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
                 "type": "path",
                 "data": {
                   "pathName": "S2-A1"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoPreShoot"
-                }
               }
             ]
           }
@@ -52,22 +46,16 @@
           "type": "deadline",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "A2-W2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoPreShoot"
+                  "pathName": "A1-A2"
                 }
               }
             ]
@@ -83,22 +71,16 @@
           "type": "deadline",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
               {
                 "type": "path",
                 "data": {
                   "pathName": "A2-A3"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoPreShoot"
                 }
               }
             ]
@@ -114,5 +96,5 @@
     }
   },
   "folder": null,
-  "choreoAuto": true
+  "choreoAuto": false
 }

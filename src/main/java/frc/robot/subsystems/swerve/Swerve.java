@@ -34,6 +34,7 @@ import org.frcteam6941.looper.Updatable;
 import org.frcteam6941.swerve.*;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 import org.frcteam6941.utils.AngleNormalization;
+import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.Constants.SwerveConstants.speedAt12Volts;
 
@@ -469,6 +470,10 @@ public class Swerve implements Updatable, Subsystem {
                 driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), rotation,
                         driveSignal.isFieldOriented(), driveSignal.isOpenLoop());
             }
+            Logger.recordOutput("heading/rotation", rotation);
+            Logger.recordOutput("heading/gyro", gyro.getYaw().getDegrees());
+            Logger.recordOutput("heading/target", headingTarget);
+            Logger.recordOutput("heading/difference", Math.abs(headingTarget - gyro.getYaw().getDegrees()));
 
         } else if (overrideRotation != null) {
             driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), overrideRotation,
