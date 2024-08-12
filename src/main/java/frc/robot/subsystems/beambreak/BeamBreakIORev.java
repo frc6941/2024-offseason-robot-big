@@ -16,6 +16,7 @@ public class BeamBreakIORev implements BeamBreakIO {
     public void updateInputs(BeamBreakIOInputs inputs) {
         inputs.isIntakerBeamBreakOn = intakerBeamBreak.get();
         inputs.isIndexerBeamBreakOn = indexerBeamBreak.get();
-        inputs.isShooterBeamBreakOn = shooterBeamBreak.get();
+        inputs.isShooterBeamBreakOn = shooterBeamBreak.get();                inputs.indexHasNote = true;
+        
     }
 }
