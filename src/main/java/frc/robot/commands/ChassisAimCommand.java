@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,7 +19,7 @@ public class ChassisAimCommand extends Command {
     private final Supplier<ShootingDecider.Destination> destinationSupplier;
     private final ShootingDecider shootingDecider;
     private final boolean isAuto;
-    LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
+    // LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
     private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("DistanceShooting");
 
     public ChassisAimCommand(
@@ -47,7 +46,7 @@ public class ChassisAimCommand extends Command {
 
     @Override
     public void initialize() {
-        filter.reset();
+        //filter.reset();
     }
 
     @Override
@@ -68,9 +67,9 @@ public class ChassisAimCommand extends Command {
                 destinationSupplier.get(),
                 swerve.getLocalizer().getCoarseFieldPose(0));
         SmartDashboard.putNumber("Swerve/origin heading", parameter.getFieldAimingAngle().getDegrees());
-        double degrees = filter.calculate(parameter.getFieldAimingAngle().getDegrees());
-        SmartDashboard.putNumber("Swerve/filtered heading", degrees);
-        swerve.setHeadingTarget(degrees);
+        //double degrees = filter.calculate(parameter.getFieldAimingAngle().getDegrees());
+        //SmartDashboard.putNumber("Swerve/filtered heading", degrees);
+        swerve.setHeadingTarget(parameter.getFieldAimingAngle().getDegrees());
         distanceLogged.set(parameter.getDistance());
         swerve.setLockHeading(true);
     }

@@ -1,12 +1,9 @@
 package frc.robot.utils.shooting;
 
-import com.team254.lib.geometry.Twist2d;
-import com.team254.lib.util.InterpolatingDouble;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.display.Display;
 import frc.robot.display.OperatorDashboard;
@@ -14,8 +11,6 @@ import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.FieldLayout;
 import frc.robot.utils.TunableNumber;
 import org.frcteam6941.looper.Updatable;
-
-import static frc.robot.Constants.ShooterConstants.*;
 
 public class ShootingDecider implements Updatable {
     public static final Translation2d kCornerTarget = new Translation2d(1.0, FieldLayout.kFieldWidth - 1.5);
@@ -57,10 +52,10 @@ public class ShootingDecider implements Updatable {
         highFerryParams.loadParameter(11.0, -6500.0, 10.0);
         highFerryParams.ready();
         lowFerryParams.loadParameter(1.5, -2000.0, 15.0);
-        lowFerryParams.loadParameter(3.0, -5000.0, 15.0);
-        lowFerryParams.loadParameter(3.0, -5000.0, 15.0);
-        lowFerryParams.loadParameter(3.0, -5000.0, 15.0);
-        lowFerryParams.loadParameter(3.0, -5000.0, 15.0);
+        lowFerryParams.loadParameter(3.1, -5000.0, 15.0);
+        lowFerryParams.loadParameter(3.2, -5000.0, 15.0);
+        lowFerryParams.loadParameter(3.3, -5000.0, 15.0);
+        lowFerryParams.loadParameter(3.4, -5000.0, 15.0);
         lowFerryParams.ready();
     }
 
@@ -76,13 +71,6 @@ public class ShootingDecider implements Updatable {
         return pose.getX() > FieldConstants.wingOpponentX;
     }
 
-    private static double getSkewCompensationFromRegression(double y_offset) {
-        if (useSmartDashboardForSkew) {
-            return skewValue.get();
-        }
-        return ShootingDistanceMap.skewOffsetMap.getInterpolated(new InterpolatingDouble(y_offset)).value;
-    }
-
     @Override
     public void update(double time, double dt) {
         speakerParams.update();
@@ -90,25 +78,7 @@ public class ShootingDecider implements Updatable {
         lowFerryParams.update();
     }
 
-    private double[] getAdjustedShootOnMoveParams(
-            double uncompensated_yaw, double uncompensated_range, Twist2d robot_velocity) {
-        com.team254.lib.geometry.Translation2d polar_velocity = new com.team254.lib.geometry.Translation2d(robot_velocity.dx, robot_velocity.dy)
-                .rotateBy(com.team254.lib.geometry.Rotation2d.fromDegrees(uncompensated_yaw));
-        double radial = polar_velocity.x();
-        double tangential = polar_velocity.y();
-
-        double shot_speed = uncompensated_range / kToFFactor - radial;
-        shot_speed = Math.max(0.0, shot_speed);
-        double yaw_adj = Units.radiansToDegrees(Math.atan2(-tangential, shot_speed));
-        double range_adj = kToFFactor * Math.sqrt(Math.pow(tangential, 2) + Math.pow(shot_speed, 2));
-        return new double[]{yaw_adj + uncompensated_yaw, range_adj};
-    }
-
     public ShootingParameters getShootingParameter(Destination destination, Pose2d robotPose) {
-        return getShootingParameter(destination, robotPose, new Twist2d(0, 0, 0));
-    }
-
-    public ShootingParameters getShootingParameter(Destination destination, Pose2d robotPose, Twist2d robotVelocity) {
         Translation2d target, delta;
         Pair<Double, Double> launchParam;
 
@@ -123,32 +93,14 @@ public class ShootingDecider implements Updatable {
                 OperatorDashboard.getInstance().updateDistanceToTarget(delta.getNorm());
                 launchParam = useMid ? lowFerryParams.getParameters(delta.getNorm()) : highFerryParams.getParameters(delta.getNorm());
                 return new ShootingParameters(delta.getNorm(), launchParam.getFirst(), launchParam.getSecond(),
-                        new Rotation2d(delta.getX(), delta.getY()).rotateBy(Rotation2d.fromDegrees(180.0)));
+                        new Rotation2d(delta.getX(), delta.getY()).rotateBy(Rotation2d.fromDegrees(AllianceFlipUtil.shouldFlip() ? 0 : 180)));
             case SPEAKER:
                 target = AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening).toTranslation2d();
                 delta = target.minus(robotPose.getTranslation());
-
-                com.team254.lib.geometry.Translation2d deltaMod = new com.team254.lib.geometry.Translation2d(
-                        delta
-                );
-
-                double dist = deltaMod.norm();
-                double yaw = deltaMod.direction().getDegrees();
-
-                if (useShootOnMove) {
-                    double[] somParams = getAdjustedShootOnMoveParams(yaw, dist, robotVelocity);
-                    yaw = somParams[0];
-                    dist = somParams[1];
-                }
-
-                OperatorDashboard.getInstance().updateDistanceToTarget(dist);
-                OperatorDashboard.getInstance().updateHorizontalDistanceToTarget(deltaMod.y());
-                launchParam = speakerParams.getParameters(dist);
-
-                return new ShootingParameters(dist, launchParam.getFirst(), launchParam.getSecond(),
-                        new Rotation2d(yaw)
-                                .rotateBy(Rotation2d.fromDegrees(180.0))
-                                .rotateBy(Rotation2d.fromDegrees(getSkewCompensationFromRegression(deltaMod.y()))));
+                OperatorDashboard.getInstance().updateDistanceToTarget(delta.getNorm());
+                launchParam = speakerParams.getParameters(delta.getNorm());
+                return new ShootingParameters(delta.getNorm(), launchParam.getFirst(), launchParam.getSecond(),
+                        new Rotation2d(delta.getX(), delta.getY()).rotateBy(Rotation2d.fromDegrees(AllianceFlipUtil.shouldFlip() ? 0 : 180)));
             default:
                 throw new IllegalArgumentException("Illegal destination: undefined.");
         }
