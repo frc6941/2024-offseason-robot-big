@@ -39,16 +39,29 @@
     }
   },
   "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
     "transitory": {
-      "AdvantageKit": {
-        "Shooter": {
-          "open": true
-        }
+      "PathPlanner": {
+        "open": true
       },
-      "SmartDashboard": {
-        "TunableNumbers": {
+      "Shuffleboard": {
+        "Operator": {
+          "Auto Selector": {
+            "open": true
+          },
           "open": true
         },
+        "open": true
+      },
+      "SmartDashboard": {
+        "open": true
+      },
+      "Swerve": {
+        "open": true
+      },
+      "limelight": {
         "open": true
       }
     }
