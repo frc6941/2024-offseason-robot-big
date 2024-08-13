@@ -2,35 +2,29 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.378968596458435,
-      "y": 5.570969581604004
+      "x": 1.389139294624329,
+      "y": 5.5790886878967285
     },
-    "rotation": -2.7754019216079233e-17
+    "rotation": 2.0285959565663912e-16
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "AutoShoot"
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Intake"
+                  "pathName": "S2-A1-A2-A3.1"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "S2-A1"
+                  "name": "Intake"
                 }
               }
             ]

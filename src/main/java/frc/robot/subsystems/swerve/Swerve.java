@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerve;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.team254.lib.util.MovingAverage;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -37,8 +38,6 @@ import org.frcteam6941.swerve.*;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 import org.frcteam6941.utils.AngleNormalization;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.Constants.SwerveConstants.speedAt12Volts;
 
 /**
  * Rectangular Swerve Drivetrain.
@@ -137,9 +136,23 @@ public class Swerve implements Updatable, Subsystem {
                 this::resetPose,
                 this::getChassisSpeeds,
                 this::driveSpeed,
+//                new HolonomicPathFollowerConfig(
+//                        speedAt12Volts.magnitude(),
+//                        driveBaseRadius,
+//                        new ReplanningConfig()),
                 new HolonomicPathFollowerConfig(
-                        speedAt12Volts.magnitude(),
-                        driveBaseRadius,
+                        new PIDConstants(
+                                Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
+                                Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
+                                Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()
+                        ),
+                        new PIDConstants(
+                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
+                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
+                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()
+                        ),
+                        Constants.SwerveConstants.maxSpeed.magnitude(),
+                        0.55,
                         new ReplanningConfig()),
                 Utils::flip,
                 this

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.378968596458435,
-      "y": 5.570969581604004
+      "x": 1.3891392946243286,
+      "y": 5.5790886878967285
     },
-    "rotation": -2.7754019216079233e-17
+    "rotation": 1.5731600027068038e-16
   },
   "command": {
     "type": "sequential",
@@ -22,15 +22,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "S2-A1"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "S2-A1-A2-A3.1"
                 }
               },
               {
@@ -53,15 +53,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "A2-W2"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "S2-A1-A2-A3.2"
                 }
               },
               {
@@ -84,15 +84,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "A2-A3"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "S2-A1-A2-A3.3"
                 }
               },
               {

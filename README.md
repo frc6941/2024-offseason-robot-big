@@ -19,3 +19,11 @@
 [Localhost](http://limelight.local:5801/)
 
 [Limelight](https://docs.limelightvision.io/docs/docs-limelight/getting-started/programming)
+
+# TODO
+
+- speaker往后挪 重测parameter
+- shoot变成ddl
+- 画五环 抢环
+- arm acc&cruise调整
+- 爬升
