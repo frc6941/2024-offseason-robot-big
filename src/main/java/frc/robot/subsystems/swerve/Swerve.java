@@ -74,7 +74,7 @@ public class Swerve implements Updatable, Subsystem {
     private double headingVelocityFeedforward = 0.00;
     // Control Targets
     private HolonomicDriveSignal driveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
-    private HolonomicDriveSignal autoDriveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
+    private HolonomicDriveSignal autoDriveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, false, false);
 
     private SwerveSetpoint setpoint;
     private SwerveSetpoint previousSetpoint;
@@ -175,7 +175,7 @@ public class Swerve implements Updatable, Subsystem {
         autoDrive(new Translation2d(
                 speeds.vxMetersPerSecond,
                 speeds.vyMetersPerSecond
-        ), speeds.omegaRadiansPerSecond, true, false);
+        ), speeds.omegaRadiansPerSecond, false, false);
     }
 
     public ChassisSpeeds getChassisSpeeds() {
@@ -215,7 +215,7 @@ public class Swerve implements Updatable, Subsystem {
             Rotation2d robotAngle = swerveLocalizer.getLatestPose().getRotation();
 
             if (driveSignal.isFieldOriented())
-                if (AllianceFlipUtil.shouldFlip()/* && this.state != State.PATH_FOLLOWING*/) {
+                if (AllianceFlipUtil.shouldFlip() /*&& this.state != State.PATH_FOLLOWING*/) {
                     desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, robotAngle.rotateBy(new Rotation2d(180)));
                 } else {
                     desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, robotAngle.rotateBy(new Rotation2d(0)));

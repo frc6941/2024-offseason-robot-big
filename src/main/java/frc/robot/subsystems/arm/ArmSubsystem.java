@@ -35,7 +35,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public boolean armAimingReady() {
-        var positionReady = Math.abs(inputs.armPosition.magnitude() - inputs.targetArmPosition.magnitude()) < 0.007 && Math.abs(inputs.armPosition.magnitude()) > 0.007;
+        var positionReady = Math.abs(inputs.armPosition.magnitude() - inputs.targetArmPosition.magnitude()) < 0.05 && Math.abs(inputs.armPosition.magnitude()) > 0.007;
         SmartDashboard.putBoolean("positionReady", positionReady);
         OperatorDashboard.getInstance().updateArmReady(positionReady);
         return positionReady;

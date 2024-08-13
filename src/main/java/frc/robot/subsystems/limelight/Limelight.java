@@ -132,8 +132,8 @@ public class Limelight implements Updatable {
                 deviationY = 0.01;
                 deviationOmega = 0.001;
             } else if (swerve.getState() == Swerve.State.PATH_FOLLOWING) {
-                deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 50;//140
-                deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 50;
+                deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 100;//140
+                deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 100;
                 deviationOmega = 15;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
             } else {
                 deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 80;
