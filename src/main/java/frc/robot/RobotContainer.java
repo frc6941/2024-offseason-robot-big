@@ -297,7 +297,7 @@ public class RobotContainer {
                 Commands.runOnce(() -> {
                     swerve.resetHeadingController();
                     Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();
-                    Pose2d b = new Pose2d(new Translation2d(0, 0), a);
+                    Pose2d b = new Pose2d(new Translation2d(0, 0),a );
                     swerve.resetPose(b);
                 }));
         driverController.leftBumper().whileTrue(

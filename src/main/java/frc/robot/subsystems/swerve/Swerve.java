@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.display.OperatorDashboard;
+import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -329,7 +330,7 @@ public class Swerve implements Updatable, Subsystem {
     }
 
     public void resetPose(Pose2d resetPose) {
-        gyro.setYaw(resetPose.getRotation().getDegrees());
+        gyro.setYaw(AllianceFlipUtil.apply(resetPose.getRotation().getDegrees()));
         // System.out.println(resetPose.getRotation().getDegrees());
         // System.out.println(gyro.getYaw().getDegrees());
         swerveLocalizer.reset(resetPose, getModulePositions());
@@ -472,10 +473,10 @@ public class Swerve implements Updatable, Subsystem {
             double rotation = headingController.calculate(gyro.getYaw().getDegrees(), new TrapezoidProfile.State(
                     headingTarget, headingVelocityFeedforward));
             if (this.state == State.PATH_FOLLOWING) {
-                autoDriveSignal = new HolonomicDriveSignal(autoDriveSignal.getTranslation(), rotation,
+                autoDriveSignal = new HolonomicDriveSignal(AllianceFlipUtil.apply(autoDriveSignal.getTranslation()), rotation,
                         autoDriveSignal.isFieldOriented(), autoDriveSignal.isOpenLoop());
             } else {
-                driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), rotation,
+                driveSignal = new HolonomicDriveSignal(AllianceFlipUtil.apply(driveSignal.getTranslation()), rotation,
                         driveSignal.isFieldOriented(), driveSignal.isOpenLoop());
             }
             Logger.recordOutput("heading/rotation", rotation);
