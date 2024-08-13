@@ -9,11 +9,11 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.utils.Utils.armReachedClimb;
 
-public class ClimbShooterUpCommand extends Command {
+public class ClimbArmUpCommand extends Command {
     private final ArmSubsystem armSubsystem;
     private final Timer timer = new Timer();
 
-    public ClimbShooterUpCommand(ArmSubsystem armSubsystem) {
+    public ClimbArmUpCommand(ArmSubsystem armSubsystem) {
         this.armSubsystem = armSubsystem;
     }
 

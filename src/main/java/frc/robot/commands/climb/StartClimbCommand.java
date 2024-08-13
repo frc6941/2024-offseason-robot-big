@@ -23,7 +23,7 @@ public class StartClimbCommand extends ParallelCommandGroup {
             BooleanSupplier confirmation
     ) {
         addCommands(
-                new ClimbShooterUpCommand(armSubsystem),
+                new ClimbArmUpCommand(armSubsystem),
                 new SequentialCommandGroup(
                         Commands.runOnce(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.CAN_CLIMB)),
                         new RumbleCommand(Seconds.of(0.5), driverController.getHID(), operatorController.getHID()),
