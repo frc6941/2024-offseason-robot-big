@@ -290,8 +290,8 @@ public class Constants {
          */
         public static final Measure<Velocity<Angle>> maxAngularRate = RotationsPerSecond.of(1.5 * Math.PI);
 
-        public static final double deadband = maxSpeed.magnitude() * 0.02;
-        public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.02;
+        public static final double deadband = maxSpeed.magnitude() * 0.05;
+        public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.05;
 
         /**
          * Gearing between the drive motor output shaft and the wheel.

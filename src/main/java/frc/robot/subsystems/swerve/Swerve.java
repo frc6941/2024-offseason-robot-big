@@ -215,7 +215,7 @@ public class Swerve implements Updatable, Subsystem {
             Rotation2d robotAngle = swerveLocalizer.getLatestPose().getRotation();
 
             if (driveSignal.isFieldOriented())
-                if (AllianceFlipUtil.shouldFlip()) {
+                if (AllianceFlipUtil.shouldFlip()/* && this.state != State.PATH_FOLLOWING*/) {
                     desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, robotAngle.rotateBy(new Rotation2d(180)));
                 } else {
                     desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, robotAngle.rotateBy(new Rotation2d(0)));

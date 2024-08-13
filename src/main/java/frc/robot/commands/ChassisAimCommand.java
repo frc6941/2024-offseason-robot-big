@@ -20,7 +20,12 @@ public class ChassisAimCommand extends Command {
     private final Supplier<ShootingDecider.Destination> destinationSupplier;
     private final ShootingDecider shootingDecider;
     private final boolean isAuto;
-    LinearFilter filter = LinearFilter.movingAverage(5);
+
+    private double[] inputBuffer;
+    private double[] outputBuffer;
+    private boolean reset = false;
+    //Decay = e^(-period/timeConstant) output = lastOutput*Decay + input * (1-Decay)
+    LinearFilter filter = LinearFilter.singlePoleIIR(0.02, 0.02);
     private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("DistanceShooting");
 
     public ChassisAimCommand(
@@ -47,7 +52,7 @@ public class ChassisAimCommand extends Command {
 
     @Override
     public void initialize() {
-        //filter.reset();
+        reset = false;
     }
 
     @Override
@@ -68,6 +73,11 @@ public class ChassisAimCommand extends Command {
                 destinationSupplier.get(),
                 swerve.getLocalizer().getCoarseFieldPose(0));
         SmartDashboard.putNumber("Swerve/origin heading", parameter.getFieldAimingAngle().getDegrees());
+        if (!reset) {
+            reset = true;
+            filter.reset(new double[]{parameter.getFieldAimingAngle().getDegrees()},
+                    new double[]{parameter.getFieldAimingAngle().getDegrees()});
+        }
         double degrees = filter.calculate(parameter.getFieldAimingAngle().getDegrees());
         SmartDashboard.putNumber("Swerve/filtered heading", degrees);
         swerve.setHeadingTarget(degrees);
