@@ -207,13 +207,20 @@ public class Swerve implements Updatable, Subsystem {
             desiredChassisSpeed = new ChassisSpeeds(0.0, 0.0, 0.0);
             driveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
         } else {
+
             double x = driveSignal.getTranslation().getX();
             double y = driveSignal.getTranslation().getY();
             double rotation = driveSignal.getRotation();
+
             Rotation2d robotAngle = swerveLocalizer.getLatestPose().getRotation();
 
             if (driveSignal.isFieldOriented())
-                desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, robotAngle);
+                if (AllianceFlipUtil.shouldFlip()) {
+                    desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, robotAngle.rotateBy(new Rotation2d(180)));
+                } else {
+                    desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, robotAngle.rotateBy(new Rotation2d(0)));
+                }
+
             else
                 desiredChassisSpeed = new ChassisSpeeds(x, y, rotation);
         }
@@ -330,7 +337,7 @@ public class Swerve implements Updatable, Subsystem {
     }
 
     public void resetPose(Pose2d resetPose) {
-        gyro.setYaw(AllianceFlipUtil.apply(resetPose.getRotation().getDegrees()));
+        gyro.setYaw(resetPose.getRotation().getDegrees() + (AllianceFlipUtil.shouldFlip() ? 180 : 0));
         // System.out.println(resetPose.getRotation().getDegrees());
         // System.out.println(gyro.getYaw().getDegrees());
         swerveLocalizer.reset(resetPose, getModulePositions());
@@ -473,10 +480,10 @@ public class Swerve implements Updatable, Subsystem {
             double rotation = headingController.calculate(gyro.getYaw().getDegrees(), new TrapezoidProfile.State(
                     headingTarget, headingVelocityFeedforward));
             if (this.state == State.PATH_FOLLOWING) {
-                autoDriveSignal = new HolonomicDriveSignal(AllianceFlipUtil.apply(autoDriveSignal.getTranslation()), rotation,
+                autoDriveSignal = new HolonomicDriveSignal(autoDriveSignal.getTranslation(), rotation,
                         autoDriveSignal.isFieldOriented(), autoDriveSignal.isOpenLoop());
             } else {
-                driveSignal = new HolonomicDriveSignal(AllianceFlipUtil.apply(driveSignal.getTranslation()), rotation,
+                driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), rotation,
                         driveSignal.isFieldOriented(), driveSignal.isOpenLoop());
             }
             Logger.recordOutput("heading/rotation", rotation);

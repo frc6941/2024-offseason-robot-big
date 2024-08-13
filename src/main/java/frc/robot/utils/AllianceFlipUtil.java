@@ -44,6 +44,17 @@ public class AllianceFlipUtil {
     }
 
     /**
+     * Flips a translation speed to the correct side of the field based on the current alliance color.
+     */
+    public static Translation2d applySpeed(Translation2d translation) {
+        if (shouldFlip()) {
+            return new Translation2d(translation.getX(), translation.getY());
+        } else {
+            return translation;
+        }
+    }
+
+    /**
      * Flips a rotation based on the current alliance color.
      */
     public static Rotation2d apply(Rotation2d rotation) {

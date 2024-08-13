@@ -13,8 +13,11 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
+import frc.robot.commands.climb.ClimbCommand;
+import frc.robot.commands.climb.ClimbManualShooterUpCommand;
+import frc.robot.commands.climb.StartClimbCommand;
+import frc.robot.commands.test.ArmDownCommand;
 import frc.robot.display.Display;
 import frc.robot.display.OperatorDashboard;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -114,8 +117,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("ResetArm", new ResetArmCommand(arm));
         NamedCommands.registerCommand("FlyWheelRampUp", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));//READ ME change all "Preshoot" in auto files
         NamedCommands.registerCommand("AutoPreArm", new ArmAimCommand(arm, () -> Destination.SPEAKER));
-        NamedCommands.registerCommand("ChassisAim",new ChassisAimCommand(swerve, () -> Destination.SPEAKER, () -> 0, () -> 0)); 
-        NamedCommands.registerCommand("Shoot",new DeliverNoteCommand(indexer, beamBreak, indicator)); 
+        NamedCommands.registerCommand("ChassisAim", new ChassisAimCommand(swerve, () -> Destination.SPEAKER, () -> 0, () -> 0));
+        NamedCommands.registerCommand("Shoot", new DeliverNoteCommand(indexer, beamBreak, indicator));
 
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
@@ -199,6 +202,16 @@ public class RobotContainer {
         operatorController.povLeft().onTrue(setDest(Destination.FERRY));
         operatorController.povUp().onTrue(setDest(Destination.SPEAKER));
         operatorController.povDown().onTrue(setDest(Destination.AMP));
+
+        operatorController.a().toggleOnTrue(
+                new StartClimbCommand(arm, indicator,
+                        driverController, operatorController,
+                        () -> operatorController.getHID().getBButton()));
+
+        operatorController.pov(180).whileTrue(new ArmDownCommand(arm));
+        operatorController.pov(0).whileTrue(new ClimbManualShooterUpCommand(arm));
+        operatorController.pov(90).whileTrue(new ClimbCommand(arm, false));
+        operatorController.pov(270).whileTrue(new ClimbCommand(arm, true));
     }
 
     public Command getAutonomousCommand() {
@@ -267,7 +280,7 @@ public class RobotContainer {
     private Command resetOdom() {
         return Commands.runOnce(() -> {
             swerve.resetHeadingController();
-            Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();
+            Rotation2d a = Rotation2d.fromDegrees(swerve.getLocalizer().getLatestPose().getRotation().getDegrees());
             Pose2d b = new Pose2d(new Translation2d(0, 0), a);
             swerve.resetPose(b);
         });
