@@ -37,7 +37,7 @@ public class ShootingDecider implements Updatable {
         speakerParams.loadParameter(1.245, -4500, 21.811);// 20240808
         speakerParams.loadParameter(1.600, -4500, 30.614);// 20240808
         speakerParams.loadParameter(1.910, -4500, 45.02);// 20240808
-        speakerParams.loadParameter(2.20, -4500, 52.767);// 20240808
+        speakerParams.loadParameter(2.20, -4500, 50.767);// 20240808
         speakerParams.loadParameter(2.51, -4500, 53.628);// 20240808
         speakerParams.loadParameter(2.8, -4500, 58.202);
         speakerParams.loadParameter(3.06, -5700, 63.728);// 20240808
@@ -48,8 +48,8 @@ public class ShootingDecider implements Updatable {
 
         highFerryParams.loadParameter(5.0, -2000.0, 10.0);
         highFerryParams.loadParameter(6.5, -2700.0, 10.0);
-        highFerryParams.loadParameter(8.0, -4000.0, 10.0);
-        highFerryParams.loadParameter(9.5, -5500.0, 10.0);
+        highFerryParams.loadParameter(8.0, -3500.0, 10.0);
+        highFerryParams.loadParameter(9.5, -5000.0, 10.0);
         highFerryParams.loadParameter(11.0, -6000.0, 10.0);
         highFerryParams.ready();
         lowFerryParams.loadParameter(1.5, -2000.0, 15.0);
@@ -96,7 +96,7 @@ public class ShootingDecider implements Updatable {
                 return new ShootingParameters(delta.getNorm(), launchParam.getFirst(), launchParam.getSecond(),
                         new Rotation2d(delta.getX(), delta.getY()).rotateBy(Rotation2d.fromDegrees(180)));
             case SPEAKER:
-                target = AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening).toTranslation2d();
+                target = AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.minus(new Translation3d(0.4, 0, 0))).toTranslation2d();
                 delta = target.minus(robotPose.getTranslation());
                 OperatorDashboard.getInstance().updateDistanceToTarget(delta.getNorm());
                 launchParam = speakerParams.getParameters(delta.getNorm());
