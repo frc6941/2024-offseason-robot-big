@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.commands.climb.ClimbCommand;
@@ -144,7 +145,7 @@ public class RobotContainer {
          * Right Joystick - Spinning
          * D-Pad - Field-Oriented Facing
          * Start Button - Reset Odometry
-         * Back Button - Reset Arm
+         
          *
          * Superstructure:
          * X - Speaker Shot
@@ -159,7 +160,8 @@ public class RobotContainer {
          * Superstructure: (TODO: Consider remove)
          * D-Pad Up - Select Speaker
          * D-Pad Down - Select Amp
-         * D-Pad Left - Select Ferry
+         * D-Pad right - Select Ferry
+         *  Back Button - Reset Arm
          */
 
         swerve.setDefaultCommand(drive());
@@ -172,22 +174,12 @@ public class RobotContainer {
         driverController.leftBumper().whileTrue(
                 intake().andThen(rumbleDriver(1.0)));
 
-        driverController.povUp().whileTrue(facing(0));
-        driverController.povUpRight().whileTrue(facing(315));
-        driverController.povRight().whileTrue(facing(270));
-        driverController.povDownRight().whileTrue(facing(225));
-        driverController.povDown().whileTrue(facing(180));
-        driverController.povDownLeft().whileTrue(facing(135));
-        driverController.povLeft().whileTrue(facing(90));
-        driverController.povUpLeft().whileTrue(facing(45));
-
         // superstructure
-        driverController.back().onTrue(new ResetArmCommand(arm));
         driverController.x().whileTrue(
                 speakerShot()
                         .alongWith(setDest(Destination.SPEAKER))
                         .andThen(rumbleDriver(1.0)));
-        driverController.y().whileTrue(
+        driverController.rightBumper().whileTrue(
                 ampShot()
                         .alongWith(setDest(Destination.AMP))
                         .andThen(rumbleDriver(1.0)));
@@ -195,23 +187,17 @@ public class RobotContainer {
                 ferryShot()
                         .alongWith(setDest(Destination.FERRY))
                         .andThen(rumbleDriver(1.0)));
-        driverController.leftTrigger().whileTrue(outtake()); // FIXME: will cause stuck, confirmation on safe needed
-        driverController.rightBumper().whileTrue(selectShot()); // FIXME: consider only use ABXY to shoot
+        driverController.rightBumper().whileTrue(ampAim()); 
+        driverController.rightBumper().onFalse(justShoot().withTimeout(0.3));
 
         // operator superstructure commands
-        operatorController.povLeft().onTrue(setDest(Destination.FERRY));
+        operatorController.povRight().onTrue(setDest(Destination.FERRY));
         operatorController.povUp().onTrue(setDest(Destination.SPEAKER));
-        operatorController.povDown().onTrue(setDest(Destination.AMP));
+        operatorController.a().toggleOnTrue(flyWheelOn());
+        operatorController.back().onTrue(new ResetArmCommand(arm));
 
-        operatorController.a().toggleOnTrue(
-                new StartClimbCommand(arm, indicator,
-                        driverController, operatorController,
-                        () -> operatorController.getHID().getBButton()));
 
-        operatorController.pov(180).whileTrue(new ArmDownCommand(arm));
-        operatorController.pov(0).whileTrue(new ClimbManualShooterUpCommand(arm));
-        operatorController.pov(90).whileTrue(new ClimbCommand(arm, false));
-        operatorController.pov(270).whileTrue(new ClimbCommand(arm, true));
+
     }
 
     public Command getAutonomousCommand() {
@@ -220,13 +206,17 @@ public class RobotContainer {
         // return AutoBuilder.buildAuto("S2-S-A1-A2-A3");
     }
 
-    // command composers
+    // command composer
     private Command rumbleDriver(double seconds) {
         return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
     }
 
     private Command rumbleOperator(double seconds) {
         return new RumbleCommand(Seconds.of(seconds), operatorController.getHID());
+    }
+
+    private Command justShoot(){
+        return new DeliverNoteCommand(indexer, beamBreak, indicator);
     }
 
     private Command ferryShot() {
@@ -238,6 +228,12 @@ public class RobotContainer {
         return new AmpShootCommand(shooter, arm, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean());
     }
 
+    private Command ampAim() {
+        return new ParallelCommandGroup(
+                new ArmAimCommand(arm, () -> Destination.AMP),
+                new FlyWheelRampUp(shooter, () -> Destination.AMP));
+    }
+
     private Command speakerShot() {
         return new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve,
                 driverController::getLeftX, driverController::getLeftY, false);
@@ -246,6 +242,9 @@ public class RobotContainer {
     private Command speakerAutoShot() {
         //return new SpeakerShootAutoCommand(shooter, indexer, beamBreak, indicator, swerve);
         return new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve);
+    }
+    private Command flyWheelOn(){
+        return new FlyWheelRampUp(shooter, () ->dashboard.getCurrDestination());
     }
 
     private Command selectShot() {
