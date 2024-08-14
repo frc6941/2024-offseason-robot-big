@@ -22,9 +22,35 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Intake"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Intake"
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "AutoPreArm"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "FlywheelRampUp"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -45,12 +71,6 @@
                 "data": {
                   "pathName": "A1-B1"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
               }
             ]
           }
@@ -63,12 +83,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "B1-R1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoPreShoot"
                 }
               }
             ]
@@ -91,9 +105,35 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Intake"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Intake"
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "AutoPreArm"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "FlywheelRampUp"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -116,9 +156,35 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Intake"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Intake"
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "AutoPreArm"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "FlywheelRampUp"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               }
             ]
