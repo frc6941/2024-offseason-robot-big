@@ -43,6 +43,12 @@
       "open": false
     },
     "transitory": {
+      "AdvantageKit": {
+        "Shooter": {
+          "open": true
+        },
+        "open": true
+      },
       "PathPlanner": {
         "open": true
       },

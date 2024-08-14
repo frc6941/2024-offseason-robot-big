@@ -27,11 +27,12 @@ public class FlyWheelRampUp extends Command {
 
     @Override
     public void initialize() {
-        OperatorDashboard.getInstance().updateFlyWheelOn(true);
+
     }
 
     @Override
     public void execute() {
+        OperatorDashboard.getInstance().updateFlyWheelOn(true);
         shooterSubsystem.getIo().setFlyWheelVelocity(
                 shootingDecider.getShootingParameter(
                         destinationSupplier.get(),

@@ -224,8 +224,6 @@ public class RobotContainer {
         operatorController.povLeft().onTrue(setDest(Destination.SPEAKER));
         operatorController.a().toggleOnTrue(flyWheelOn());
         operatorController.povUp().onTrue(new ResetArmCommand(arm));
-
-
     }
 
     public Command getAutonomousCommand() {

@@ -1,7 +1,9 @@
 package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
@@ -20,6 +22,7 @@ public class ShooterIOSim implements ShooterIO {
 
     private Measure<Voltage> leftShooterAppliedVoltage = Volts.zero();
     private Measure<Voltage> rightShooterAppliedVoltage = Volts.zero();
+    private Measure<Velocity<Angle>> targetShooterVelocity = RadiansPerSecond.zero();
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
@@ -43,6 +46,8 @@ public class ShooterIOSim implements ShooterIO {
                 rightShooterAppliedVoltage;
         inputs.rightShooterSupplyCurrent =
                 Amps.of(rightShooterTalonSim.getCurrentDrawAmps());
+
+        inputs.targetShooterVelocity = targetShooterVelocity;
     }
 
     @Override
@@ -61,6 +66,7 @@ public class ShooterIOSim implements ShooterIO {
     @Override
     public void setFlyWheelVelocity(double velocityRPM) {
         leftShooterTalonSim.setState(0, velocityRPM);
+        targetShooterVelocity = RadiansPerSecond.of(velocityRPM / 60);
     }
 
     @Override

@@ -25,3 +25,7 @@
 - 画五环 抢环
 - arm acc&cruise调整
 - 爬升
+- Swerve两套PID
+- ArmVelocity调大
+- 动量补偿？
+- 
