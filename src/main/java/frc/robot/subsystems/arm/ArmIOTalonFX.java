@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -32,6 +33,7 @@ public class ArmIOTalonFX implements ArmIO {
     private final StatusSignal<Double> pullerTorqueCurrent = pullerTalon.getTorqueCurrent();
     private boolean homed = false;
     private double targetArmPosition = 0;
+    private double targetPullerVelocity = 0;
 
     public ArmIOTalonFX() {
         //TODO: Arm PID
@@ -82,6 +84,7 @@ public class ArmIOTalonFX implements ArmIO {
 
         inputs.homed = homed;
         inputs.targetArmPosition = Radians.of(targetArmPosition);
+        inputs.targetPullerVelocity = targetPullerVelocity;
 
         armTalon.getConfigurator().apply(new Slot0Configs()
                 .withKP(inputs.ArmKP)
@@ -90,6 +93,14 @@ public class ArmIOTalonFX implements ArmIO {
                 .withKA(inputs.ArmKA)
                 .withKV(inputs.ArmKV)
                 .withKS(inputs.ArmKS));
+
+        pullerTalon.getConfigurator().apply(new Slot0Configs()
+                .withKP(inputs.PullerKP)
+                .withKI(inputs.PullerKI)
+                .withKD(inputs.PullerKD)
+                .withKA(inputs.PullerKA)
+                .withKV(inputs.PullerKV)
+                .withKS(inputs.PullerKS));
     }
 
     @Override
@@ -100,6 +111,22 @@ public class ArmIOTalonFX implements ArmIO {
     @Override
     public void setPullerVoltage(Measure<Voltage> volts) {
         pullerTalon.setControl(new VoltageOut(volts.magnitude()));
+    }
+
+    @Override
+    public void setPullerVelocity(double RPM) {
+        var velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(RPM);
+        pullerTalon.setControl(new VelocityVoltage(
+                Units.radiansToRotations(velocityRadPerSec),
+                0.0,
+                true,
+                0,
+                0,
+                false,
+                false,
+                false
+        ));
+        targetPullerVelocity = velocityRadPerSec;
     }
 
     @Override

@@ -63,6 +63,10 @@ public class ArmIOSim implements ArmIO {
     }
 
     @Override
+    public void setPullerVelocity(double RPM) {
+    }
+
+    @Override
     public void setArmHome(Measure<Angle> rad) {
         setArmPosition(rad);
     }

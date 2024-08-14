@@ -118,6 +118,15 @@ public class Constants {
             public static final TunableNumber ARM_KV = new TunableNumber("ARM PID/kv", 0);// 0.107853495
             public static final TunableNumber ARM_KS = new TunableNumber("ARM PID/ks", 0.25);
         }
+
+        public static class pullerGainsClass {
+            public static final TunableNumber PULLER_KP = new TunableNumber("PULLER PID/kp", 0.2);
+            public static final TunableNumber PULLER_KI = new TunableNumber("PULLER PID/ki", 0);
+            public static final TunableNumber PULLER_KD = new TunableNumber("PULLER PID/kd", 0.001);
+            public static final TunableNumber PULLER_KA = new TunableNumber("PULLER PID/ka", 0.0037512677);
+            public static final TunableNumber PULLER_KV = new TunableNumber("PULLER PID/kv", 0.113);// 0.107853495
+            public static final TunableNumber PULLER_KS = new TunableNumber("PULLER PID/ks", 0.28475008);
+        }
     }
 
     public static class BeamBreakConstants {

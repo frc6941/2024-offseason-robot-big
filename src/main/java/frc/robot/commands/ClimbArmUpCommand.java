@@ -7,7 +7,6 @@ import frc.robot.subsystems.arm.ArmSubsystem;
 
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.utils.Utils.armReachedClimb;
 
 public class ClimbArmUpCommand extends Command {
     private final ArmSubsystem armSubsystem;
@@ -26,11 +25,6 @@ public class ClimbArmUpCommand extends Command {
 
     @Override
     public void execute() {
-        var voltage = Constants.ArmConstants.armUpDownVoltage.mutableCopy().negate();
-        if (armSubsystem.getInputs().armPosition.minus(Radians.of(2.52)).gt(Radians.of(0.04))) {
-            voltage = Volts.zero();
-            armReachedClimb = true;
-        }
         if (!timer.hasElapsed(0.3)) {
             armSubsystem.getIo()
                     .setPullerVoltage(Constants.ArmConstants.pullVoltage);
@@ -38,7 +32,7 @@ public class ClimbArmUpCommand extends Command {
             armSubsystem.getIo()
                     .setPullerVoltage(Volts.zero());
             armSubsystem.getIo()
-                    .setArmVoltage(voltage);
+                    .setArmPosition(Radians.of(2.6));
         }
     }
 
@@ -46,11 +40,10 @@ public class ClimbArmUpCommand extends Command {
     public void end(boolean interrupted) {
         armSubsystem.getIo()
                 .setPullerBrakeMode(false);
-        armSubsystem.getIo().setArmVoltage(Volts.zero());
     }
 
     @Override
     public boolean isFinished() {
-        return armReachedClimb;
+        return false;
     }
 }

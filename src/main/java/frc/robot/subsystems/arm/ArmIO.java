@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.AutoLog;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ArmConstants.armGainsClass.*;
+import static frc.robot.Constants.ArmConstants.pullerGainsClass.*;
 
 public interface ArmIO {
     void updateInputs(ArmIOInputs inputs);
@@ -15,6 +16,8 @@ public interface ArmIO {
     void setArmVoltage(Measure<Voltage> volts);
 
     void setPullerVoltage(Measure<Voltage> volts);
+
+    void setPullerVelocity(double RPM);
 
     void setArmHome(Measure<Angle> rad);
 
@@ -43,6 +46,7 @@ public interface ArmIO {
         public Measure<Current> pullerTorqueCurrent = Amps.zero();
 
         public Measure<Angle> targetArmPosition = Radians.zero();
+        public double targetPullerVelocity = 0;
 
         public double ArmKP = ARM_KP.get();
         public double ArmKI = ARM_KI.get();
@@ -50,5 +54,12 @@ public interface ArmIO {
         public double ArmKA = ARM_KA.get();
         public double ArmKV = ARM_KV.get();
         public double ArmKS = ARM_KS.get();
+
+        public double PullerKP = PULLER_KP.get();
+        public double PullerKI = PULLER_KI.get();
+        public double PullerKD = PULLER_KD.get();
+        public double PullerKA = PULLER_KA.get();
+        public double PullerKV = PULLER_KV.get();
+        public double PullerKS = PULLER_KS.get();
     }
 }
