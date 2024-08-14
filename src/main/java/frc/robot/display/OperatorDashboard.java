@@ -12,7 +12,7 @@ public class OperatorDashboard {
     private static OperatorDashboard instance;
     private final ShuffleboardTab operatorTab;
     private final GenericEntry distanceToTarget, horizontalDistanceToTarget;
-    private final GenericEntry useFerry, useAmp, useSpeaker;
+    private final GenericEntry useFerry, useAmp, useSpeaker, flyWheelOn;
     private final GenericEntry isShooterReady, isDrivetrainReady, isArmReady, isReady;
     private final GenericEntry noteAtIntaker, noteAtIndexer, noteAtShooter;
     // TargetStatus
@@ -21,6 +21,11 @@ public class OperatorDashboard {
 
     private OperatorDashboard() {
         operatorTab = Shuffleboard.getTab("Operator");
+        flyWheelOn = operatorTab
+                .add("flyWheelOn", false)
+                .withPosition(3, 1)
+                .withSize(1, 1)
+                .getEntry();
         distanceToTarget = operatorTab
                 .add("Distance", -1.0)
                 .withPosition(0, 1)
@@ -34,54 +39,54 @@ public class OperatorDashboard {
 
         useFerry = operatorTab
                 .add("Use Ferry", false)
-                .withPosition(4, 0)
+                .withPosition(4, 1)
                 .withSize(1, 1)
                 .getEntry();
         useAmp = operatorTab
                 .add("Use Amp", false)
-                .withPosition(6, 0)
+                .withPosition(3, 0)
                 .withSize(1, 1)
                 .getEntry();
         useSpeaker = operatorTab
                 .add("Use Speaker", false)
-                .withPosition(5, 0)
+                .withPosition(2, 0)
                 .withSize(1, 1)
                 .getEntry();
 
         isReady = operatorTab
                 .add("Ready", false)
                 .withPosition(4, 1)
-                .withSize(3, 2)
+                .withSize(3, 1)
                 .getEntry();
         isShooterReady = operatorTab
                 .add("Shooter Ready", false)
-                .withPosition(4, 3)
+                .withPosition(3, 2)
                 .withSize(1, 1)
                 .getEntry();
         isDrivetrainReady = operatorTab
                 .add("Drivetrain Ready", false)
-                .withPosition(6, 3)
+                .withPosition(5, 2)
                 .withSize(1, 1)
                 .getEntry();
         isArmReady = operatorTab
                 .add("Arm Ready", false)
-                .withPosition(5, 3)
+                .withPosition(4, 2)
                 .withSize(1, 1)
                 .getEntry();
 
         noteAtIntaker = operatorTab
                 .add("At Intaker", false)
-                .withPosition(4, 4)
+                .withPosition(2, 4)
                 .withSize(1, 1)
                 .getEntry();
         noteAtIndexer = operatorTab
                 .add("At Indexer", false)
-                .withPosition(6, 4)
+                .withPosition(4, 4)
                 .withSize(1, 1)
                 .getEntry();
         noteAtShooter = operatorTab
                 .add("At Shooter", false)
-                .withPosition(5, 4)
+                .withPosition(3, 4)
                 .withSize(1, 1)
                 .getEntry();
 
@@ -159,5 +164,9 @@ public class OperatorDashboard {
 
     public void updateHorizontalDistanceToTarget(double distanceToTarget) {
         this.horizontalDistanceToTarget.setDouble(distanceToTarget);
+    }
+
+    public void updateFlyWheelOn(boolean flyWheelOn) {
+        this.flyWheelOn.setBoolean(flyWheelOn);
     }
 }

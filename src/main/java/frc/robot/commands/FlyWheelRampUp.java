@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.display.OperatorDashboard;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.shooting.ShootingDecider;
@@ -21,11 +22,11 @@ public class FlyWheelRampUp extends Command {
         this.shooterSubsystem = shooterSubsystem;
         this.destinationSupplier = destinationSupplier;
         this.shootingDecider = ShootingDecider.getInstance();
-
     }
 
     @Override
     public void initialize() {
+        OperatorDashboard.getInstance().updateFlyWheelOn(true);
     }
 
     @Override
@@ -34,12 +35,13 @@ public class FlyWheelRampUp extends Command {
                 shootingDecider.getShootingParameter(
                         destinationSupplier.get(),
                         Swerve.getInstance().getLocalizer().getCoarseFieldPose(0)
-        ).getShootingVelocity());
+                ).getShootingVelocity());
     }
 
     @Override
     public void end(boolean interrupted) {
         shooterSubsystem.getIo()
                 .setFlyWheelDirectVoltage(Constants.ShooterConstants.shooterConstantVoltage);
+        OperatorDashboard.getInstance().updateFlyWheelOn(false);
     }
 }

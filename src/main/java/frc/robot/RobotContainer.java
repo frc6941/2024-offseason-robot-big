@@ -15,10 +15,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
-import frc.robot.commands.climb.ClimbCommand;
-import frc.robot.commands.climb.ClimbManualShooterUpCommand;
-import frc.robot.commands.climb.StartClimbCommand;
-import frc.robot.commands.test.ArmDownCommand;
 import frc.robot.display.Display;
 import frc.robot.display.OperatorDashboard;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -145,7 +141,7 @@ public class RobotContainer {
          * Right Joystick - Spinning
          * D-Pad - Field-Oriented Facing
          * Start Button - Reset Odometry
-         
+
          *
          * Superstructure:
          * X - Speaker Shot
@@ -187,16 +183,15 @@ public class RobotContainer {
                 ferryShot()
                         .alongWith(setDest(Destination.FERRY))
                         .andThen(rumbleDriver(1.0)));
-        driverController.rightBumper().whileTrue(ampAim()); 
+        driverController.rightBumper().whileTrue(ampAim());
         driverController.rightBumper().onFalse(justShoot().withTimeout(0.3));
         driverController.leftTrigger().whileTrue(outtake());
 
         // operator superstructure commands
         operatorController.povRight().onTrue(setDest(Destination.FERRY));
-        operatorController.povUp().onTrue(setDest(Destination.SPEAKER));
+        operatorController.povLeft().onTrue(setDest(Destination.SPEAKER));
         operatorController.a().toggleOnTrue(flyWheelOn());
         operatorController.back().onTrue(new ResetArmCommand(arm));
-
 
 
     }
@@ -216,7 +211,7 @@ public class RobotContainer {
         return new RumbleCommand(Seconds.of(seconds), operatorController.getHID());
     }
 
-    private Command justShoot(){
+    private Command justShoot() {
         return new DeliverNoteCommand(indexer, beamBreak, indicator);
     }
 
@@ -244,8 +239,9 @@ public class RobotContainer {
         //return new SpeakerShootAutoCommand(shooter, indexer, beamBreak, indicator, swerve);
         return new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve);
     }
-    private Command flyWheelOn(){
-        return new FlyWheelRampUp(shooter, () ->dashboard.getCurrDestination());
+
+    private Command flyWheelOn() {
+        return new FlyWheelRampUp(shooter, () -> dashboard.getCurrDestination());
     }
 
     private Command selectShot() {
@@ -288,99 +284,5 @@ public class RobotContainer {
 
     private Command setDest(Destination des) {
         return Commands.runOnce(() -> dashboard.updateDestination(des));
-    }
-
-
-    /**
-     * Bind controller keys to commands.
-     */
-    @Deprecated
-    private void configureBindingsOld() {
-        // Driving
-        swerve.setDefaultCommand(
-                Commands.runOnce(() -> {
-                    Translation2d transVel = new Translation2d(
-                            -driverController.getLeftY(),
-                            -driverController.getLeftX()).times(Constants.SwerveConstants.maxSpeed.magnitude());
-                    double rotVel = -Constants.RobotConstants.driverController.getRightX()
-                            * Constants.SwerveConstants.maxAngularRate.magnitude();
-                    swerve.drive(transVel, rotVel, true, false);
-                }, swerve));
-        driverController.start().onTrue(
-                Commands.runOnce(() -> {
-                    swerve.resetHeadingController();
-                    Rotation2d a = swerve.getLocalizer().getLatestPose().getRotation();
-                    Pose2d b = new Pose2d(new Translation2d(0, 0),a );
-                    swerve.resetPose(b);
-                }));
-        driverController.leftBumper().whileTrue(
-                Commands.sequence(
-                        Commands.parallel(new IntakeCommand(intaker, beamBreak, indicator, shooter, arm),
-                                new IndexCommand(indexer, beamBreak)),
-                        new RumbleCommand(Seconds.of(1), driverController.getHID(), operatorController.getHID())));
-
-        driverController.leftBumper().whileTrue(
-                Commands.sequence(
-                        Commands.parallel(
-                                new IntakeCommand(intaker, beamBreak, indicator, shooter, arm),
-                                new IndexCommand(indexer, beamBreak)),
-                        new RumbleCommand(Seconds.of(1), driverController.getHID(),
-                                operatorController.getHID())));
-
-        driverController.povUp().whileTrue(new SetFacingCommand(swerve, 0));
-        driverController.povUpRight().whileTrue(new SetFacingCommand(swerve, 315));
-        driverController.povRight().whileTrue(new SetFacingCommand(swerve, 270));
-        driverController.povDownRight().whileTrue(new SetFacingCommand(swerve, 225));
-        driverController.povDown().whileTrue(new SetFacingCommand(swerve, 180));
-        driverController.povDownLeft().whileTrue(new SetFacingCommand(swerve, 135));
-        driverController.povLeft().whileTrue(new SetFacingCommand(swerve, 90));
-        driverController.povUpLeft().whileTrue(new SetFacingCommand(swerve, 45));
-
-        // superstructure
-        driverController.back().onTrue(new ResetArmCommand(arm));
-        driverController.x().whileTrue(
-                new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve,
-                        driverController::getLeftX, driverController::getLeftY, false)
-                        .alongWith(Commands
-                                .runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.SPEAKER)))
-                        .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
-        driverController.y().whileTrue(
-                new AmpShootCommand(shooter, arm, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean())
-                        .alongWith(Commands
-                                .runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.AMP)))
-                        .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
-        driverController.b().whileTrue(
-                new FerryShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve,
-                        driverController::getLeftX, driverController::getLeftY)
-                        .alongWith(Commands
-                                .runOnce(() -> OperatorDashboard.getInstance().updateDestination(Destination.FERRY)))
-                        .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
-        driverController.leftTrigger().whileTrue(
-                new IntakeOutCommand(intaker).alongWith(
-                        new IndexOutCommand(indexer))); // FIXME: will cause stuck, confirmation on arriving at safe
-        // spot needed.
-
-        shootingCommandMapping = new HashMap<>();
-        shootingCommandMapping.put(
-                Destination.FERRY, new FerryShootCommand(shooter, arm, indexer, beamBreak, indicator,
-                        swerve, driverController::getLeftX, driverController::getLeftY));
-        shootingCommandMapping.put(
-                Destination.AMP,
-                new AmpShootCommand(shooter, arm, indexer, beamBreak, indicator, () -> driverController.a().getAsBoolean()));
-        shootingCommandMapping.put(
-                Destination.SPEAKER, new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve,
-                        driverController::getLeftX, driverController::getLeftY, false));
-
-        driverController.rightBumper().whileTrue(
-                Commands.select(shootingCommandMapping, dashboard::getCurrDestination)
-                        .andThen(new RumbleCommand(Seconds.of(1.0), driverController.getHID())));
-
-        // operator superstructure commands
-        operatorController.povLeft().onTrue(
-                Commands.runOnce(() -> dashboard.updateDestination(Destination.FERRY)));
-        operatorController.povUp().onTrue(
-                Commands.runOnce(() -> dashboard.updateDestination(Destination.SPEAKER)));
-        operatorController.povDown().onTrue(
-                Commands.runOnce(() -> dashboard.updateDestination(Destination.AMP)));
     }
 }
