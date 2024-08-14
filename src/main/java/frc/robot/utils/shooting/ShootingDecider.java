@@ -33,24 +33,24 @@ public class ShootingDecider implements Updatable {
         ampAngle = new TunableNumber("Amp Angle Degs", 165.0);
         ampVelocity = new TunableNumber("Amp Velocity Rpm", -3000.0);
 
-        speakerParams.loadParameter(1.064, -4500, 0.2574 / 3.14 * 180);// 20240808
-        speakerParams.loadParameter(1.245, -4500, 0.5026 / 3.14 * 180);// 20240808
-        speakerParams.loadParameter(1.600, -4500, 0.6736 / 3.14 * 180);// 20240808
-        speakerParams.loadParameter(1.910, -4500, 0.8587 / 3.14 * 180);// 20240808
-        speakerParams.loadParameter(2.20, -4500, 0.9205 / 3.14 * 180);// 20240808
-        speakerParams.loadParameter(2.51, -4500, 0.9704 / 3.14 * 180);// 20240808
-        speakerParams.loadParameter(2.8, -4500, 1.0502 / 3.14 * 180);
-        speakerParams.loadParameter(3.06, -5700, 1.1117 / 3.14 * 180);// 20240808
-        speakerParams.loadParameter(3.47, -5700, 1.1746 / 3.14 * 180);// 20240808
-        speakerParams.loadParameter(3.79, -5700, 1.2322 / 3.14 * 180);//
-        speakerParams.loadParameter(3.9, -5700, 1.2391 / 3.14 * 180);// 20240808
+        speakerParams.loadParameter(1.064, -4500, 14.755);// 20240808
+        speakerParams.loadParameter(1.245, -4500, 21.811);// 20240808
+        speakerParams.loadParameter(1.600, -4500, 30.614);// 20240808
+        speakerParams.loadParameter(1.910, -4500, 45.02);// 20240808
+        speakerParams.loadParameter(2.20, -4500, 52.767);// 20240808
+        speakerParams.loadParameter(2.51, -4500, 53.628);// 20240808
+        speakerParams.loadParameter(2.8, -4500, 58.202);
+        speakerParams.loadParameter(3.06, -5700, 63.728);// 20240808
+        speakerParams.loadParameter(3.47, -5700, 67.333);// 20240808
+        speakerParams.loadParameter(3.79, -5700, 70.635);//
+        speakerParams.loadParameter(3.9, -5700, 71.0312);// 20240808
         speakerParams.ready();
 
         highFerryParams.loadParameter(5.0, -2000.0, 10.0);
         highFerryParams.loadParameter(6.5, -2700.0, 10.0);
         highFerryParams.loadParameter(8.0, -4000.0, 10.0);
         highFerryParams.loadParameter(9.5, -5500.0, 10.0);
-        highFerryParams.loadParameter(11.0, -6500.0, 10.0);
+        highFerryParams.loadParameter(11.0, -6000.0, 10.0);
         highFerryParams.ready();
         lowFerryParams.loadParameter(1.5, -2000.0, 15.0);
         lowFerryParams.loadParameter(3.1, -5000.0, 15.0);
