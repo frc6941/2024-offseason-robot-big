@@ -73,12 +73,12 @@ public class ChassisAimCommand extends Command {
                 destinationSupplier.get(),
                 swerve.getLocalizer().getCoarseFieldPose(0));
         SmartDashboard.putNumber("Swerve/origin heading", parameter.getFieldAimingAngle().getDegrees());
-        if (!reset) {
-            reset = true;
-            filter.reset(new double[]{parameter.getFieldAimingAngle().getDegrees()},
-                    new double[]{parameter.getFieldAimingAngle().getDegrees()});
-        }
-        double degrees = filter.calculate(parameter.getFieldAimingAngle().getDegrees());
+        // if (!reset) {
+        //     reset = true;
+        //     filter.reset(new double[]{parameter.getFieldAimingAngle().getDegrees()},
+        //             new double[]{parameter.getFieldAimingAngle().getDegrees()});
+        // }
+        double degrees = parameter.getFieldAimingAngle().getDegrees();
         SmartDashboard.putNumber("Swerve/filtered heading", degrees);
         swerve.setHeadingTarget(degrees);
         distanceLogged.set(parameter.getDistance());
