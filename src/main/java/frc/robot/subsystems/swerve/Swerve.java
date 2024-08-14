@@ -1,9 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 import com.team254.lib.util.MovingAverage;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.display.OperatorDashboard;
 import frc.robot.utils.AllianceFlipUtil;
-import frc.robot.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
@@ -128,35 +123,6 @@ public class Swerve implements Updatable, Subsystem {
                 new TrapezoidProfile.Constraints(6000, 7200));
         headingController.setIntegratorRange(-0.5, 0.5);
         headingController.enableContinuousInput(0, 360.0);
-
-        var driveBaseRadius = getDriveBaseRadius();
-
-        AutoBuilder.configureHolonomic(
-                () -> swerveLocalizer.getCoarseFieldPose(0),
-                this::resetPose,
-                this::getChassisSpeeds,
-                this::driveSpeed,
-//                new HolonomicPathFollowerConfig(
-//                        speedAt12Volts.magnitude(),
-//                        driveBaseRadius,
-//                        new ReplanningConfig()),
-                new HolonomicPathFollowerConfig(
-                        new PIDConstants(
-                                Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
-                                Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
-                                Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()
-                        ),
-                        new PIDConstants(
-                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
-                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
-                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()
-                        ),
-                        Constants.SwerveConstants.maxSpeed.magnitude(),
-                        0.55,
-                        new ReplanningConfig()),
-                Utils::flip,
-                this
-        );
     }
 
     private static double getDriveBaseRadius() {
@@ -184,11 +150,12 @@ public class Swerve implements Updatable, Subsystem {
         return instance;
     }
 
-    private void driveSpeed(ChassisSpeeds speeds) {
+    public void driveSpeed(ChassisSpeeds speeds) {
         autoDrive(new Translation2d(
                 speeds.vxMetersPerSecond,
                 speeds.vyMetersPerSecond
         ), speeds.omegaRadiansPerSecond, false, false);
+        System.out.println(speeds.toString());
     }
 
     public ChassisSpeeds getChassisSpeeds() {

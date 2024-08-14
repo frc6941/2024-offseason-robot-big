@@ -4,8 +4,14 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,6 +25,7 @@ import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.Utils;
 import frc.robot.utils.shooting.ShootingDecider;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -28,6 +35,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 public class Robot extends LoggedRobot {
     ShooterSubsystem shooterSubsystem = new ShooterSubsystem(new ShooterIOTalonFX());
     ArmSubsystem armSubsystem = new ArmSubsystem(new ArmIOTalonFX());
+    Swerve swerve;
     OperatorDashboard dashboard = OperatorDashboard.getInstance();
     private Command m_autonomousCommand;
     private RobotContainer robotContainer;
@@ -76,6 +84,32 @@ public class Robot extends LoggedRobot {
         Commands.runOnce(() -> dashboard.updateDestination(ShootingDecider.Destination.SPEAKER));
         new ResetArmAutoCommand(armSubsystem).schedule();
         CommandScheduler.getInstance().run();
+        AutoBuilder.configureHolonomic(
+                () -> Swerve.getInstance().getLocalizer().getCoarseFieldPose(0),
+                (Pose2d pose2d) -> Swerve.getInstance().resetPose(pose2d),
+                () -> Swerve.getInstance().getChassisSpeeds(),
+                (ChassisSpeeds chassisSpeeds) -> Swerve.getInstance().driveSpeed(chassisSpeeds),
+//                new HolonomicPathFollowerConfig(
+//                        speedAt12Volts.magnitude(),
+//                        driveBaseRadius,
+//                        new ReplanningConfig()),
+                new HolonomicPathFollowerConfig(
+                        new PIDConstants(
+                                Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
+                                Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
+                                Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()
+                        ),
+                        new PIDConstants(
+                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
+                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
+                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()
+                        ),
+                        Constants.SwerveConstants.maxSpeed.magnitude(),
+                        0.55,
+                        new ReplanningConfig()),
+                Utils::flip,
+                swerve
+        );
     }
 
     @Override
