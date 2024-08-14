@@ -22,6 +22,7 @@ public class FlyWheelRampUp extends Command {
         this.shooterSubsystem = shooterSubsystem;
         this.destinationSupplier = destinationSupplier;
         this.shootingDecider = ShootingDecider.getInstance();
+        addRequirements(shooterSubsystem);
     }
 
     @Override

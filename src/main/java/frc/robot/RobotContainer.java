@@ -172,26 +172,28 @@ public class RobotContainer {
 
         // superstructure
         driverController.x().whileTrue(
-                speakerShot()
-                        .alongWith(setDest(Destination.SPEAKER))
+                ferryShot()
+                        .alongWith(setDest(Destination.FERRY))
                         .andThen(rumbleDriver(1.0)));
+
         driverController.rightBumper().whileTrue(
                 ampShot()
                         .alongWith(setDest(Destination.AMP))
                         .andThen(rumbleDriver(1.0)));
         driverController.b().whileTrue(
-                ferryShot()
-                        .alongWith(setDest(Destination.FERRY))
+
+                speakerShot()
+                        .alongWith(setDest(Destination.SPEAKER))
                         .andThen(rumbleDriver(1.0)));
-        driverController.rightBumper().whileTrue(ampAim());
-        driverController.rightBumper().onFalse(justShoot().withTimeout(0.3));
+        driverController.rightTrigger().whileTrue(ampAim());
+        driverController.rightTrigger().onFalse(justShoot().withTimeout(0.3));
         driverController.leftTrigger().whileTrue(outtake());
 
         // operator superstructure commands
         operatorController.povRight().onTrue(setDest(Destination.FERRY));
         operatorController.povLeft().onTrue(setDest(Destination.SPEAKER));
         operatorController.a().toggleOnTrue(flyWheelOn());
-        operatorController.back().onTrue(new ResetArmCommand(arm));
+        operatorController.povUp().onTrue(new ResetArmCommand(arm));
 
 
     }

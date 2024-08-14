@@ -41,7 +41,8 @@ public class ArmAimCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        armSubsystem.getIo().setArmPosition(Radians.zero());
+        //armSubsystem.getIo().setArmPosition(Radians.zero());
+        new ResetArmHomeCommand(armSubsystem).schedule();
     }
 
     @Override

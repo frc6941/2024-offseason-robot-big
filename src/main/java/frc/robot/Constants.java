@@ -26,19 +26,19 @@ public class Constants {
 
     public static class AutoConstants {
         public static class swerveXGainsClass {
-            public static final TunableNumber swerveX_KP = new TunableNumber("swerveX PID/kp", 1.4);
+            public static final TunableNumber swerveX_KP = new TunableNumber("swerveX PID/kp", 0.001);//1.4
             public static final TunableNumber swerveX_KI = new TunableNumber("swerveX PID/ki", 0);
             public static final TunableNumber swerveX_KD = new TunableNumber("swerveX PID/kd", 0.0);
         }
 
         public static class swerveYGainsClass {
-            public static final TunableNumber swerveY_KP = new TunableNumber("swerveY PID/kp", 2.0);
+            public static final TunableNumber swerveY_KP = new TunableNumber("swerveY PID/kp", 0.0);
             public static final TunableNumber swerveY_KI = new TunableNumber("swerveY PID/ki", 0);
             public static final TunableNumber swerveY_KD = new TunableNumber("swerveY PID/kd", 0);
         }
 
         public static class swerveOmegaGainsClass {
-            public static final TunableNumber swerveOmega_KP = new TunableNumber("swerveOmega PID/kp", 0.7);
+            public static final TunableNumber swerveOmega_KP = new TunableNumber("swerveOmega PID/kp", 0.001);//0.7
             public static final TunableNumber swerveOmega_KI = new TunableNumber("swerveOmega PID/ki", 0);
             public static final TunableNumber swerveOmega_KD = new TunableNumber("swerveOmega PID/kd", 0);
         }
@@ -93,7 +93,7 @@ public class Constants {
         public static final int ARM_MOTOR_ID = 43;
         public static final int PULLER_MOTOR_ID = 44;
         public static final Measure<Current> armZeroCurrent = Amps.of(1.0);
-        public static final Measure<Voltage> armZeroVoltage = Volts.of(-2);
+        public static final Measure<Voltage> armZeroVoltage = Volts.of(-1.5);
         public static final Measure<Voltage> armUpDownVoltage = Volts.of(-4);
         public static final ClosedLoopRampsConfigs rampConfigs = new ClosedLoopRampsConfigs()
                 .withVoltageClosedLoopRampPeriod(0.3);
