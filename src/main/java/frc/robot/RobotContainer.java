@@ -189,6 +189,7 @@ public class RobotContainer {
                         .andThen(rumbleDriver(1.0)));
         driverController.rightBumper().whileTrue(ampAim()); 
         driverController.rightBumper().onFalse(justShoot().withTimeout(0.3));
+        driverController.leftTrigger().whileTrue(outtake());
 
         // operator superstructure commands
         operatorController.povRight().onTrue(setDest(Destination.FERRY));

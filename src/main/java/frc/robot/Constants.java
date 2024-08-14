@@ -51,7 +51,7 @@ public class Constants {
                 .withNeutralMode(NeutralModeValue.Brake);
 
         public final static double indexRPM = 1000;
-        public final static double triggerRPM = 3500;
+        public final static double triggerRPM = 4500;
 
         public static class indexerGainsClass {
             public static final TunableNumber INDEXER_KP = new TunableNumber("INDEXER PID/kp", 0.25);
@@ -73,7 +73,7 @@ public class Constants {
         public static final int LEFT_SHOOTER_MOTOR_ID = 41;
         public static final int RIGHT_SHOOTER_MOTOR_ID = 42;
 
-        public static final Measure<Voltage> shooterConstantVoltage = Volts.of(2);
+        public static final Measure<Voltage> shooterConstantVoltage = Volts.of(-2);
         public static final TunableNumber skewValue = new TunableNumber("Shooter skew", 0);
         public static double kToFFactor = 0.2;
         public static boolean useSmartDashboardForSkew = false;
@@ -290,7 +290,7 @@ public class Constants {
          */
         public static final Measure<Velocity<Angle>> maxAngularRate = RotationsPerSecond.of(1.5 * Math.PI);
 
-        public static final double deadband = maxSpeed.magnitude() * 0.05;
+        public static final double deadband = maxSpeed.magnitude() * 0.01;
         public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.05;
 
         /**
