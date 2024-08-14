@@ -38,7 +38,7 @@ public class Constants {
         }
 
         public static class swerveOmegaGainsClass {
-            public static final TunableNumber swerveOmega_KP = new TunableNumber("swerveOmega PID/kp", 0.001);//0.7
+            public static final TunableNumber swerveOmega_KP = new TunableNumber("swerveOmega PID/kp", 1);//0.7
             public static final TunableNumber swerveOmega_KI = new TunableNumber("swerveOmega PID/ki", 0);
             public static final TunableNumber swerveOmega_KD = new TunableNumber("swerveOmega PID/kd", 0);
         }
