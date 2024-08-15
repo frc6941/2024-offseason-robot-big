@@ -50,7 +50,7 @@ public class ShootingDecider implements Updatable {
         highFerryParams.loadParameter(6.5, -2700.0, 10.0);
         highFerryParams.loadParameter(8.0, -3500.0, 10.0);
         highFerryParams.loadParameter(9.5, -5000.0, 10.0);
-        highFerryParams.loadParameter(11.0, -6000.0, 10.0);
+        highFerryParams.loadParameter(11.0, -5700.0, 10.0);
         highFerryParams.ready();
         lowFerryParams.loadParameter(1.5, -2000.0, 15.0);
         lowFerryParams.loadParameter(3.1, -5000.0, 15.0);
