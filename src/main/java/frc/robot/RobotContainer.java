@@ -147,7 +147,7 @@ public class RobotContainer {
                        Constants.SwerveConstants.maxSpeed.magnitude(),
                        0.55,
                        new ReplanningConfig()),
-                Utils::flip,
+                AllianceFlipUtil::shouldFlip,
                
                 swerve
         );
