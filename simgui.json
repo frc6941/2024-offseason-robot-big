@@ -15,11 +15,6 @@
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
-      "/SmartDashboard/AutoData": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Chooser": {
         "window": {
           "visible": true
