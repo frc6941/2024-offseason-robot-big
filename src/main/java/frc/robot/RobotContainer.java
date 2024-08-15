@@ -324,6 +324,14 @@ public class RobotContainer {
     }
 
     private Command setDest(Destination des) {
+        switch (des) {
+            case SPEAKER:
+                return new ParallelCommandGroup(Commands.runOnce(() -> dashboard.updateDestination(des)),
+                        Commands.run(() -> indicator.setPattern(IndicatorIO.Patterns.SPEAKER), indicator));
+            case FERRY:
+                return new ParallelCommandGroup(Commands.runOnce(() -> dashboard.updateDestination(des)),
+                        Commands.run(() -> indicator.setPattern(IndicatorIO.Patterns.FERRY), indicator));
+        }
         return Commands.runOnce(() -> dashboard.updateDestination(des));
     }
 }

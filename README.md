@@ -28,4 +28,9 @@
 - Swerve两套PID
 - ArmVelocity调大
 - 动量补偿？
-- 
+- indicator
+    - 正常：蓝光长亮
+    - indexer吸到球：绿色闪2秒后绿色长亮
+    - speaker：红色长亮，瞄准时红色闪
+    - ferry：黄色长亮，瞄准时黄色闪
+    - 射完：蓝色闪2秒后蓝色长亮
