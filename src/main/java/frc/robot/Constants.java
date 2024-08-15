@@ -506,6 +506,7 @@ public class Constants {
             public static final TunableNumber HEADING_KP = new TunableNumber("HEADING PID/kp", 0.08);
             public static final TunableNumber HEADING_KI = new TunableNumber("HEADING PID/ki", 0.0002);
             public static final TunableNumber HEADING_KD = new TunableNumber("HEADING PID/kd", 0.002);
+            public static final TunableNumber MAX_ERROR_CORRECTION_ANGLE = new TunableNumber("HEADING/Max Error Correction Angle", 90.0);
             // TODO
         }
     }

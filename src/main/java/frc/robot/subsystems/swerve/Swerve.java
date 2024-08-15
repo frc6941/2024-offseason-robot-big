@@ -1,6 +1,8 @@
 package frc.robot.subsystems.swerve;
 
 import com.team254.lib.util.MovingAverage;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.display.OperatorDashboard;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
@@ -80,7 +83,7 @@ public class Swerve implements Updatable, Subsystem {
 
     private Swerve() {
         if (RobotBase.isReal()) {
-            swerveMods = new SwerveModuleBase[]{
+            swerveMods = new SwerveModuleBase[] {
                     new CTRESwerveModule(0, Constants.SwerveConstants.FrontLeft,
                             Constants.RobotConstants.CAN_BUS_NAME),
                     new CTRESwerveModule(1, Constants.SwerveConstants.FrontRight,
@@ -91,7 +94,7 @@ public class Swerve implements Updatable, Subsystem {
             };
             gyro = new Pigeon2Gyro(Constants.SwerveConstants.PIGEON_ID, Constants.RobotConstants.CAN_BUS_NAME);
         } else {
-            swerveMods = new SwerveModuleBase[]{
+            swerveMods = new SwerveModuleBase[] {
                     new SimSwerveModuleDummy(0, Constants.SwerveConstants.FrontLeft),
                     new SimSwerveModuleDummy(1, Constants.SwerveConstants.FrontRight),
                     new SimSwerveModuleDummy(2, Constants.SwerveConstants.BackLeft),
@@ -120,13 +123,13 @@ public class Swerve implements Updatable, Subsystem {
                 Constants.SwerveConstants.headingController.HEADING_KP.get(),
                 Constants.SwerveConstants.headingController.HEADING_KI.get(),
                 Constants.SwerveConstants.headingController.HEADING_KD.get(),
-                new TrapezoidProfile.Constraints(6000, 7200));
+                new TrapezoidProfile.Constraints(400, 720));
         headingController.setIntegratorRange(-0.5, 0.5);
         headingController.enableContinuousInput(0, 360.0);
     }
 
     private static double getDriveBaseRadius() {
-        var moduleLocations = new Translation2d[]{
+        var moduleLocations = new Translation2d[] {
                 new Translation2d(Constants.SwerveConstants.FrontLeft.LocationX,
                         Constants.SwerveConstants.FrontLeft.LocationY),
                 new Translation2d(Constants.SwerveConstants.FrontRight.LocationX,
@@ -153,8 +156,7 @@ public class Swerve implements Updatable, Subsystem {
     public void driveSpeed(ChassisSpeeds speeds) {
         autoDrive(new Translation2d(
                 speeds.vxMetersPerSecond,
-                speeds.vyMetersPerSecond
-        ), speeds.omegaRadiansPerSecond, false, false);
+                speeds.vyMetersPerSecond), speeds.omegaRadiansPerSecond, false, false);
         System.out.println(speeds.toString());
     }
 
@@ -171,7 +173,6 @@ public class Swerve implements Updatable, Subsystem {
     private void updateOdometry(double time, double dt) {
         swerveLocalizer.updateWithTime(time, dt, gyro.getYaw(), getModulePositions());
     }
-
 
     /**
      * Core method to update swerve modules according to the
@@ -195,10 +196,12 @@ public class Swerve implements Updatable, Subsystem {
             Rotation2d robotAngle = swerveLocalizer.getLatestPose().getRotation();
 
             if (driveSignal.isFieldOriented())
-                if (AllianceFlipUtil.shouldFlip() /*&& this.state != State.PATH_FOLLOWING*/) {
-                    desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, robotAngle.rotateBy(Rotation2d.fromDegrees(180)));
+                if (AllianceFlipUtil.shouldFlip() /* && this.state != State.PATH_FOLLOWING */) {
+                    desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation,
+                            robotAngle.rotateBy(Rotation2d.fromDegrees(180)));
                 } else {
-                    desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, robotAngle.rotateBy(Rotation2d.fromDegrees(0)));
+                    desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation,
+                            robotAngle.rotateBy(Rotation2d.fromDegrees(0)));
                 }
 
             else
@@ -231,8 +234,7 @@ public class Swerve implements Updatable, Subsystem {
         return new com.team254.lib.geometry.Twist2d(
                 speeds.vxMetersPerSecond * Constants.LOOPER_DT,
                 speeds.vyMetersPerSecond * Constants.LOOPER_DT,
-                speeds.omegaRadiansPerSecond * Constants.LOOPER_DT
-        );
+                speeds.omegaRadiansPerSecond * Constants.LOOPER_DT);
     }
 
     @Synchronized
@@ -261,7 +263,7 @@ public class Swerve implements Updatable, Subsystem {
      * @param isFieldOriented       Is the drive signal field oriented.
      */
     public void drive(Translation2d translationalVelocity, double rotationalVelocity,
-                      boolean isFieldOriented, boolean isOpenLoop) {
+            boolean isFieldOriented, boolean isOpenLoop) {
         // if (Math.hypot(translationalVelocity.getX(), translationalVelocity.getY())
         // < Constants.SwerveConstants.deadband) {
         // translationalVelocity = new Translation2d(0, 0);
@@ -279,8 +281,9 @@ public class Swerve implements Updatable, Subsystem {
     }
 
     public void autoDrive(Translation2d translationalVelocity, double rotationalVelocity,
-                          boolean isFieldOriented, boolean isOpenLoop) {
-        autoDriveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented, isOpenLoop);
+            boolean isFieldOriented, boolean isOpenLoop) {
+        autoDriveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented,
+                isOpenLoop);
     }
 
     public void pointWheelsAt(Rotation2d rotation2d) {
@@ -457,8 +460,14 @@ public class Swerve implements Updatable, Subsystem {
     public void update(double time, double dt) {
         if (isLockHeading) {
             headingTarget = AngleNormalization.placeInAppropriate0To360Scope(gyro.getYaw().getDegrees(), headingTarget);
-            double rotation = headingController.calculate(gyro.getYaw().getDegrees(), new TrapezoidProfile.State(
-                    headingTarget, headingVelocityFeedforward));
+            
+            // clamp max rotation output value from the heading controller to prevent controller overshoot
+            double headingRotationLimit = SwerveConstants.headingController.MAX_ERROR_CORRECTION_ANGLE.get()
+                    * SwerveConstants.headingController.HEADING_KP.get();
+            double rotation = MathUtil
+                    .clamp(headingController.calculate(gyro.getYaw().getDegrees(), new TrapezoidProfile.State(
+                            headingTarget, headingVelocityFeedforward)), -headingRotationLimit, headingRotationLimit);
+
             if (this.state == State.PATH_FOLLOWING) {
                 autoDriveSignal = new HolonomicDriveSignal(autoDriveSignal.getTranslation(), rotation,
                         autoDriveSignal.isFieldOriented(), autoDriveSignal.isOpenLoop());
@@ -502,7 +511,7 @@ public class Swerve implements Updatable, Subsystem {
     public void telemetry() {
         Pose2d latestPose = swerveLocalizer.getLatestPose();
         dataTable.getEntry("Pose").setDoubleArray(
-                new double[]{
+                new double[] {
                         latestPose.getX(), latestPose.getY(), latestPose.getRotation().getDegrees()
                 });
         for (SwerveModuleBase mod : swerveMods) {
@@ -534,9 +543,7 @@ public class Swerve implements Updatable, Subsystem {
     public void simulate(double time, double dt) {
         gyro.setYaw(
                 gyro.getYaw().rotateBy(
-                        new Rotation2d(dt * setpoint.mChassisSpeeds.omegaRadiansPerSecond)
-                ).getDegrees()
-        );
+                        new Rotation2d(dt * setpoint.mChassisSpeeds.omegaRadiansPerSecond)).getDegrees());
         read(time, dt);
     }
 
