@@ -14,9 +14,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
@@ -42,6 +42,7 @@ import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.Utils;
 import frc.robot.utils.shooting.ShootingDecider;
 import frc.robot.utils.shooting.ShootingDecider.Destination;
@@ -223,8 +224,8 @@ public class RobotContainer {
         // operator superstructure commands
         operatorController.povRight().onTrue(setDest(Destination.FERRY));
         operatorController.povLeft().onTrue(setDest(Destination.SPEAKER));
-        driverController.povUp().toggleOnTrue(
-            preheat().withInterruptBehavior(InterruptionBehavior.kCancelSelf)
+        operatorController.povUp().toggleOnTrue(
+                preheat().withInterruptBehavior(InterruptionBehavior.kCancelSelf)
         );
         operatorController.povUp().onTrue(new ResetArmCommand(arm));
     }
@@ -274,11 +275,14 @@ public class RobotContainer {
     }
 
     private Command preheat() {
-        return new FlyWheelRampUp(shooter, () -> dashboard.getCurrDestination()).alongWith(
-            new ArmAimCommand(arm, () -> dashboard.getCurrDestination())
-        ).alongWith(
-            Commands.print("Preheat Started!")
-        ).handleInterrupt(() -> {System.out.println("Preheat Interrupted, Driver Take Control!");});
+        return new FlyWheelRampUp(shooter, () -> dashboard.getCurrDestination());
+//                .alongWith(
+//                new ArmAimCommand(arm, () -> dashboard.getCurrDestination())
+//        ).alongWith(
+//                Commands.print("Preheat Started!")
+//        ).handleInterrupt(() -> {
+//            System.out.println("Preheat Interrupted, Driver Take Control!");
+//        });
     }
 
     private Command selectShot() {
@@ -313,9 +317,9 @@ public class RobotContainer {
     private Command resetOdom() {
         return Commands.runOnce(() -> {
             swerve.resetHeadingController();
-            Rotation2d a = Rotation2d.fromDegrees(swerve.getLocalizer().getLatestPose().getRotation().getDegrees());
-            Pose2d b = new Pose2d(new Translation2d(0, 0), a);
-            swerve.resetPose(b);
+            swerve.resetPose(
+                    new Pose2d(AllianceFlipUtil.apply(Constants.FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d()),
+                            Rotation2d.fromDegrees(swerve.getLocalizer().getLatestPose().getRotation().getDegrees())));
         });
     }
 

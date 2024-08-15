@@ -13,7 +13,6 @@ import frc.robot.subsystems.limelight.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.FieldLayout;
-
 import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
@@ -37,7 +36,7 @@ public class Limelight implements Updatable {
     private static final Swerve swerve = Swerve.getInstance();
     private static int measuerCnt = 0;
     private static double deviationX, deviationY, deviationOmega;
-     private Translation2d kdeltaToTag;
+    private Translation2d kdeltaToTag;
     private int kTagID;
     private Pose3d kTagPose;
 
@@ -116,9 +115,9 @@ public class Limelight implements Updatable {
 
     @Override
     public void update(double time, double dt) {
-        int ktagID = (int)LimelightHelpers.getFiducialID("limelight");
-  
-        
+        int ktagID = (int) LimelightHelpers.getFiducialID("limelight");
+
+
         LimelightHelpers.SetRobotOrientation("limelight",
                 Swerve.getInstance().getLocalizer().getLatestPose().getRotation().getDegrees(),
                 Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation().getDegrees(),
@@ -129,16 +128,16 @@ public class Limelight implements Updatable {
         if (Math.abs(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation()
                 .getDegrees()) > Math.toDegrees(Constants.SwerveConstants.maxAngularRate.magnitude()))
             return;
-        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent()){
+        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent()) {
             kTagPose = FieldLayout.kTagMap.getTagPose(ktagID).get();
-            kdeltaToTag = new Translation2d(kTagPose.getX(),kTagPose.getY()).minus(swerve.getLocalizer().getCoarseFieldPose(0).getTranslation());
-            if (kdeltaToTag.getNorm() > 3){
-                SmartDashboard.putBoolean("TargetUpdated", true);
+            kdeltaToTag = new Translation2d(kTagPose.getX(), kTagPose.getY()).minus(swerve.getLocalizer().getCoarseFieldPose(0).getTranslation());
+            if (kdeltaToTag.getNorm() > 3) {
+                SmartDashboard.putBoolean("TargetUpdated", false);
                 return;
             }
         }
-   
-        
+
+
         // if (Swerve.getInstance().getLocalizer().getLatestPose().getX() < 0
         // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getX() > Constants.FieldConstants.fieldLength
         // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getY() < 0
@@ -155,8 +154,8 @@ public class Limelight implements Updatable {
                 deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 100;
                 deviationOmega = 15;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
             } else {
-                deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 80;
-                deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 80;
+                deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 10;//80
+                deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 10;
                 deviationOmega = 15;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
             }
             botEstimate.ifPresent((poseEstimate) -> {
@@ -165,7 +164,7 @@ public class Limelight implements Updatable {
                         botEstimate.get().pose,
                         new Pose2d(new Translation2d(deviationX, deviationY),
                                 Rotation2d.fromDegrees(deviationOmega)));
-            SmartDashboard.putBoolean("TargetUpdated", false);
+                SmartDashboard.putBoolean("TargetUpdated", true);
 
             });
         }
