@@ -29,7 +29,7 @@ public class FerryShootCommand extends ParallelCommandGroup {
                         new ChassisAimCommand(Swerve, () -> Destination.FERRY, driverX, driverY).andThen(Commands.print("Spun Up")),
                         new ArmAimCommand(armSubsystem, () -> Destination.FERRY).andThen(Commands.print("Arm Aimed")),
                         new FlyWheelRampUp(shooterSubsystem, () -> Destination.FERRY).andThen(Commands.print("Spun Up")),
-                        Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.FERRY_AIMING), indicatorSubsystem),
+                        Commands.runOnce(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.FERRY_AIMING), indicatorSubsystem),
                         new WaitUntilCommand(() -> {
                             boolean swerveReady = Swerve.aimingReady(2.5);
                             boolean shooterReady = shooterSubsystem.ShooterVelocityReady();

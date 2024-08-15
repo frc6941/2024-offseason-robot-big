@@ -1,6 +1,5 @@
 package frc.robot.subsystems.indicator;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.drivers.led.AddressableLEDPattern;
 import frc.robot.drivers.led.patterns.BlinkingPattern;
@@ -17,8 +16,8 @@ public interface IndicatorIO {
     enum Patterns {
         NORMAL(new SolidColorPattern(Color.kBlue)),
         INDEX(new SolidColorPattern(Color.kGreen)),
-        SPEAKER(new SolidColorPattern(Color.kRed)),
-        FERRY(new SolidColorPattern(Color.kYellow)),
+        //        SPEAKER(new SolidColorPattern(Color.kRed)),
+//        FERRY(new SolidColorPattern(Color.kYellow)),
         SPEAKER_AIMING(new BlinkingPattern(Color.kRed, 0.1)),
         FERRY_AIMING(new BlinkingPattern(Color.kYellow, 0.1)),
         FINISH_INDEX(new BlinkingPattern(Color.kGreen, 0.1)),
@@ -43,10 +42,11 @@ public interface IndicatorIO {
      * @return Current alliance color
      */
     default Color allianceColor() {
-        return switch (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)) {
-            case Blue -> Color.kBlue;
-            case Red -> Color.kRed;
-        };
+//        return switch (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)) {
+//            case Blue -> Color.kBlue;
+//            case Red -> Color.kRed;
+//        };
+        return Color.kBlue;
     }
 
     @AutoLog

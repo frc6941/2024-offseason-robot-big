@@ -35,12 +35,12 @@ public class SpeakerShootCommand extends ParallelCommandGroup {
                                     boolean armReady = armSubsystem.armAimingReady();
                                     return swerveReady && shooterReady && armReady;
                                 }),
-                                Commands.runOnce(() -> Timer.delay(0.02), indicatorSubsystem),
+                                Commands.runOnce(() -> Timer.delay(0.02)),
                                 new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)),
                         new ChassisAimCommand(Swerve, () -> Destination.SPEAKER, driverX, driverY, isAuto),
                         new ArmAimCommand(armSubsystem, () -> Destination.SPEAKER),
                         new FlyWheelRampUp(shooterSubsystem, () -> Destination.SPEAKER),
-                        Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.SPEAKER_AIMING), indicatorSubsystem)
+                        Commands.runOnce(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.SPEAKER_AIMING), indicatorSubsystem)
                 ));
 
     }
