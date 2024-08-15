@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
@@ -222,7 +223,9 @@ public class RobotContainer {
         // operator superstructure commands
         operatorController.povRight().onTrue(setDest(Destination.FERRY));
         operatorController.povLeft().onTrue(setDest(Destination.SPEAKER));
-        operatorController.a().toggleOnTrue(flyWheelOn());
+        driverController.povUp().toggleOnTrue(
+            preheat().withInterruptBehavior(InterruptionBehavior.kCancelSelf)
+        );
         operatorController.povUp().onTrue(new ResetArmCommand(arm));
     }
 
@@ -270,8 +273,12 @@ public class RobotContainer {
         return new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve);
     }
 
-    private Command flyWheelOn() {
-        return new FlyWheelRampUp(shooter, () -> dashboard.getCurrDestination());
+    private Command preheat() {
+        return new FlyWheelRampUp(shooter, () -> dashboard.getCurrDestination()).alongWith(
+            new ArmAimCommand(arm, () -> dashboard.getCurrDestination())
+        ).alongWith(
+            Commands.print("Preheat Started!")
+        ).handleInterrupt(() -> {System.out.println("Preheat Interrupted, Driver Take Control!");});
     }
 
     private Command selectShot() {

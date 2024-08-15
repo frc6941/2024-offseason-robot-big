@@ -129,7 +129,7 @@ public class Limelight implements Updatable {
         if (Math.abs(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation()
                 .getDegrees()) > Math.toDegrees(Constants.SwerveConstants.maxAngularRate.magnitude()))
             return;
-        if (FieldLayout.kTagMap.getTagPose(ktagID) != null){
+        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent()){
             kTagPose = FieldLayout.kTagMap.getTagPose(ktagID).get();
             kdeltaToTag = new Translation2d(kTagPose.getX(),kTagPose.getY()).minus(swerve.getLocalizer().getCoarseFieldPose(0).getTranslation());
             if (kdeltaToTag.getNorm() > 3){
