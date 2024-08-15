@@ -60,10 +60,10 @@ public class IntakeCommand extends Command {
                 .setIntakeVoltage(Volts.zero());
         shooterSubsystem.getIo()
                 .setFlyWheelDirectVoltage(Constants.ShooterConstants.shooterConstantVoltage);
-        if (interrupted)
-            return;
         indicatorSubsystem
                 .setPattern(IndicatorIO.Patterns.FINISH_INDEX);
+        if (interrupted)
+            return;
     }
 
     @Override

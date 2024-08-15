@@ -10,15 +10,12 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.units.Voltage;
 import frc.robot.Constants;
+
+import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.LEFT_SHOOTER_MOTOR_ID;
 import static frc.robot.Constants.ShooterConstants.RIGHT_SHOOTER_MOTOR_ID;
 

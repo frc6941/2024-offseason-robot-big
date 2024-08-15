@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.display.OperatorDashboard;
+import frc.robot.utils.shooting.ShootingDecider;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
@@ -16,6 +17,9 @@ public class ShooterSubsystem extends SubsystemBase {
     private final ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
     private final SysIdRoutine sysId;
+
+    private ShootingDecider.Destination destinationSupplier = ShootingDecider.Destination.AMP;
+    private ShootingDecider shootingDecider = ShootingDecider.getInstance();
 
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
@@ -36,6 +40,12 @@ public class ShooterSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Shooter", inputs);
+//        if (OperatorDashboard.getInstance().getFlyWheelOn().get().getBoolean()) {
+//                this.getIo().setFlyWheelVelocity(
+//                        shootingDecider.getShootingParameter(
+//                                destinationSupplier,
+//                                Swerve.getInstance().getLocalizer().getCoarseFieldPose(0)
+//                        ).getShootingVelocity());
     }
 
     public boolean ShooterVelocityReady() {

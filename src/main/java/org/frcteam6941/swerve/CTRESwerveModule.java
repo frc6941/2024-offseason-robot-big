@@ -5,10 +5,13 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import lombok.Getter;
 
 public class CTRESwerveModule implements SwerveModuleBase {
     private final int moduleNumber;
+    @Getter
     private final CTRESwerveIO module;
 
     // edu.wpi.first.math.geometry.Rotation2d angleLowSpeed = new edu.wpi.first.math.geometry.Rotation2d(0, 0);
@@ -37,6 +40,7 @@ public class CTRESwerveModule implements SwerveModuleBase {
     public void updateSignals() {
         // module.getPosition(true);
         SwerveModulePosition pos = module.getPosition(true);
+        SmartDashboard.putNumber("Swerve/DriverMotor " + moduleNumber, module.getDriveMotor().getPosition().getValue());
     }
 
     // int cnt = 0;

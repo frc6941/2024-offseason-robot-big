@@ -1,7 +1,6 @@
 package frc.robot.subsystems.swerve;
 
 import com.team254.lib.util.MovingAverage;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -83,7 +82,7 @@ public class Swerve implements Updatable, Subsystem {
 
     private Swerve() {
         if (RobotBase.isReal()) {
-            swerveMods = new SwerveModuleBase[] {
+            swerveMods = new SwerveModuleBase[]{
                     new CTRESwerveModule(0, Constants.SwerveConstants.FrontLeft,
                             Constants.RobotConstants.CAN_BUS_NAME),
                     new CTRESwerveModule(1, Constants.SwerveConstants.FrontRight,
@@ -94,7 +93,7 @@ public class Swerve implements Updatable, Subsystem {
             };
             gyro = new Pigeon2Gyro(Constants.SwerveConstants.PIGEON_ID, Constants.RobotConstants.CAN_BUS_NAME);
         } else {
-            swerveMods = new SwerveModuleBase[] {
+            swerveMods = new SwerveModuleBase[]{
                     new SimSwerveModuleDummy(0, Constants.SwerveConstants.FrontLeft),
                     new SimSwerveModuleDummy(1, Constants.SwerveConstants.FrontRight),
                     new SimSwerveModuleDummy(2, Constants.SwerveConstants.BackLeft),
@@ -129,7 +128,7 @@ public class Swerve implements Updatable, Subsystem {
     }
 
     private static double getDriveBaseRadius() {
-        var moduleLocations = new Translation2d[] {
+        var moduleLocations = new Translation2d[]{
                 new Translation2d(Constants.SwerveConstants.FrontLeft.LocationX,
                         Constants.SwerveConstants.FrontLeft.LocationY),
                 new Translation2d(Constants.SwerveConstants.FrontRight.LocationX,
@@ -156,7 +155,7 @@ public class Swerve implements Updatable, Subsystem {
     public void driveSpeed(ChassisSpeeds speeds) {
         autoDrive(new Translation2d(
                 speeds.vxMetersPerSecond,
-                speeds.vyMetersPerSecond), speeds.omegaRadiansPerSecond, true, false);
+                speeds.vyMetersPerSecond), speeds.omegaRadiansPerSecond, false, false);
         System.out.println(speeds.toString());
     }
 
@@ -196,18 +195,16 @@ public class Swerve implements Updatable, Subsystem {
             Rotation2d robotAngle = swerveLocalizer.getLatestPose().getRotation();
 
 
-            if (driveSignal.isFieldOriented()){
+            if (driveSignal.isFieldOriented()) {
                 // if (AllianceFlipUtil.shouldFlip()) {
                 //     desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation,
                 //             robotAngle.rotateBy(Rotation2d.fromDegrees(180)));
                 // } else {
                 //     desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation,
                 //             robotAngle.rotateBy(Rotation2d.fromDegrees(0)));
-                desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation,robotAngle);
+                desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, robotAngle);
 
-                }
-
-            else
+            } else
                 desiredChassisSpeed = new ChassisSpeeds(x, y, rotation);
         }
 
@@ -266,7 +263,7 @@ public class Swerve implements Updatable, Subsystem {
      * @param isFieldOriented       Is the drive signal field oriented.
      */
     public void drive(Translation2d translationalVelocity, double rotationalVelocity,
-            boolean isFieldOriented, boolean isOpenLoop) {
+                      boolean isFieldOriented, boolean isOpenLoop) {
         // if (Math.hypot(translationalVelocity.getX(), translationalVelocity.getY())
         // < Constants.SwerveConstants.deadband) {
         // translationalVelocity = new Translation2d(0, 0);
@@ -284,7 +281,7 @@ public class Swerve implements Updatable, Subsystem {
     }
 
     public void autoDrive(Translation2d translationalVelocity, double rotationalVelocity,
-            boolean isFieldOriented, boolean isOpenLoop) {
+                          boolean isFieldOriented, boolean isOpenLoop) {
         autoDriveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented,
                 isOpenLoop);
     }
@@ -323,6 +320,7 @@ public class Swerve implements Updatable, Subsystem {
     }
 
     public void resetPose(Pose2d resetPose) {
+        SmartDashboard.putString("aaa", resetPose.toString());
         gyro.setYaw(resetPose.getRotation().getDegrees() + (AllianceFlipUtil.shouldFlip() ? 180 : 0));
         // System.out.println(resetPose.getRotation().getDegrees());
         // System.out.println(gyro.getYaw().getDegrees());
@@ -463,7 +461,7 @@ public class Swerve implements Updatable, Subsystem {
     public void update(double time, double dt) {
         if (isLockHeading) {
             headingTarget = AngleNormalization.placeInAppropriate0To360Scope(gyro.getYaw().getDegrees(), headingTarget);
-            
+
             // clamp max rotation output value from the heading controller to prevent controller overshoot
             double headingRotationLimit = SwerveConstants.headingController.MAX_ERROR_CORRECTION_ANGLE.get()
                     * SwerveConstants.headingController.HEADING_KP.get();
@@ -512,9 +510,10 @@ public class Swerve implements Updatable, Subsystem {
 
     @Override
     public void telemetry() {
+
         Pose2d latestPose = swerveLocalizer.getLatestPose();
         dataTable.getEntry("Pose").setDoubleArray(
-                new double[] {
+                new double[]{
                         latestPose.getX(), latestPose.getY(), latestPose.getRotation().getDegrees()
                 });
         for (SwerveModuleBase mod : swerveMods) {
@@ -561,6 +560,12 @@ public class Swerve implements Updatable, Subsystem {
 
     public enum State {
         BRAKE, DRIVE, PATH_FOLLOWING, EMPTY
+    }
+
+    public void setDriveMotorBreakMode() {
+        for (SwerveModuleBase mod : swerveMods) {
+
+        }
     }
 
 }

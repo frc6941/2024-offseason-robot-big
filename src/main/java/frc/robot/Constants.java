@@ -6,9 +6,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,8 +17,6 @@ import frc.robot.utils.TunableNumber;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 
 import static edu.wpi.first.units.Units.*;
-
-import java.io.IOException;
 
 public class Constants {
     public static final boolean TUNING = true;

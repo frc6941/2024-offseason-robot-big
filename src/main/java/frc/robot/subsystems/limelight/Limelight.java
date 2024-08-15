@@ -46,6 +46,10 @@ public class Limelight implements Updatable {
     private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("Distance");
     private Optional<PoseEstimate> botEstimate;
 
+    private int loopCnt = 0;
+    private boolean[][] tagFlagCnt = new boolean[17][60];
+    private double[] tagCnt = new double[17];
+
     private Limelight() {
     }
 
@@ -116,11 +120,34 @@ public class Limelight implements Updatable {
 
     @Override
     public void update(double time, double dt) {
+        loopCnt++;
         int ktagID = (int) LimelightHelpers.getFiducialID("limelight");
-        boolean isAutoDrive  = swerve.getInstance().getState() == State.PATH_FOLLOWING;
+        for (int i = 1; i <= 16; i++) {
+            if (tagFlagCnt[i][loopCnt]) tagCnt[i]--;
+            tagFlagCnt[i][loopCnt] = false;
+        }
+//        if (botEstimate.isPresent()) {
+//            if (botEstimate.get().rawFiducials != null) {
+//                for (int i = 0; i < botEstimate.get().rawFiducials.length; i++) {
+//                    //SmartDashboard.putString("Limelight/raw", botEstimate.get().rawFiducials[i].toString());
+//                    tagFlagCnt[botEstimate.get().rawFiducials[i].id][loopCnt] = true;
+//                    tagCnt[botEstimate.get().rawFiducials[i].id]++;
+//                }
+//
+//            }
+//        }
+//        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent()) {
+//            tagFlagCnt[ktagID][loopCnt] = true;
+//            tagCnt[ktagID]++;
+//        }
+        loopCnt %= 30;
+        SmartDashboard.putNumberArray("Limelight/tagCnt", tagCnt);
+        SmartDashboard.putNumber("Limelight/tagCnt3", tagCnt[3]);
+        SmartDashboard.putNumber("Limelight/loopCnt", loopCnt);
+        boolean isAutoDrive = swerve.getInstance().getState() == frc.robot.subsystems.swerve.Swerve.State.PATH_FOLLOWING;
         double rejectionRange;
         if(isAutoDrive){
-            rejectionRange = 1.9;        
+            rejectionRange = 1.9;
         }else rejectionRange = 1.9;
 
         LimelightHelpers.SetRobotOrientation("limelight",
@@ -133,7 +160,7 @@ public class Limelight implements Updatable {
         if (Math.abs(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation()
                 .getDegrees()) > Math.toDegrees(Constants.SwerveConstants.maxAngularRate.magnitude()))
             return;
-   
+
         if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent() && botEstimate.isPresent()) {
             kTagPose = FieldLayout.kTagMap.getTagPose(ktagID).get();
             kdeltaToTag = new Translation2d(kTagPose.getX(), kTagPose.getY()).minus(swerve.getLocalizer().getCoarseFieldPose(0).getTranslation());
@@ -204,6 +231,8 @@ public class Limelight implements Updatable {
     public void telemetry() {
         //SmartDashboard.putBoolean("has_target", hasTarget());
         if (hasTarget()) {
+//            if (!botEstimate.isEmpty())
+//                SmartDashboard.putNumber("Limelight/aaa", botEstimate.get().rawFiducials.length);
             SmartDashboard.putString("metaTag2blue",
                     LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.AIM_LIMELIGHT_NAME).pose.toString());
             if (!botEstimate.isEmpty()) {
