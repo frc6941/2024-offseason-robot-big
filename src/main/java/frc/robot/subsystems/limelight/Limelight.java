@@ -128,10 +128,10 @@ public class Limelight implements Updatable {
         if (Math.abs(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation()
                 .getDegrees()) > Math.toDegrees(Constants.SwerveConstants.maxAngularRate.magnitude()))
             return;
-        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent()) {
+        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent() && botEstimate.isPresent()) {
             kTagPose = FieldLayout.kTagMap.getTagPose(ktagID).get();
-            kdeltaToTag = new Translation2d(kTagPose.getX(), kTagPose.getY()).minus(swerve.getLocalizer().getCoarseFieldPose(0).getTranslation());
-            if (kdeltaToTag.getNorm() > 3) {
+            kdeltaToTag = new Translation2d(kTagPose.getX(), kTagPose.getY()).minus(botEstimate.get().pose.getTranslation());
+            if (kdeltaToTag.getNorm() > 3.0) {
                 SmartDashboard.putBoolean("TargetUpdated", false);
                 return;
             }
@@ -154,8 +154,8 @@ public class Limelight implements Updatable {
                 deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 100;
                 deviationOmega = 15;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
             } else {
-                deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 10;//80
-                deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 10;
+                deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 40;//80
+                deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 40;
                 deviationOmega = 15;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
             }
             botEstimate.ifPresent((poseEstimate) -> {

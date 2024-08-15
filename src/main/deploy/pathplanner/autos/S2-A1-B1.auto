@@ -22,35 +22,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake"
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "AutoPreArm"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "FlywheelRampUp"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
+                  "name": "Intake"
                 }
               }
             ]
@@ -105,35 +79,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake"
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "AutoPreArm"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "FlywheelRampUp"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
+                  "name": "Intake"
                 }
               }
             ]
@@ -156,35 +104,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake"
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "AutoPreArm"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "FlywheelRampUp"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
+                  "name": "Intake"
                 }
               }
             ]
