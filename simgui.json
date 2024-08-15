@@ -46,11 +46,7 @@
       "AdvantageKit": {
         "Shooter": {
           "open": true
-        },
-        "open": true
-      },
-      "PathPlanner": {
-        "open": true
+        }
       },
       "Shuffleboard": {
         "Operator": {
@@ -58,16 +54,9 @@
             "open": true
           },
           "open": true
-        },
-        "open": true
+        }
       },
       "SmartDashboard": {
-        "open": true
-      },
-      "Swerve": {
-        "open": true
-      },
-      "limelight": {
         "open": true
       }
     }
