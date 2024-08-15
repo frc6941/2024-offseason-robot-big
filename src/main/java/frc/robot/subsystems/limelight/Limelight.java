@@ -16,6 +16,8 @@ import frc.robot.utils.FieldLayout;
 import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
+import com.google.common.util.concurrent.Service.State;
+
 import java.util.Optional;
 
 import static edu.wpi.first.units.Units.*;
@@ -116,6 +118,11 @@ public class Limelight implements Updatable {
     @Override
     public void update(double time, double dt) {
         int ktagID = (int) LimelightHelpers.getFiducialID("limelight");
+        boolean isAutoDrive  = swerve.getInstance().getState() == frc.robot.subsystems.swerve.Swerve.State.PATH_FOLLOWING;
+        double rejectionRange;
+        if(isAutoDrive){
+            rejectionRange = 2.3;        
+        }else rejectionRange = 3.0;
 
 
         LimelightHelpers.SetRobotOrientation("limelight",
@@ -131,7 +138,7 @@ public class Limelight implements Updatable {
         if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent() && botEstimate.isPresent()) {
             kTagPose = FieldLayout.kTagMap.getTagPose(ktagID).get();
             kdeltaToTag = new Translation2d(kTagPose.getX(), kTagPose.getY()).minus(botEstimate.get().pose.getTranslation());
-            if (kdeltaToTag.getNorm() > 3.0) {
+            if (kdeltaToTag.getNorm() > rejectionRange) {
                 SmartDashboard.putBoolean("TargetUpdated", false);
                 return;
             }
