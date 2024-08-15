@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
@@ -28,6 +29,7 @@ public class FerryShootCommand extends ParallelCommandGroup {
                         new ChassisAimCommand(Swerve, () -> Destination.FERRY, driverX, driverY).andThen(Commands.print("Spun Up")),
                         new ArmAimCommand(armSubsystem, () -> Destination.FERRY).andThen(Commands.print("Arm Aimed")),
                         new FlyWheelRampUp(shooterSubsystem, () -> Destination.FERRY).andThen(Commands.print("Spun Up")),
+                        Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.FERRY_AIMING), indicatorSubsystem),
                         new WaitUntilCommand(() -> {
                             boolean swerveReady = Swerve.aimingReady(2.5);
                             boolean shooterReady = shooterSubsystem.ShooterVelocityReady();

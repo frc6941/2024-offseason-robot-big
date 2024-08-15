@@ -63,7 +63,7 @@ public class IntakeCommand extends Command {
         if (interrupted)
             return;
         indicatorSubsystem
-                .setPattern(IndicatorIO.Patterns.FINISH_INTAKE);
+                .setPattern(IndicatorIO.Patterns.FINISH_INDEX);
     }
 
     @Override

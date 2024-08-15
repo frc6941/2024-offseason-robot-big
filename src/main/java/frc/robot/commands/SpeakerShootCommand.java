@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
@@ -38,7 +39,8 @@ public class SpeakerShootCommand extends ParallelCommandGroup {
                                 new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem, indicatorSubsystem)),
                         new ChassisAimCommand(Swerve, () -> Destination.SPEAKER, driverX, driverY, isAuto),
                         new ArmAimCommand(armSubsystem, () -> Destination.SPEAKER),
-                        new FlyWheelRampUp(shooterSubsystem, () -> Destination.SPEAKER)
+                        new FlyWheelRampUp(shooterSubsystem, () -> Destination.SPEAKER),
+                        Commands.run(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.SPEAKER_AIMING), indicatorSubsystem)
                 ));
 
     }
