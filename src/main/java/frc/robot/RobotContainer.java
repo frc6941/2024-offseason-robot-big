@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -128,25 +129,26 @@ public class RobotContainer {
                 (Pose2d pose2d) -> Swerve.getInstance().resetPose(pose2d),
                 () -> Swerve.getInstance().getChassisSpeeds(),
                 (ChassisSpeeds chassisSpeeds) -> Swerve.getInstance().driveSpeed(chassisSpeeds),
-                new HolonomicPathFollowerConfig(
-                        Constants.SwerveConstants.maxSpeed.magnitude(),
-                        0.55,
-                        new ReplanningConfig()),
-//                new HolonomicPathFollowerConfig(
-//                        new PIDConstants(
-//                                Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
-//                                Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
-//                                Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()
-//                        ),
-//                        new PIDConstants(
-//                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
-//                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
-//                                Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()
-//                        ),
-//                        Constants.SwerveConstants.maxSpeed.magnitude(),
-//                        0.55,
-//                        new ReplanningConfig()),
+                // new HolonomicPathFollowerConfig(
+                //         Constants.SwerveConstants.maxSpeed.magnitude(),
+                //         0.55,
+                //         new ReplanningConfig()),
+               new HolonomicPathFollowerConfig(
+                    //    new PIDConstants(
+                    //            Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
+                    //            Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
+                    //            Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()
+                    //    ),
+                    //    new PIDConstants(
+                    //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
+                    //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
+                    //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()
+                    //    ),
+                       Constants.SwerveConstants.maxSpeed.magnitude(),
+                       0.55,
+                       new ReplanningConfig()),
                 Utils::flip,
+               
                 swerve
         );
 
@@ -208,23 +210,21 @@ public class RobotContainer {
                         .alongWith(setDest(Destination.FERRY))
                         .andThen(rumbleDriver(1.0)));
 
-        driverController.rightBumper().whileTrue(
-                ampShot()
-                        .alongWith(setDest(Destination.AMP))
-                        .andThen(rumbleDriver(1.0)));
         driverController.b().whileTrue(
 
                 speakerShot()
                         .alongWith(setDest(Destination.SPEAKER))
                         .andThen(rumbleDriver(1.0)));
+        driverController.leftTrigger().whileTrue((justShoot().withTimeout(0.3)));
         driverController.rightTrigger().whileTrue(ampAim());
-        driverController.rightTrigger().onFalse(justShoot().withTimeout(0.3));
-        driverController.leftTrigger().whileTrue(outtake());
+
+        driverController.y().whileTrue(outtake());
 
         // operator superstructure commands
         operatorController.povRight().onTrue(setDest(Destination.FERRY));
         operatorController.povLeft().onTrue(setDest(Destination.SPEAKER));
         operatorController.povUp().toggleOnTrue(
+
                 preheat().withInterruptBehavior(InterruptionBehavior.kCancelSelf)
         );
         operatorController.povUp().onTrue(new ResetArmCommand(arm));
@@ -305,12 +305,21 @@ public class RobotContainer {
 
     private Command drive() {
         return Commands.runOnce(() -> {
+            if (AllianceFlipUtil.shouldFlip()){
             Translation2d transVel = new Translation2d(
+                    -driverController.getLeftY(),
+                    -driverController.getLeftX()).times(Constants.SwerveConstants.maxSpeed.magnitude()).rotateBy(Rotation2d.fromDegrees(180));
+            double rotVel = -Constants.RobotConstants.driverController.getRightX()
+                    * Constants.SwerveConstants.maxAngularRate.magnitude();
+            swerve.drive(transVel, rotVel, true, false);
+            }else{
+                Translation2d transVel = new Translation2d(
                     -driverController.getLeftY(),
                     -driverController.getLeftX()).times(Constants.SwerveConstants.maxSpeed.magnitude());
             double rotVel = -Constants.RobotConstants.driverController.getRightX()
                     * Constants.SwerveConstants.maxAngularRate.magnitude();
             swerve.drive(transVel, rotVel, true, false);
+            }
         }, swerve);
     }
 

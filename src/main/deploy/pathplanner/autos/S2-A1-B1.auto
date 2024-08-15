@@ -1,16 +1,16 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.338998314360265,
+      "y": 5.559932574410603
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoShoot"
-          }
-        },
         {
           "type": "parallel",
           "data": {

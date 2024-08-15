@@ -156,7 +156,7 @@ public class Swerve implements Updatable, Subsystem {
     public void driveSpeed(ChassisSpeeds speeds) {
         autoDrive(new Translation2d(
                 speeds.vxMetersPerSecond,
-                speeds.vyMetersPerSecond), speeds.omegaRadiansPerSecond, false, false);
+                speeds.vyMetersPerSecond), speeds.omegaRadiansPerSecond, true, false);
         System.out.println(speeds.toString());
     }
 
@@ -195,13 +195,16 @@ public class Swerve implements Updatable, Subsystem {
 
             Rotation2d robotAngle = swerveLocalizer.getLatestPose().getRotation();
 
-            if (driveSignal.isFieldOriented())
-                if (AllianceFlipUtil.shouldFlip() /* && this.state != State.PATH_FOLLOWING */) {
-                    desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation,
-                            robotAngle.rotateBy(Rotation2d.fromDegrees(180)));
-                } else {
-                    desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation,
-                            robotAngle.rotateBy(Rotation2d.fromDegrees(0)));
+
+            if (driveSignal.isFieldOriented()){
+                // if (AllianceFlipUtil.shouldFlip()) {
+                //     desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation,
+                //             robotAngle.rotateBy(Rotation2d.fromDegrees(180)));
+                // } else {
+                //     desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation,
+                //             robotAngle.rotateBy(Rotation2d.fromDegrees(0)));
+                desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation,robotAngle);
+
                 }
 
             else

@@ -11,12 +11,11 @@ import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.limelight.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.Swerve.State;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.FieldLayout;
 import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
-
-import com.google.common.util.concurrent.Service.State;
 
 import java.util.Optional;
 
@@ -118,12 +117,11 @@ public class Limelight implements Updatable {
     @Override
     public void update(double time, double dt) {
         int ktagID = (int) LimelightHelpers.getFiducialID("limelight");
-        boolean isAutoDrive  = swerve.getInstance().getState() == frc.robot.subsystems.swerve.Swerve.State.PATH_FOLLOWING;
+        boolean isAutoDrive  = swerve.getInstance().getState() == State.PATH_FOLLOWING;
         double rejectionRange;
         if(isAutoDrive){
-            rejectionRange = 2.3;        
-        }else rejectionRange = 3.0;
-
+            rejectionRange = 1.9;        
+        }else rejectionRange = 1.9;
 
         LimelightHelpers.SetRobotOrientation("limelight",
                 Swerve.getInstance().getLocalizer().getLatestPose().getRotation().getDegrees(),
@@ -135,14 +133,16 @@ public class Limelight implements Updatable {
         if (Math.abs(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation()
                 .getDegrees()) > Math.toDegrees(Constants.SwerveConstants.maxAngularRate.magnitude()))
             return;
+   
         if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent() && botEstimate.isPresent()) {
             kTagPose = FieldLayout.kTagMap.getTagPose(ktagID).get();
-            kdeltaToTag = new Translation2d(kTagPose.getX(), kTagPose.getY()).minus(botEstimate.get().pose.getTranslation());
+            kdeltaToTag = new Translation2d(kTagPose.getX(), kTagPose.getY()).minus(swerve.getLocalizer().getCoarseFieldPose(0).getTranslation());
             if (kdeltaToTag.getNorm() > rejectionRange) {
                 SmartDashboard.putBoolean("TargetUpdated", false);
                 return;
             }
         }
+
 
 
         // if (Swerve.getInstance().getLocalizer().getLatestPose().getX() < 0
@@ -157,8 +157,8 @@ public class Limelight implements Updatable {
                 deviationY = 0.01;
                 deviationOmega = 0.001;
             } else if (swerve.getState() == Swerve.State.PATH_FOLLOWING) {
-                deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 100;//140
-                deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 100;
+                deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 200;//140
+                deviationY = (0.0062 * botEstimate.get().pose.getY() + 0.0087) * 200;
                 deviationOmega = 15;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
             } else {
                 deviationX = (0.0062 * botEstimate.get().pose.getX() + 0.0087) * 40;//80
