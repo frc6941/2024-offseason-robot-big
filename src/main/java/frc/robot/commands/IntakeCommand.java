@@ -4,8 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.beambreak.BeamBreakSubsystem;
-import frc.robot.subsystems.indicator.IndicatorIO;
-import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intaker.IntakerSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
@@ -14,7 +12,6 @@ import static edu.wpi.first.units.Units.Volts;
 public class IntakeCommand extends Command {
     private final IntakerSubsystem intakerSubsystem;
     private final BeamBreakSubsystem beamBreakSubsystem;
-    private final IndicatorSubsystem indicatorSubsystem;
     private final ShooterSubsystem shooterSubsystem;
     private final ArmSubsystem armSubsystem;
     private boolean enabledBefore = false;
@@ -22,12 +19,10 @@ public class IntakeCommand extends Command {
     public IntakeCommand(
             IntakerSubsystem intakerSubsystem,
             BeamBreakSubsystem beamBreakSubsystem,
-            IndicatorSubsystem indicatorSubsystem,
             ShooterSubsystem shooterSubsystem,
             ArmSubsystem armSubsystem) {
         this.intakerSubsystem = intakerSubsystem;
         this.beamBreakSubsystem = beamBreakSubsystem;
-        this.indicatorSubsystem = indicatorSubsystem;
         this.shooterSubsystem = shooterSubsystem;
         this.armSubsystem = armSubsystem;
     }
@@ -60,8 +55,6 @@ public class IntakeCommand extends Command {
                 .setIntakeVoltage(Volts.zero());
         shooterSubsystem.getIo()
                 .setFlyWheelDirectVoltage(Constants.ShooterConstants.shooterConstantVoltage);
-        indicatorSubsystem
-                .setPattern(IndicatorIO.Patterns.FINISH_INDEX);
         if (interrupted)
             return;
     }

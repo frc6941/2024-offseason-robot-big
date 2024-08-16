@@ -37,9 +37,9 @@ public class DeliverNoteCommand extends Command {
         if (interrupted)
             return;
         indicatorSubsystem
-                .setPattern(IndicatorIO.Patterns.FINISH_SHOOT);
+                .setPattern(IndicatorIO.Patterns.SHOOT_FINISH);
         new RumbleCommand(Seconds.of(0.5), Constants.RobotConstants.operatorController.getHID()).schedule();
-        Commands.runOnce(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.FINISH_SHOOT), indicatorSubsystem);
+        Commands.runOnce(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.SHOOT_FINISH), indicatorSubsystem);
     }
 
     @Override

@@ -7,7 +7,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
@@ -44,7 +44,6 @@ import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
-import frc.robot.utils.Utils;
 import frc.robot.utils.shooting.ShootingDecider;
 import frc.robot.utils.shooting.ShootingDecider.Destination;
 import lombok.Getter;
@@ -112,7 +111,12 @@ public class RobotContainer {
 
         }
 
-        indicator.setDefaultCommand(Commands.run(() -> indicator.setPattern(IndicatorIO.Patterns.NORMAL), indicator));
+        indicator.setDefaultCommand(Commands.run(() -> {
+            if (beamBreak.isIntakeReady())
+                indicator.setPattern(IndicatorIO.Patterns.INDEXED);
+            else
+                indicator.setPattern(IndicatorIO.Patterns.NORMAL);
+        }, indicator));
     }
 
     private void configureAuto() {
@@ -133,22 +137,22 @@ public class RobotContainer {
                 //         Constants.SwerveConstants.maxSpeed.magnitude(),
                 //         0.55,
                 //         new ReplanningConfig()),
-               new HolonomicPathFollowerConfig(
-                    //    new PIDConstants(
-                    //            Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
-                    //            Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
-                    //            Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()
-                    //    ),
-                    //    new PIDConstants(
-                    //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
-                    //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
-                    //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()
-                    //    ),
-                       Constants.SwerveConstants.maxSpeed.magnitude(),
-                       0.55,
-                       new ReplanningConfig()),
+                new HolonomicPathFollowerConfig(
+                        //    new PIDConstants(
+                        //            Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
+                        //            Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
+                        //            Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()
+                        //    ),
+                        //    new PIDConstants(
+                        //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
+                        //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
+                        //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()
+                        //    ),
+                        Constants.SwerveConstants.maxSpeed.magnitude(),
+                        0.55,
+                        new ReplanningConfig()),
                 AllianceFlipUtil::shouldFlip,
-               
+
                 swerve
         );
 
@@ -224,10 +228,10 @@ public class RobotContainer {
         operatorController.povRight().onTrue(setDest(Destination.FERRY));
         operatorController.povLeft().onTrue(setDest(Destination.SPEAKER));
         operatorController.povUp().toggleOnTrue(
-
                 preheat().withInterruptBehavior(InterruptionBehavior.kCancelSelf)
         );
-        operatorController.povUp().onTrue(new ResetArmCommand(arm));
+//        operatorController.povUp().onTrue(new ResetArmCommand(arm));
+        operatorController.a().debounce(1).onTrue(climb());
     }
 
     public Command getAutonomousCommand() {
@@ -294,8 +298,8 @@ public class RobotContainer {
     }
 
     private Command intake() {
-        return new IntakeCommand(intaker, beamBreak, indicator, shooter, arm)
-                .alongWith(new IndexCommand(indexer, beamBreak));
+        return new IntakeCommand(intaker, beamBreak, shooter, arm)
+                .alongWith(new IndexCommand(indexer, beamBreak, indicator));
     }
 
     private Command outtake() {
@@ -305,20 +309,20 @@ public class RobotContainer {
 
     private Command drive() {
         return Commands.runOnce(() -> {
-            if (AllianceFlipUtil.shouldFlip()){
-            Translation2d transVel = new Translation2d(
-                    -driverController.getLeftY(),
-                    -driverController.getLeftX()).times(Constants.SwerveConstants.maxSpeed.magnitude()).rotateBy(Rotation2d.fromDegrees(180));
-            double rotVel = -Constants.RobotConstants.driverController.getRightX()
-                    * Constants.SwerveConstants.maxAngularRate.magnitude();
-            swerve.drive(transVel, rotVel, true, false);
-            }else{
+            if (AllianceFlipUtil.shouldFlip()) {
                 Translation2d transVel = new Translation2d(
-                    -driverController.getLeftY(),
-                    -driverController.getLeftX()).times(Constants.SwerveConstants.maxSpeed.magnitude());
-            double rotVel = -Constants.RobotConstants.driverController.getRightX()
-                    * Constants.SwerveConstants.maxAngularRate.magnitude();
-            swerve.drive(transVel, rotVel, true, false);
+                        -driverController.getLeftY(),
+                        -driverController.getLeftX()).times(Constants.SwerveConstants.maxSpeed.magnitude()).rotateBy(Rotation2d.fromDegrees(180));
+                double rotVel = -Constants.RobotConstants.driverController.getRightX()
+                        * Constants.SwerveConstants.maxAngularRate.magnitude();
+                swerve.drive(transVel, rotVel, true, false);
+            } else {
+                Translation2d transVel = new Translation2d(
+                        -driverController.getLeftY(),
+                        -driverController.getLeftX()).times(Constants.SwerveConstants.maxSpeed.magnitude());
+                double rotVel = -Constants.RobotConstants.driverController.getRightX()
+                        * Constants.SwerveConstants.maxAngularRate.magnitude();
+                swerve.drive(transVel, rotVel, true, false);
             }
         }, swerve);
     }
@@ -334,5 +338,14 @@ public class RobotContainer {
 
     private Command setDest(Destination des) {
         return Commands.runOnce(() -> dashboard.updateDestination(des));
+    }
+
+    private Command climb() {
+        return Commands.parallel(
+                new ClimbArmUpCommand(arm),
+                Commands.sequence(
+                        new RumbleCommand(Seconds.of(1.0), operatorController.getHID()),
+                        new WaitUntilCommand(() -> operatorController.b().getAsBoolean()),
+                        new ClimbPullerDownCommand(arm, indicator)));
     }
 }

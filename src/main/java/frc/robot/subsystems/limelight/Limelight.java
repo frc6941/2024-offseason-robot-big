@@ -1,5 +1,6 @@
 package frc.robot.subsystems.limelight;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -38,13 +39,14 @@ public class Limelight implements Updatable {
     private static int measuerCnt = 0;
     private static double deviationX, deviationY, deviationOmega;
     private Translation2d kdeltaToTag;
-    private int kTagID;
     private Pose3d kTagPose;
 
     // singleton
     private static Limelight instance;
     private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("Distance");
     private Optional<PoseEstimate> botEstimate;
+
+    private LinearFilter tagDistance = LinearFilter.movingAverage(10);
 
     private Limelight() {
     }
@@ -116,12 +118,12 @@ public class Limelight implements Updatable {
 
     @Override
     public void update(double time, double dt) {
-        int ktagID = (int) LimelightHelpers.getFiducialID("limelight");
-        boolean isAutoDrive  = swerve.getInstance().getState() == State.PATH_FOLLOWING;
+        int kTagID = (int) LimelightHelpers.getFiducialID("limelight");
+        boolean isAutoDrive = swerve.getInstance().getState() == State.PATH_FOLLOWING;
         double rejectionRange;
-        if(isAutoDrive){
+        if (isAutoDrive) {
             rejectionRange = 0;
-        }else rejectionRange = 3.1;
+        } else rejectionRange = 3.1;
 
         LimelightHelpers.SetRobotOrientation("limelight",
                 Swerve.getInstance().getLocalizer().getLatestPose().getRotation().getDegrees(),
@@ -134,8 +136,8 @@ public class Limelight implements Updatable {
                 .getDegrees()) > Math.toDegrees(Constants.SwerveConstants.maxAngularRate.magnitude()))
             return;
 
-        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent() && botEstimate.isPresent()) {
-            kTagPose = FieldLayout.kTagMap.getTagPose(ktagID).get();
+        if (FieldLayout.kTagMap.getTagPose(kTagID).isPresent() && botEstimate.isPresent()) {
+            kTagPose = FieldLayout.kTagMap.getTagPose(kTagID).get();
             kdeltaToTag = new Translation2d(kTagPose.getX(), kTagPose.getY()).minus(botEstimate.get().pose.getTranslation());
             if (kdeltaToTag.getNorm() > rejectionRange) {
                 SmartDashboard.putBoolean("TargetUpdated", false);
@@ -144,13 +146,12 @@ public class Limelight implements Updatable {
         }
 
 
-
         // if (Swerve.getInstance().getLocalizer().getLatestPose().getX() < 0
         // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getX() > Constants.FieldConstants.fieldLength
         // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getY() < 0
         // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getY() > Constants.FieldConstants.fieldWidth)
         // 	return;
-        if (!botEstimate.isEmpty()) {
+        if (botEstimate.isPresent()) {
             if (measuerCnt <= 3) {
                 measuerCnt++;
                 deviationX = 0.01;
@@ -206,7 +207,7 @@ public class Limelight implements Updatable {
         if (hasTarget()) {
             SmartDashboard.putString("metaTag2blue",
                     LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.AIM_LIMELIGHT_NAME).pose.toString());
-            if (!botEstimate.isEmpty()) {
+            if (botEstimate.isPresent()) {
                 SmartDashboard.putString("limelight_pose", botEstimate.get().pose.toString());
                 SmartDashboard.putNumber("latency", botEstimate.get().latency);
             }
