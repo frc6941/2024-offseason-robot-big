@@ -122,7 +122,7 @@ public class Limelight implements Updatable {
         boolean isAutoDrive = swerve.getInstance().getState() == State.PATH_FOLLOWING;
         double rejectionRange;
         if (isAutoDrive) {
-            rejectionRange = 0;
+            rejectionRange = 100;
         } else rejectionRange = 3.1;
 
         LimelightHelpers.SetRobotOrientation("limelight",
@@ -143,6 +143,9 @@ public class Limelight implements Updatable {
                 SmartDashboard.putBoolean("TargetUpdated", false);
                 return;
             }
+        }
+        if (isAutoDrive){
+            return;
         }
 
 
