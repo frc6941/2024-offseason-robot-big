@@ -1,6 +1,5 @@
 package frc.robot.subsystems.limelight;
 
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -12,7 +11,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.limelight.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.subsystems.swerve.Swerve.State;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.FieldLayout;
 import org.frcteam6941.looper.Updatable;
@@ -46,7 +44,9 @@ public class Limelight implements Updatable {
     private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("Distance");
     private Optional<PoseEstimate> botEstimate;
 
-    private LinearFilter tagDistance = LinearFilter.movingAverage(10);
+    private int loopCnt = 0;
+    private boolean[][] tagFlagCnt = new boolean[30][60];
+    private double[] tagCnt = new double[30];//17
 
     private Limelight() {
     }
@@ -118,8 +118,61 @@ public class Limelight implements Updatable {
 
     @Override
     public void update(double time, double dt) {
-        int kTagID = (int) LimelightHelpers.getFiducialID("limelight");
-        boolean isAutoDrive = swerve.getInstance().getState() == State.PATH_FOLLOWING;
+        loopCnt++;
+        int ktagID = (int) LimelightHelpers.getFiducialID("limelight");
+        for (int i = 1; i <= 16; i++) {
+            if (tagFlagCnt[i][loopCnt]) tagCnt[i]--;
+            tagFlagCnt[i][loopCnt] = false;
+        }
+//        if (botEstimate.isPresent()) {
+////            if (botEstimate.get().rawFiducials.length != 0) {
+//            for (LimelightHelpers.RawFiducial rawFiducial : botEstimate.get().rawFiducials) {
+//                if (rawFiducial != null) {
+//                    tagFlagCnt[rawFiducial.id][loopCnt] = true;
+//                    tagCnt[rawFiducial.id]++;
+//                } else {
+//                    System.out.println("wtf");
+//                }
+//            }
+////            }
+//        }
+//        for (int i = 0; i <= 16; i++) {
+//            if (FieldLayout.kTagMap.getTagPose(i).isPresent() && botEstimate.isPresent()) {
+//                tagFlagCnt[i][loopCnt] = true;
+//                tagCnt[i]++;
+//            }
+//        }
+
+//        LimelightHelpers.setPriorityTagID("limelight", 7);
+//        ktagID = (int) LimelightHelpers.getFiducialID("limelight");
+//        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent()) {
+//            tagFlagCnt[ktagID][loopCnt] = true;
+//            tagCnt[ktagID]++;
+//        }
+//        LimelightHelpers.setPriorityTagID("limelight", 8);
+//        ktagID = (int) LimelightHelpers.getFiducialID("limelight");
+//        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent()) {
+//            tagFlagCnt[ktagID][loopCnt] = true;
+//            tagCnt[ktagID]++;
+//        }
+        if (ktagID == 7 || ktagID == 8) {
+            tagFlagCnt[ktagID][loopCnt] = true;
+            tagCnt[ktagID]++;
+            if (botEstimate.isPresent()) {
+                if (botEstimate.get().rawFiducials.length >= 2) {
+                    ktagID = ktagID == 7 ? 8 : 7;
+                    tagFlagCnt[ktagID][loopCnt] = true;
+                    tagCnt[ktagID]++;
+                    ktagID = ktagID == 7 ? 7 : 8;
+                }
+            }
+
+        }
+        loopCnt %= 30;
+        SmartDashboard.putNumberArray("Limelight/tagCnt", tagCnt);
+        SmartDashboard.putNumber("Limelight/tagCnt3", tagCnt[3]);
+        SmartDashboard.putNumber("Limelight/loopCnt", loopCnt);
+        boolean isAutoDrive = swerve.getInstance().getState() == Swerve.State.PATH_FOLLOWING;
         double rejectionRange;
         if (isAutoDrive) {
             rejectionRange = 100;
@@ -136,15 +189,20 @@ public class Limelight implements Updatable {
                 .getDegrees()) > Math.toDegrees(Constants.SwerveConstants.maxAngularRate.magnitude()))
             return;
 
-        if (FieldLayout.kTagMap.getTagPose(kTagID).isPresent() && botEstimate.isPresent()) {
-            kTagPose = FieldLayout.kTagMap.getTagPose(kTagID).get();
+        //TODO: RED ALLIANCE
+        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent() && botEstimate.isPresent()) {
+            kTagPose = FieldLayout.kTagMap.getTagPose(ktagID).get();
             kdeltaToTag = new Translation2d(kTagPose.getX(), kTagPose.getY()).minus(botEstimate.get().pose.getTranslation());
-            if (kdeltaToTag.getNorm() > rejectionRange) {
+            if (kdeltaToTag.getNorm() > rejectionRange ||
+                    (((tagCnt[7] < 25 || tagCnt[8] < 25)
+                            && !(tagCnt[7] == 0 && tagCnt[8] == 30)
+                            && !(tagCnt[8] == 0 && tagCnt[7] == 30)
+                            && (ktagID == 7 || ktagID == 8)))) {
                 SmartDashboard.putBoolean("TargetUpdated", false);
                 return;
             }
         }
-        if (isAutoDrive){
+        if (isAutoDrive) {
             return;
         }
 
@@ -208,11 +266,13 @@ public class Limelight implements Updatable {
     public void telemetry() {
         //SmartDashboard.putBoolean("has_target", hasTarget());
         if (hasTarget()) {
-            SmartDashboard.putString("metaTag2blue",
-                    LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.AIM_LIMELIGHT_NAME).pose.toString());
+//            SmartDashboard.putString("metaTag2blue",
+//                    LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.AIM_LIMELIGHT_NAME).pose.toString());
             if (botEstimate.isPresent()) {
                 SmartDashboard.putString("limelight_pose", botEstimate.get().pose.toString());
                 SmartDashboard.putNumber("latency", botEstimate.get().latency);
+                SmartDashboard.putNumber("Limelight/botEstimate", botEstimate.get().rawFiducials.length);
+//                LimelightHelpers.printPoseEstimate(botEstimate.get());
             }
         }
         distanceLogged.set(Limelight.getInstance().getSpeakerRelativePosition().getNorm());
