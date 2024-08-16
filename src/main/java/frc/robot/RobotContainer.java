@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -127,6 +128,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoPreArm", new ArmAimCommand(arm, () -> Destination.SPEAKER));
         NamedCommands.registerCommand("ChassisAim", new ChassisAimCommand(swerve, () -> Destination.SPEAKER, () -> 0, () -> 0));
         NamedCommands.registerCommand("Shoot", new DeliverNoteCommand(indexer, beamBreak, indicator).withTimeout(1.0));
+        NamedCommands.registerCommand("PreloadShoot", PreloadShoot().withTimeout(1.0));
+
 
         AutoBuilder.configureHolonomic(
                 () -> Swerve.getInstance().getLocalizer().getCoarseFieldPose(0),
@@ -138,7 +141,7 @@ public class RobotContainer {
                 //         0.55,
                 //         new ReplanningConfig()),
                 new HolonomicPathFollowerConfig(
-                        //    new PIDConstants(
+                        //    new PIDConstants(  
                         //            Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
                         //            Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
                         //            Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()
@@ -347,5 +350,21 @@ public class RobotContainer {
                         new RumbleCommand(Seconds.of(1.0), operatorController.getHID()),
                         new WaitUntilCommand(() -> operatorController.b().getAsBoolean()),
                         new ClimbPullerDownCommand(arm, indicator)));
+    }
+
+    private Command PreloadShoot(){
+        return Commands.deadline(
+            Commands.sequence(
+                    new WaitUntilCommand(() -> {
+                        boolean shooterReady = shooter.ShooterVelocityReady();
+                        boolean armReady = arm.armAimingReady();
+                        return shooterReady && armReady;
+                    }),
+                    Commands.runOnce(() -> Timer.delay(0.02)),
+                    new DeliverNoteCommand(indexer, beamBreak, indicator)),
+            new ArmAimCommand(arm, () -> Destination.SPEAKER),
+            new FlyWheelRampUp(shooter, () -> Destination.SPEAKER),
+            Commands.runOnce(() -> indicator.setPattern(IndicatorIO.Patterns.SPEAKER_AIMING), indicator)
+        );
     }
 }

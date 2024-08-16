@@ -73,7 +73,7 @@ public class Constants {
         public static final int LEFT_SHOOTER_MOTOR_ID = 41;
         public static final int RIGHT_SHOOTER_MOTOR_ID = 42;
 
-        public static final Measure<Voltage> shooterConstantVoltage = Volts.of(-2);
+        public static final Measure<Voltage> shooterConstantVoltage = Volts.of(-4);
         public static final TunableNumber skewValue = new TunableNumber("Shooter skew", 0);
         public static double kToFFactor = 0.2;
         public static boolean useSmartDashboardForSkew = false;
@@ -325,7 +325,7 @@ public class Constants {
         /**
          * Radius of the wheel in meters.
          */
-        private static final Measure<Distance> wheelRadius = Inches.of(1.9);
+        private static final Measure<Distance> wheelRadius = Inches.of(1.8752773878);
         /**
          * Circumference of the wheel in meters.
          */
