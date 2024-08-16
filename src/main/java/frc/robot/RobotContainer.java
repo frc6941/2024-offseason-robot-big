@@ -117,12 +117,12 @@ public class RobotContainer {
 
     private void configureAuto() {
         NamedCommands.registerCommand("AutoShoot", speakerAutoShot().withTimeout(2.0));
-        NamedCommands.registerCommand("Intake", intake());
+        NamedCommands.registerCommand("Intake", intake().withTimeout(2.0));
         NamedCommands.registerCommand("ResetArm", new ResetArmCommand(arm));
         NamedCommands.registerCommand("FlyWheelRampUp", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));//READ ME change all "Preshoot" in auto files
         NamedCommands.registerCommand("AutoPreArm", new ArmAimCommand(arm, () -> Destination.SPEAKER));
         NamedCommands.registerCommand("ChassisAim", new ChassisAimCommand(swerve, () -> Destination.SPEAKER, () -> 0, () -> 0));
-        NamedCommands.registerCommand("Shoot", new DeliverNoteCommand(indexer, beamBreak, indicator));
+        NamedCommands.registerCommand("Shoot", new DeliverNoteCommand(indexer, beamBreak, indicator).withTimeout(1.0));
 
         AutoBuilder.configureHolonomic(
                 () -> Swerve.getInstance().getLocalizer().getCoarseFieldPose(0),
