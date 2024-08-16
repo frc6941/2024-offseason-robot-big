@@ -1,8 +1,8 @@
 package frc.robot.subsystems.swerve;
 
-import com.team254.lib.util.MovingAverage;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -48,9 +48,9 @@ public class Swerve implements Updatable, Subsystem {
     private final Gyro gyro;
     private final SwerveSetpointGenerator generator;
     // System Status
-    private final MovingAverage pitchVelocity;
-    private final MovingAverage rollVelocity;
-    private final MovingAverage yawVelocity;
+    private final LinearFilter pitchVelocity;
+    private final LinearFilter rollVelocity;
+    private final LinearFilter yawVelocity;
     // Logging
     private final NetworkTable dataTable = NetworkTableInstance.getDefault().getTable("Swerve");
     // Snap Rotation Controller
@@ -109,9 +109,9 @@ public class Swerve implements Updatable, Subsystem {
         gyro.setYaw(0.0);
         swerveLocalizer.reset(new Pose2d(), getModulePositions());
 
-        yawVelocity = new MovingAverage(10);
-        pitchVelocity = new MovingAverage(10);
-        rollVelocity = new MovingAverage(10);
+        yawVelocity = LinearFilter.movingAverage(10);
+        pitchVelocity = LinearFilter.movingAverage(10);
+        rollVelocity = LinearFilter.movingAverage(10);
 
         setpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates());
         previousSetpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates());
@@ -239,17 +239,17 @@ public class Swerve implements Updatable, Subsystem {
 
     @Synchronized
     public double getYawVelocity() {
-        return yawVelocity.getAverage();
+        return yawVelocity.lastValue();
     }
 
     @Synchronized
     public double getPitchVelocity() {
-        return pitchVelocity.getAverage();
+        return pitchVelocity.lastValue();
     }
 
     @Synchronized
     public double getRollVelocity() {
-        return rollVelocity.getAverage();
+        return rollVelocity.lastValue();
     }
 
     /**
@@ -486,9 +486,9 @@ public class Swerve implements Updatable, Subsystem {
                     driveSignal.isFieldOriented(), driveSignal.isOpenLoop());
         }
 
-        rollVelocity.addNumber(gyro.getRaw()[0]);
-        pitchVelocity.addNumber(gyro.getRaw()[1]);
-        yawVelocity.addNumber(gyro.getRaw()[2]);
+        rollVelocity.calculate(gyro.getRaw()[0]);
+        pitchVelocity.calculate(gyro.getRaw()[1]);
+        yawVelocity.calculate(gyro.getRaw()[2]);
     }
 
     @Override
