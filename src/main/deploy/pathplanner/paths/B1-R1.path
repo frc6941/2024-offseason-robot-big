@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.3,
-        "y": 7.44
+        "x": 8.288914032373519,
+        "y": 7.42568176045443
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.345058554160043,
-        "y": 7.195984338301414
+        "x": 5.4542052491813555,
+        "y": 7.3725799689556775
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "B1"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 6.285472034271439
       },
       "prevControl": {
-        "x": 6.12987785238232,
-        "y": 6.752236662336878
+        "x": 5.685576451653799,
+        "y": 6.740728186286426
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "FlywheelRampUp"
+                "name": "FlyWheelRampUp"
               }
             }
           ]
@@ -56,7 +56,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.1,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0

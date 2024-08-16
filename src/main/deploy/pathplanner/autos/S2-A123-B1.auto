@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "AutoShoot"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -71,12 +77,6 @@
         {
           "type": "named",
           "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "AutoShoot"
           }
         },
@@ -88,12 +88,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "R1-A2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
                 }
               }
             ]
@@ -133,7 +127,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Intake\\"
+            "name": "Intake"
           }
         },
         {
