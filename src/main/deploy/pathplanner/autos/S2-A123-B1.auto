@@ -71,6 +71,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "AutoShoot"
           }
         },
@@ -96,6 +102,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "AutoShoot"
           }
         },
@@ -116,6 +128,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake\\"
           }
         },
         {

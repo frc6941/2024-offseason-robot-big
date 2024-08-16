@@ -15,8 +15,7 @@ import org.frcteam6941.looper.Updatable;
 
 public class ShootingDecider implements Updatable {
     public static final Translation2d kCornerTarget = new Translation2d(1.0, FieldLayout.kFieldWidth - 1.5);
-    public static final Translation2d kMidUpperTarget = new Translation2d((FieldLayout.kFieldLength / 2.0) - 1.0,
-            FieldLayout.kFieldWidth - 0.2);
+    public static final Translation2d kMidUpperTarget = new Translation2d(1.0, FieldLayout.kFieldWidth - 1.5);
 
     private static ShootingDecider instance;
     TunableNumber ampAngle;
@@ -49,14 +48,14 @@ public class ShootingDecider implements Updatable {
         highFerryParams.loadParameter(5.0, -2000.0, 10.0);
         highFerryParams.loadParameter(6.5, -2700.0, 10.0);
         highFerryParams.loadParameter(8.0, -3500.0, 10.0);
-        highFerryParams.loadParameter(9.5, -5000.0, 10.0);
-        highFerryParams.loadParameter(11.0, -5700.0, 10.0);
+        highFerryParams.loadParameter(9.5, -4900.0, 10.0);
+        highFerryParams.loadParameter(11.0, -5500.0, 10.0);
         highFerryParams.ready();
-        lowFerryParams.loadParameter(1.5, -2000.0, 15.0);
-        lowFerryParams.loadParameter(3.1, -5000.0, 15.0);
-        lowFerryParams.loadParameter(3.2, -5000.0, 15.0);
-        lowFerryParams.loadParameter(3.3, -5000.0, 15.0);
-        lowFerryParams.loadParameter(3.4, -5000.0, 15.0);
+        lowFerryParams.loadParameter(1.5, -20000.0, 10.0);
+        lowFerryParams.loadParameter(3.1, -50000.0, 10.0);
+        lowFerryParams.loadParameter(3.2, -50000.0, 10.0);
+        lowFerryParams.loadParameter(3.3, -50000.0, 10.0);
+        lowFerryParams.loadParameter(3.4, -50000.0, 10.0);
         lowFerryParams.ready();
     }
 

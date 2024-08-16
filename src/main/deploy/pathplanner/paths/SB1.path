@@ -28,25 +28,43 @@
         "y": 6.306232248828134
       },
       "isLocked": false,
-      "linkedName": "B1"
+      "linkedName": "S2"
     },
     {
       "anchor": {
-        "x": 8.307571524233957,
-        "y": 7.435010506384649
+        "x": 8.288914032373519,
+        "y": 7.42568176045443
       },
       "prevControl": {
-        "x": 7.514628120165331,
-        "y": 7.1924631121989515
+        "x": 7.495970628304893,
+        "y": 7.183134366268733
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "B1"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -55,7 +73,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 9.462322208025656,
+    "rotation": 1.245364266768435,
     "rotateFast": false
   },
   "reversed": false,
