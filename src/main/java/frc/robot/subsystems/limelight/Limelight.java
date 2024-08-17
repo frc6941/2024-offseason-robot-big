@@ -23,7 +23,7 @@ import static edu.wpi.first.units.Units.*;
 public class Limelight implements Updatable {
     private static final NetworkTable limelightTable = NetworkTableInstance
             .getDefault()
-            .getTable("limelight");
+            .getTable(Constants.VisionConstants.AIM_LIMELIGHT_NAME);
 
     private static final NetworkTableEntry tv = limelightTable.getEntry("tv");
     private static final NetworkTableEntry tx = limelightTable.getEntry("tx");
@@ -118,14 +118,15 @@ public class Limelight implements Updatable {
 
     @Override
     public void update(double time, double dt) {
+        int speakerTag1 = AllianceFlipUtil.shouldFlip() ? 4 : 7;
+        int speakerTag2 = AllianceFlipUtil.shouldFlip() ? 3 : 8;
         loopCnt++;
-        int ktagID = (int) LimelightHelpers.getFiducialID("limelight");
+        int ktagID = (int) LimelightHelpers.getFiducialID(Constants.VisionConstants.AIM_LIMELIGHT_NAME);
         for (int i = 1; i <= 16; i++) {
             if (tagFlagCnt[i][loopCnt]) tagCnt[i]--;
             tagFlagCnt[i][loopCnt] = false;
         }
 //        if (botEstimate.isPresent()) {
-////            if (botEstimate.get().rawFiducials.length != 0) {
 //            for (LimelightHelpers.RawFiducial rawFiducial : botEstimate.get().rawFiducials) {
 //                if (rawFiducial != null) {
 //                    tagFlagCnt[rawFiducial.id][loopCnt] = true;
@@ -134,36 +135,28 @@ public class Limelight implements Updatable {
 //                    System.out.println("wtf");
 //                }
 //            }
-////            }
 //        }
-//        for (int i = 0; i <= 16; i++) {
-//            if (FieldLayout.kTagMap.getTagPose(i).isPresent() && botEstimate.isPresent()) {
-//                tagFlagCnt[i][loopCnt] = true;
-//                tagCnt[i]++;
-//            }
-//        }
-
-//        LimelightHelpers.setPriorityTagID("limelight", 7);
-//        ktagID = (int) LimelightHelpers.getFiducialID("limelight");
+//        LimelightHelpers.setPriorityTagID(Constants.VisionConstants.AIM_LIMELIGHT_NAME, 7);
+//        ktagID = (int) LimelightHelpers.getFiducialID(Constants.VisionConstants.AIM_LIMELIGHT_NAME);
 //        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent()) {
 //            tagFlagCnt[ktagID][loopCnt] = true;
 //            tagCnt[ktagID]++;
 //        }
-//        LimelightHelpers.setPriorityTagID("limelight", 8);
-//        ktagID = (int) LimelightHelpers.getFiducialID("limelight");
+//        LimelightHelpers.setPriorityTagID(Constants.VisionConstants.AIM_LIMELIGHT_NAME, 8);
+//        ktagID = (int) LimelightHelpers.getFiducialID(Constants.VisionConstants.AIM_LIMELIGHT_NAME);
 //        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent()) {
 //            tagFlagCnt[ktagID][loopCnt] = true;
 //            tagCnt[ktagID]++;
 //        }
-        if (ktagID == 7 || ktagID == 8) {
+        if (ktagID == speakerTag1 || ktagID == speakerTag2) {
             tagFlagCnt[ktagID][loopCnt] = true;
             tagCnt[ktagID]++;
             if (botEstimate.isPresent()) {
                 if (botEstimate.get().rawFiducials.length >= 2) {
-                    ktagID = ktagID == 7 ? 8 : 7;
+                    ktagID = ktagID == speakerTag1 ? speakerTag2 : speakerTag1;
                     tagFlagCnt[ktagID][loopCnt] = true;
                     tagCnt[ktagID]++;
-                    ktagID = ktagID == 7 ? 7 : 8;
+                    ktagID = ktagID == speakerTag1 ? speakerTag2 : speakerTag1;
                 }
             }
 
@@ -172,13 +165,13 @@ public class Limelight implements Updatable {
         SmartDashboard.putNumberArray("Limelight/tagCnt", tagCnt);
         SmartDashboard.putNumber("Limelight/tagCnt3", tagCnt[3]);
         SmartDashboard.putNumber("Limelight/loopCnt", loopCnt);
-        boolean isAutoDrive = swerve.getInstance().getState() == Swerve.State.PATH_FOLLOWING;
+        boolean isAutoDrive = Swerve.getInstance().getState() == Swerve.State.PATH_FOLLOWING;
         double rejectionRange;
         if (isAutoDrive) {
             rejectionRange = 100;
         } else rejectionRange = 3.1;
 
-        LimelightHelpers.SetRobotOrientation("limelight",
+        LimelightHelpers.SetRobotOrientation(Constants.VisionConstants.AIM_LIMELIGHT_NAME,
                 Swerve.getInstance().getLocalizer().getLatestPose().getRotation().getDegrees(),
                 Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation().getDegrees(),
                 0, 0, 0, 0);
@@ -189,15 +182,14 @@ public class Limelight implements Updatable {
                 .getDegrees()) > Math.toDegrees(Constants.SwerveConstants.maxAngularRate.magnitude()))
             return;
 
-        //TODO: RED ALLIANCE
         if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent() && botEstimate.isPresent()) {
             kTagPose = FieldLayout.kTagMap.getTagPose(ktagID).get();
             kdeltaToTag = new Translation2d(kTagPose.getX(), kTagPose.getY()).minus(botEstimate.get().pose.getTranslation());
             if (kdeltaToTag.getNorm() > rejectionRange ||
-                    (((tagCnt[7] < 25 || tagCnt[8] < 25)
-                            && !(tagCnt[7] == 0 && tagCnt[8] == 30)
-                            && !(tagCnt[8] == 0 && tagCnt[7] == 30)
-                            && (ktagID == 7 || ktagID == 8)))) {
+                    (((tagCnt[speakerTag1] < 25 || tagCnt[speakerTag2] < 25)
+                            && !(tagCnt[speakerTag1] == 0 && tagCnt[speakerTag2] == 30)
+                            && !(tagCnt[speakerTag2] == 0 && tagCnt[speakerTag1] == 30)
+                            && (ktagID == speakerTag1 || ktagID == speakerTag2)))) {
                 SmartDashboard.putBoolean("TargetUpdated", false);
                 return;
             }
