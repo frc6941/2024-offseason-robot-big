@@ -1,0 +1,109 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.288914032373519,
+        "y": 7.42568176045443
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.404507354469255,
+        "y": 7.444339252314869
+      },
+      "isLocked": false,
+      "linkedName": "B1"
+    },
+    {
+      "anchor": {
+        "x": 1.9173805620338513,
+        "y": 6.045027362781998
+      },
+      "prevControl": {
+        "x": 1.992195169509775,
+        "y": 6.394162197669643
+      },
+      "nextControl": {
+        "x": 1.8054356108712217,
+        "y": 5.522617590689727
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.868912646916203,
+        "y": 5.550603828480384
+      },
+      "prevControl": {
+        "x": 2.2998591451728356,
+        "y": 5.587918812201261
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "A2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Aim",
+      "waypointRelativePos": 0.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoPreArm"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "FlywheelRampUp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 1.15,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.1,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
