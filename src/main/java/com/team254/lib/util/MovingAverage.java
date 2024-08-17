@@ -23,7 +23,7 @@ public class MovingAverage {
 
     public double getAverage() {
         double total = 0;
-        ArrayList<Double> numbersCopy = numbers;
+        ArrayList<Double> numbersCopy = (ArrayList<Double>) numbers.clone();
         for (double number : numbersCopy) {
             total += number;
         }
