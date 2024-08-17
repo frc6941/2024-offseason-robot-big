@@ -161,7 +161,7 @@ public class Limelight implements Updatable {
             }
 
         }
-        loopCnt %= 30;
+        loopCnt %= 20;
         SmartDashboard.putNumberArray("Limelight/tagCnt", tagCnt);
         SmartDashboard.putNumber("Limelight/tagCnt3", tagCnt[3]);
         SmartDashboard.putNumber("Limelight/loopCnt", loopCnt);
@@ -185,10 +185,11 @@ public class Limelight implements Updatable {
         if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent() && botEstimate.isPresent()) {
             kTagPose = FieldLayout.kTagMap.getTagPose(ktagID).get();
             kdeltaToTag = new Translation2d(kTagPose.getX(), kTagPose.getY()).minus(botEstimate.get().pose.getTranslation());
-            if (kdeltaToTag.getNorm() > rejectionRange ||
-                    (((tagCnt[speakerTag1] < 25 || tagCnt[speakerTag2] < 25)
-                            && !(tagCnt[speakerTag1] == 0 && tagCnt[speakerTag2] == 30)
-                            && !(tagCnt[speakerTag2] == 0 && tagCnt[speakerTag1] == 30)
+            if (/*kdeltaToTag.getNorm() > rejectionRange ||*/
+                    (((tagCnt[speakerTag1] < 15 || tagCnt[speakerTag2] < 15)
+                            && !(tagCnt[speakerTag1] == 0 && tagCnt[speakerTag2] == 20 && kdeltaToTag.getNorm() < 2.5)
+                            && !(tagCnt[speakerTag2] == 0 && tagCnt[speakerTag1] == 20 && kdeltaToTag.getNorm() < 2.5)
+//                            && kdeltaToTag.getNorm() > 2.0
                             && (ktagID == speakerTag1 || ktagID == speakerTag2)))) {
                 SmartDashboard.putBoolean("TargetUpdated", false);
                 return;
