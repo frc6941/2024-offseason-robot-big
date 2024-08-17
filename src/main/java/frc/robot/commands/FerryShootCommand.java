@@ -10,6 +10,7 @@ import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.shooting.ShootingDecider;
 import frc.robot.utils.shooting.ShootingDecider.Destination;
 
 import java.util.function.DoubleSupplier;
@@ -34,7 +35,7 @@ public class FerryShootCommand extends ParallelCommandGroup {
                             boolean swerveReady = Swerve.aimingReady(2.5);
                             boolean shooterReady = shooterSubsystem.ShooterVelocityReady();
                             boolean armReady = armSubsystem.armAimingReady();
-                            return swerveReady && shooterReady && armReady;
+                            return swerveReady && shooterReady && armReady && !ShootingDecider.inHighFerryZone(Swerve.getLocalizer().getCoarseFieldPose(0));
                         }).andThen(
                                 Commands.waitSeconds(0.02),
                                 new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem,

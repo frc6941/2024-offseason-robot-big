@@ -51,13 +51,10 @@ public class ShootingDecider implements Updatable {
         highFerryParams.loadParameter(6.5, -2700.0, 10.0);
         highFerryParams.loadParameter(8.0, -3000.0, 10.0);
         highFerryParams.loadParameter(9.5, -4400.0, 10.0);
-        highFerryParams.loadParameter(11.0, -5000.0, 10.0);
+        highFerryParams.loadParameter(11.0, -4850.0, 10.0);
         highFerryParams.ready();
-        lowFerryParams.loadParameter(1.5, -20000.0, 10.0);
-        lowFerryParams.loadParameter(3.1, -50000.0, 10.0);
-        lowFerryParams.loadParameter(3.2, -50000.0, 10.0);
-        lowFerryParams.loadParameter(3.3, -50000.0, 10.0);
-        lowFerryParams.loadParameter(3.4, -50000.0, 10.0);
+        lowFerryParams.loadParameter(1.5, -4850.0, 10.0);
+        lowFerryParams.loadParameter(3.1, -4850.0, 10.0);
         lowFerryParams.ready();
     }
 
@@ -68,7 +65,7 @@ public class ShootingDecider implements Updatable {
         return instance;
     }
 
-    private static boolean inHighFerryZone(Pose2d robotPose) {
+    public static boolean inHighFerryZone(Pose2d robotPose) {
         Pose2d pose = AllianceFlipUtil.apply(robotPose);
         return pose.getX() > FieldConstants.wingOpponentX;
     }
