@@ -35,16 +35,16 @@ public class ShootingDecider implements Updatable {
         speakerParams.loadParameter(1.064, -4500, 14.755);// 20240808
         speakerParams.loadParameter(1.245, -4500, 21.811);// 20240808
         speakerParams.loadParameter(1.600, -4500, 30.614);// 20240808
-        speakerParams.loadParameter(1.910, -4500, 45.02);// 20240808
-        speakerParams.loadParameter(2.20, -4500, 50.767);// 20240808
-        speakerParams.loadParameter(2.51, -4500, 53.628);// 20240808
-        speakerParams.loadParameter(2.8, -4500, 58.202);
-        speakerParams.loadParameter(3.06, -5700, 63.728);// 20240808
-        speakerParams.loadParameter(3.47, -5700, 67.333);// 20240808
-        speakerParams.loadParameter(3.79, -5700, 70.635);//
-        speakerParams.loadParameter(3.9, -5700, 71.0312);
-        speakerParams.loadParameter(4.2, -5700, 74.0312);
-        speakerParams.loadParameter(4.5, -5700, 77.0312);// 20240808
+        speakerParams.loadParameter(1.910, -4500, 40.02);// 20240817
+        speakerParams.loadParameter(2.20, -4500, 48.767);// 20240817
+        speakerParams.loadParameter(2.51, -4500, 50.000);// 20240817
+        speakerParams.loadParameter(2.8, -4500, 56.902);// 20240817
+        speakerParams.loadParameter(3.06, -5700, 61.728);// 20240817
+        speakerParams.loadParameter(3.47, -5700, 66.333);// 20240817
+        speakerParams.loadParameter(3.79, -5700, 70.635);// 20240808
+        speakerParams.loadParameter(3.9, -5700, 71.0312);// 20240816
+        speakerParams.loadParameter(4.2, -5700, 74.0312);// 20240816
+        speakerParams.loadParameter(4.5, -5700, 77.0312);// 20240816
         speakerParams.ready();
 
         highFerryParams.loadParameter(5.0, -2000.0, 10.0);
