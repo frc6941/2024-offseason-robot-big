@@ -16,6 +16,7 @@ import frc.robot.commands.auto.ResetArmAutoCommand;
 import frc.robot.display.OperatorDashboard;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.limelight.Light;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
@@ -34,6 +35,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotInit() {
+        Light.getInstance().lightOff();
         robotContainer = new RobotContainer();
         DriverStation.silenceJoystickConnectionWarning(true);
         robotContainer.getUpdateManager().startEnableLoop(Constants.LOOPER_DT);
@@ -53,6 +55,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledInit() {
+        Light.getInstance().lightOff();
     }
 
     @Override
