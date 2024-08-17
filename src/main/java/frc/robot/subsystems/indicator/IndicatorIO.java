@@ -21,7 +21,7 @@ public interface IndicatorIO {
         SPEAKER_AIMING(new BlinkingPattern(Color.kRed, 0.1)),
         FERRY_AIMING(new BlinkingPattern(Color.kYellow, 0.1)),
         INDEX_FINISHING(new BlinkingPattern(Color.kGreen, 0.05)),
-        INDEXING(new BlinkingPattern(Color.kGreen, 0.2)),
+        INDEXING(new BlinkingPattern(Color.kBlue, 0.2)),
         SHOOT_FINISH(new BlinkingPattern(Color.kBlue, 0.1)),
         //        FINISH_SHOOT(new BlinkingPattern(Color.kRed, 0.5)),
         SHOULD_AMPLIFY(new RainbowPattern()),
