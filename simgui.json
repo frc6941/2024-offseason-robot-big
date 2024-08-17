@@ -60,6 +60,9 @@
         "Chooser": {
           "open": true
         },
+        "Swerve": {
+          "open": true
+        },
         "open": true
       }
     }

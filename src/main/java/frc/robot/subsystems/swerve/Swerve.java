@@ -510,20 +510,24 @@ public class Swerve implements Updatable, Subsystem {
 
     @Override
     public void telemetry() {
-
+        SmartDashboard.putString("Swerve/Speaker Relative", AllianceFlipUtil.shouldFlip() ?
+                new Pose2d(15.622 - 0.44, 5.545, Rotation2d.fromDegrees(180)).minus(
+                        this.getLocalizer().getCoarseFieldPose(0)).toString() :
+                this.getLocalizer().getCoarseFieldPose(0).minus(
+                        new Pose2d(0.91895 + 0.44, 5.545, Rotation2d.fromDegrees(0))).toString());
         Pose2d latestPose = swerveLocalizer.getLatestPose();
         dataTable.getEntry("Pose").setDoubleArray(
                 new double[]{
                         latestPose.getX(), latestPose.getY(), latestPose.getRotation().getDegrees()
                 });
         for (SwerveModuleBase mod : swerveMods) {
-            SmartDashboard.putNumber("Swerve/SPEED REQ" + mod.getModuleNumber(),
+            SmartDashboard.putNumber("Swerve/SPEED/SPEED REQ" + mod.getModuleNumber(),
                     setpoint.mModuleStates[mod.getModuleNumber()].speedMetersPerSecond);
-            SmartDashboard.putNumber("Swerve/SPEED ACT" + mod.getModuleNumber(),
+            SmartDashboard.putNumber("Swerve/SPEED/SPEED ACT" + mod.getModuleNumber(),
                     mod.getState().speedMetersPerSecond);
-            SmartDashboard.putNumber("Swerve/ANGLE REQ" + mod.getModuleNumber(),
+            SmartDashboard.putNumber("Swerve/ANGLE/ANGLE REQ" + mod.getModuleNumber(),
                     setpoint.mModuleStates[mod.getModuleNumber()].angle.getDegrees());
-            SmartDashboard.putNumber("Swerve/ANGLE ACT" + mod.getModuleNumber(),
+            SmartDashboard.putNumber("Swerve/ANGLE/ANGLE ACT" + mod.getModuleNumber(),
                     mod.getState().angle.getDegrees());
         }
         SmartDashboard.putNumber("Swerve/headingTarget", headingTarget);
