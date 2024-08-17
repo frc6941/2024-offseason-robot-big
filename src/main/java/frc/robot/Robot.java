@@ -35,7 +35,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotInit() {
-        Light.getInstance().lightOff();
+        Light.getInstance().setState(Light.STATE.OFF);
         robotContainer = new RobotContainer();
         DriverStation.silenceJoystickConnectionWarning(true);
         robotContainer.getUpdateManager().startEnableLoop(Constants.LOOPER_DT);
@@ -55,7 +55,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledInit() {
-        Light.getInstance().lightOff();
+        Light.getInstance().setState(Light.STATE.OFF);
     }
 
     @Override

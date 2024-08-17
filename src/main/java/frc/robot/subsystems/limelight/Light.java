@@ -11,7 +11,7 @@ public class Light extends SubsystemBase {
     private static Light instance;
     @Getter
     @Setter
-    private STATE STATE;
+    private STATE State = STATE.AUTO;
 
     public Light() {
     }
@@ -33,11 +33,11 @@ public class Light extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if ((this.STATE == STATE.ON ||
+        if ((this.getState() == STATE.ON ||
                 Math.abs(Limelight.getInstance().getSpeakerRelativePosition().getAngle().getDegrees() -
                         Swerve.getInstance().getGyro().getYaw().getDegrees() -
                         Swerve.getInstance().getGyro().getYaw().getDegrees()) < 40.0)
-                && this.STATE != STATE.OFF) {
+                && this.getState() != STATE.OFF) {
             Light.getInstance().lightOn();
         } else {
             Light.getInstance().lightOff();

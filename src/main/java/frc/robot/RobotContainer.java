@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
+import frc.robot.commands.manual.ShootManualCommand;
 import frc.robot.display.Display;
 import frc.robot.display.OperatorDashboard;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -128,10 +129,6 @@ public class RobotContainer {
                 (Pose2d pose2d) -> Swerve.getInstance().resetPose(pose2d),
                 () -> Swerve.getInstance().getChassisSpeeds(),
                 (ChassisSpeeds chassisSpeeds) -> Swerve.getInstance().driveSpeed(chassisSpeeds),
-                // new HolonomicPathFollowerConfig(
-                //         Constants.SwerveConstants.maxSpeed.magnitude(),
-                //         0.55,
-                //         new ReplanningConfig()),
                 new HolonomicPathFollowerConfig(
                         //    new PIDConstants(  
                         //            Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
@@ -147,7 +144,6 @@ public class RobotContainer {
                         0.55,
                         new ReplanningConfig()),
                 AllianceFlipUtil::shouldFlip,
-
                 swerve
         );
 
@@ -194,10 +190,6 @@ public class RobotContainer {
          */
 
         swerve.setDefaultCommand(drive());
-//        shooter.setDefaultCommand(Commands.runOnce(() -> {
-//            shooter.getIo().setFlyWheelDirectVoltage(Constants.ShooterConstants.shooterConstantVoltage);
-//            shooter.getIo().setArmPosition(Radians.zero());
-//        }, shooter));
         indicator.setDefaultCommand(Commands.run(() -> {
             if (beamBreak.isIntakeReady())
                 indicator.setPattern(IndicatorIO.Patterns.INDEXED);
@@ -233,7 +225,7 @@ public class RobotContainer {
         operatorController.a().debounce(1).onTrue(climbUp());
         operatorController.b().debounce(0.5).onTrue(climbDown());
 
-//        operatorController.leftTrigger().whileTrue();
+        operatorController.leftTrigger().whileTrue(ManualShoot());
         operatorController.rightTrigger().onTrue(justShoot());
     }
 
@@ -368,16 +360,20 @@ public class RobotContainer {
 
     private Command LightOn() {
         return Commands.run(() ->
-                Light.getInstance().setSTATE(Light.STATE.ON), Light.getInstance());
+                Light.getInstance().setState(Light.STATE.ON), Light.getInstance());
     }
 
     private Command LightOff() {
         return Commands.run(() ->
-                Light.getInstance().setSTATE(Light.STATE.OFF), Light.getInstance());
+                Light.getInstance().setState(Light.STATE.OFF), Light.getInstance());
     }
 
     private Command LightAuto() {
         return Commands.run(() ->
-                Light.getInstance().setSTATE(Light.STATE.AUTO), Light.getInstance());
+                Light.getInstance().setState(Light.STATE.AUTO), Light.getInstance());
+    }
+
+    private Command ManualShoot() {
+        return new ShootManualCommand(shooter, arm, indicator);
     }
 }
