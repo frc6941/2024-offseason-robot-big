@@ -75,6 +75,10 @@ public class Robot extends LoggedRobot {
         Swerve.getInstance().auto();
         Commands.runOnce(() -> dashboard.updateDestination(ShootingDecider.Destination.SPEAKER));
         new ResetArmAutoCommand(armSubsystem).schedule();
+        Commands.runOnce(() -> {
+            Swerve.getInstance().resetHeadingController();
+            Swerve.getInstance().resetPose((Swerve.getInstance().getLocalizer().getCoarseFieldPose(0)));
+        });
         CommandScheduler.getInstance().run();
     }
 
