@@ -108,7 +108,7 @@ public class Constants {
         public static final FeedbackConfigs pullerfeedbackConfigs = new FeedbackConfigs()
                 .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
                 .withSensorToMechanismRatio(8d / 64 * 16 / 64);
-        public static final Measure<Voltage> pullVoltage = Volts.of(-8.0);
+        public static final double pullVelocity = 4000;
 
         public static class armGainsClass {
             public static final TunableNumber ARM_KP = new TunableNumber("ARM PID/kp", 400);//todo change it 
@@ -120,9 +120,9 @@ public class Constants {
         }
 
         public static class pullerGainsClass {
-            public static final TunableNumber PULLER_KP = new TunableNumber("PULLER PID/kp", 0.2);
+            public static final TunableNumber PULLER_KP = new TunableNumber("PULLER PID/kp", 0.01);
             public static final TunableNumber PULLER_KI = new TunableNumber("PULLER PID/ki", 0);
-            public static final TunableNumber PULLER_KD = new TunableNumber("PULLER PID/kd", 0.001);
+            public static final TunableNumber PULLER_KD = new TunableNumber("PULLER PID/kd", 0);
             public static final TunableNumber PULLER_KA = new TunableNumber("PULLER PID/ka", 0.0037512677);
             public static final TunableNumber PULLER_KV = new TunableNumber("PULLER PID/kv", 0.113);// 0.107853495
             public static final TunableNumber PULLER_KS = new TunableNumber("PULLER PID/ks", 0.28475008);

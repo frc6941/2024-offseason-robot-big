@@ -234,7 +234,9 @@ public class RobotContainer {
                 preheat().withInterruptBehavior(InterruptionBehavior.kCancelSelf)
         );
 //        operatorController.povUp().onTrue(new ResetArmCommand(arm));
-        operatorController.a().debounce(1).onTrue(climb());
+//        operatorController.a().debounce(1).onTrue(climb());
+        operatorController.a().debounce(1).onTrue(climbUp());
+        operatorController.b().debounce(0.5).onTrue(climbDown());
     }
 
     public Command getAutonomousCommand() {
@@ -343,28 +345,36 @@ public class RobotContainer {
         return Commands.runOnce(() -> dashboard.updateDestination(des));
     }
 
-    private Command climb() {
-        return Commands.parallel(
-                new ClimbArmUpCommand(arm),
-                Commands.sequence(
-                        new RumbleCommand(Seconds.of(1.0), operatorController.getHID()),
-                        new WaitUntilCommand(() -> operatorController.b().getAsBoolean()),
-                        new ClimbPullerDownCommand(arm, indicator)));
+//    private Command climb() {
+//        return Commands.parallel(
+//                new ClimbArmUpCommand(arm, () -> operatorController.b().getAsBoolean()),
+//                Commands.sequence(
+//                        new RumbleCommand(Seconds.of(1.0), operatorController.getHID()),
+//                        new WaitUntilCommand(() -> operatorController.b().getAsBoolean()),
+//                        new ClimbPullerDownCommand(arm, indicator)));
+//    }
+
+    private Command climbUp() {
+        return new ClimbArmUpCommand(arm);
     }
 
-    private Command PreloadShoot(){
+    private Command climbDown() {
+        return new ClimbPullerDownCommand(arm, indicator);
+    }
+
+    private Command PreloadShoot() {
         return Commands.deadline(
-            Commands.sequence(
-                    new WaitUntilCommand(() -> {
-                        boolean shooterReady = shooter.ShooterVelocityReady();
-                        boolean armReady = arm.armAimingReady();
-                        return shooterReady && armReady;
-                    }),
-                    Commands.runOnce(() -> Timer.delay(0.02)),
-                    new DeliverNoteCommand(indexer, beamBreak, indicator)),
-            new ArmAimCommand(arm, () -> Destination.SPEAKER),
-            new FlyWheelRampUp(shooter, () -> Destination.SPEAKER),
-            Commands.runOnce(() -> indicator.setPattern(IndicatorIO.Patterns.SPEAKER_AIMING), indicator)
+                Commands.sequence(
+                        new WaitUntilCommand(() -> {
+                            boolean shooterReady = shooter.ShooterVelocityReady();
+                            boolean armReady = arm.armAimingReady();
+                            return shooterReady && armReady;
+                        }),
+                        Commands.runOnce(() -> Timer.delay(0.02)),
+                        new DeliverNoteCommand(indexer, beamBreak, indicator)),
+                new ArmAimCommand(arm, () -> Destination.SPEAKER),
+                new FlyWheelRampUp(shooter, () -> Destination.SPEAKER),
+                Commands.runOnce(() -> indicator.setPattern(IndicatorIO.Patterns.SPEAKER_AIMING), indicator)
         );
     }
 }
