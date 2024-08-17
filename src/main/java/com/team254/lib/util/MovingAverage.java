@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class MovingAverage {
 
     ArrayList<Double> numbers = new ArrayList<Double>();
+    ArrayList<Double> numbersCopy;
     int maxSize;
 
     public MovingAverage(int maxSize) {
@@ -23,12 +24,12 @@ public class MovingAverage {
 
     public double getAverage() {
         double total = 0;
-        
-        for (double number : numbers) {
+        numbersCopy = numbers;
+        for (double number : numbersCopy) {
             total += number;
         }
 
-        return total / numbers.size();
+        return total / numbersCopy.size();
     }
 
     public int getSize() {
