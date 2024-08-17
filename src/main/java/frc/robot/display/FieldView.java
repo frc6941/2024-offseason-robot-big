@@ -29,11 +29,9 @@ public class FieldView {
         mField2d.getObject("FerryLoc").setPose(new Pose2d(pos, new Rotation2d()));
     }
 
-    public void update(Pose2d pose, Pose2d ghost) {
+    public void update(Pose2d pose) {
         drawField();
-
         mField2d.setRobotPose(pose);
-        mField2d.getObject("Ghost").setPose(ghost);
     }
 
 }

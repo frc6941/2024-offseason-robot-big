@@ -1,13 +1,8 @@
 package frc.robot.display;
 
-import org.frcteam6941.looper.Updatable;
-
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.utils.AllianceFlipUtil;
+import org.frcteam6941.looper.Updatable;
 
 public class Display implements Updatable {
     FieldView fieldView;
@@ -36,8 +31,7 @@ public class Display implements Updatable {
     @Override
     public void update(double time, double dt) {
         fieldView.update(
-            swerve.getLocalizer().getCoarseFieldPose(time), 
-            swerve.getLocalizer().getPredictedPose(0.02)
+                swerve.getLocalizer().getCoarseFieldPose(time)
         );
     }
 }
