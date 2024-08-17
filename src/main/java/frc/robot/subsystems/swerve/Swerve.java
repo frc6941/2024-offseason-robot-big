@@ -555,8 +555,9 @@ public class Swerve implements Updatable, Subsystem {
 
     public boolean aimingReady(double offset) {
         var dtReady = Math.abs(gyro.getYaw().getDegrees() - headingTarget) < offset;
+        SmartDashboard.putNumber("aimOffsetSwerve", Math.abs(gyro.getYaw().getDegrees() - headingTarget));
         SmartDashboard.putBoolean("SwerveReady", dtReady);
-        boolean angularSpeedReady = Math.abs(this.getLocalizer().getMeasuredVelocity().getRotation().getDegrees()) < 90;
+        boolean angularSpeedReady = Math.abs(this.getLocalizer().getMeasuredVelocity().getRotation().getDegrees()) < 380;
         SmartDashboard.putBoolean("SwerveAngularReady", angularSpeedReady);
         OperatorDashboard.getInstance().updateDrivetrainReady(dtReady);
         return dtReady && angularSpeedReady;

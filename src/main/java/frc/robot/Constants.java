@@ -98,8 +98,8 @@ public class Constants {
         public static final ClosedLoopRampsConfigs rampConfigs = new ClosedLoopRampsConfigs()
                 .withVoltageClosedLoopRampPeriod(0.3);
         public static final MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs()
-                .withMotionMagicAcceleration(2.5)//?
-                .withMotionMagicCruiseVelocity(1);//too low
+                .withMotionMagicAcceleration(3)//?
+                .withMotionMagicCruiseVelocity(2);//too low
         public static final MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs()
                 .withNeutralMode(NeutralModeValue.Brake);
         public static final FeedbackConfigs feedbackConfigs = new FeedbackConfigs()
@@ -108,7 +108,7 @@ public class Constants {
         public static final FeedbackConfigs pullerfeedbackConfigs = new FeedbackConfigs()
                 .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
                 .withSensorToMechanismRatio(8d / 64 * 16 / 64);
-        public static final double pullVelocity = 4000;
+        public static final double pullVelocity = 4000; 
 
         public static class armGainsClass {
             public static final TunableNumber ARM_KP = new TunableNumber("ARM PID/kp", 400);//todo change it 
@@ -325,7 +325,7 @@ public class Constants {
         /**
          * Radius of the wheel in meters.
          */
-        private static final Measure<Distance> wheelRadius = Inches.of(1.8752773878);
+        private static final Measure<Distance> wheelRadius = Inches.of(1.8);//1.8752773878
         /**
          * Circumference of the wheel in meters.
          */
@@ -499,9 +499,9 @@ public class Constants {
 
         public static class headingController {
             public static final TunableNumber HEADING_KP = new TunableNumber("HEADING PID/kp", 0.08);
-            public static final TunableNumber HEADING_KI = new TunableNumber("HEADING PID/ki", 0.0002);
-            public static final TunableNumber HEADING_KD = new TunableNumber("HEADING PID/kd", 0.002);
-            public static final TunableNumber MAX_ERROR_CORRECTION_ANGLE = new TunableNumber("HEADING/Max Error Correction Angle", 90.0);
+            public static final TunableNumber HEADING_KI = new TunableNumber("HEADING PID/ki", 0.00);
+            public static final TunableNumber HEADING_KD = new TunableNumber("HEADING PID/kd", 0.005);
+            public static final TunableNumber MAX_ERROR_CORRECTION_ANGLE = new TunableNumber("HEADING/Max Error Correction Angle", 50.0);
             // TODO
         }
     }

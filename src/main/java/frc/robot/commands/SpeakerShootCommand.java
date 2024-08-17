@@ -30,7 +30,7 @@ public class SpeakerShootCommand extends ParallelCommandGroup {
                 Commands.deadline(
                         Commands.sequence(
                                 new WaitUntilCommand(() -> {
-                                    boolean swerveReady = Swerve.aimingReady(4);
+                                    boolean swerveReady = Swerve.aimingReady(10);
                                     boolean shooterReady = shooterSubsystem.ShooterVelocityReady();
                                     boolean armReady = armSubsystem.armAimingReady();
                                     return swerveReady && shooterReady && armReady;
