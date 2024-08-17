@@ -76,7 +76,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "R2-B3"
+            "pathName": "R2-C1"
           }
         },
         {
@@ -86,9 +86,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "B3-RN"
+            "name": "AutoShoot"
           }
         }
       ]
