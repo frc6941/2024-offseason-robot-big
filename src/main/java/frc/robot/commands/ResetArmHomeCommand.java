@@ -12,6 +12,7 @@ public class ResetArmHomeCommand extends Command {
 
     public ResetArmHomeCommand(ArmSubsystem armSubsystem) {
         this.armSubsystem = armSubsystem;
+        addRequirements(armSubsystem);
     }
 
     @Override
@@ -25,6 +26,15 @@ public class ResetArmHomeCommand extends Command {
             armSubsystem.getIo().setHomed(false);
             flag = true;
         }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        if (interrupted) {
+            armSubsystem.getIo().setHomed(true);
+            armSubsystem.getIo().setArmHome(armSubsystem.getInputs().armPosition);
+        }
+
     }
 
     @Override

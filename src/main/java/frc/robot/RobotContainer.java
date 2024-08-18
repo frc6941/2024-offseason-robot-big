@@ -226,6 +226,8 @@ public class RobotContainer {
         operatorController.a().debounce(1).onTrue(climbUp());
         operatorController.b().debounce(0.5).onTrue(climbDown());
 
+        operatorController.start().onTrue(new ResetArmHomeCommand(arm));
+
         operatorController.leftTrigger().whileTrue(ManualShoot());
         operatorController.rightTrigger().onTrue(justShoot());
     }
