@@ -127,7 +127,7 @@ public class RobotContainer {
 
         AutoBuilder.configureHolonomic(
                 () -> Swerve.getInstance().getLocalizer().getCoarseFieldPose(0),
-                (Pose2d pose2d) -> Swerve.getInstance().resetPose(pose2d),
+                (Pose2d pose2d) -> /*Swerve.getInstance().resetPose(pose2d)*/{},
                 () -> Swerve.getInstance().getChassisSpeeds(),
                 (ChassisSpeeds chassisSpeeds) -> Swerve.getInstance().driveSpeed(chassisSpeeds),
                 new HolonomicPathFollowerConfig(
@@ -143,7 +143,7 @@ public class RobotContainer {
                         //    ),
                         4.1,
                         0.55,
-                        new ReplanningConfig()),
+                        new ReplanningConfig(true, true)),
                 AllianceFlipUtil::shouldFlip,
                 swerve
         );

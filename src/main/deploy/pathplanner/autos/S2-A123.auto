@@ -88,12 +88,6 @@
                 "data": {
                   "name": "Intake"
                 }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "A2-A3"
-                }
               }
             ]
           }
