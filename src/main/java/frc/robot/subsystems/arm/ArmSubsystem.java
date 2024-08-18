@@ -27,7 +27,11 @@ public class ArmSubsystem extends SubsystemBase {
         if (inputs.homed) return;
         if (inputs.armSupplyCurrent.magnitude() > armZeroCurrent.magnitude()) {
             io.setArmVoltage(Volts.zero());
-            io.setArmHome(Radians.zero());
+            if (inputs.armAppliedVoltage.magnitude() > 0) {
+                io.setArmHome(inputs.armPosition);
+            } else {
+                io.setArmHome(Radians.zero());
+            }
             getIo().setHomed(true);
             return;
         }
