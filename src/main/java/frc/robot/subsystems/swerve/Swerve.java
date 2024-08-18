@@ -321,7 +321,7 @@ public class Swerve implements Updatable, Subsystem {
 
     public void resetPose(Pose2d resetPose) {
         SmartDashboard.putString("aaa", resetPose.toString());
-        gyro.setYaw(resetPose.getRotation().getDegrees() + (AllianceFlipUtil.shouldFlip() ? 180 : 0));
+        gyro.setYaw(resetPose.getRotation().getDegrees());
         // System.out.println(resetPose.getRotation().getDegrees());
         // System.out.println(gyro.getYaw().getDegrees());
         swerveLocalizer.reset(resetPose, getModulePositions());

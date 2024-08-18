@@ -22,5 +22,7 @@
 
 # TODO
 
-- 画五环 抢环
-- 动量补偿？
+- 调parameter
+- 调limelight
+- 调arm
+- 修复自动
