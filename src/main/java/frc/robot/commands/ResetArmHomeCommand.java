@@ -12,7 +12,6 @@ public class ResetArmHomeCommand extends Command {
 
     public ResetArmHomeCommand(ArmSubsystem armSubsystem) {
         this.armSubsystem = armSubsystem;
-        addRequirements(armSubsystem);
     }
 
     @Override
