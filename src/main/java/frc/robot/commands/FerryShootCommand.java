@@ -22,20 +22,22 @@ public class FerryShootCommand extends ParallelCommandGroup {
             IndexerSubsystem indexerSubsystem,
             BeamBreakSubsystem beamBreakSubsystem,
             IndicatorSubsystem indicatorSubsystem,
-            Swerve Swerve,
+            Swerve swerve,
             DoubleSupplier driverX,
             DoubleSupplier driverY) {
         addCommands(
                 Commands.parallel(
-                        new ChassisAimCommand(Swerve, () -> Destination.FERRY, driverX, driverY).andThen(Commands.print("Spun Up")),
+                        new ChassisAimCommand(swerve, () -> Destination.FERRY, driverX, driverY).andThen(Commands.print("Spun Up")),
                         new ArmAimCommand(armSubsystem, () -> Destination.FERRY).andThen(Commands.print("Arm Aimed")),
                         new FlyWheelRampUp(shooterSubsystem, () -> Destination.FERRY).andThen(Commands.print("Spun Up")),
                         Commands.runOnce(() -> indicatorSubsystem.setPattern(IndicatorIO.Patterns.FERRY_AIMING), indicatorSubsystem),
                         new WaitUntilCommand(() -> {
-                            boolean swerveReady = Swerve.aimingReady(10);
+                            boolean swerveReady = swerve.aimingReady(10);
                             boolean shooterReady = shooterSubsystem.ShooterVelocityReady();
                             boolean armReady = armSubsystem.armAimingReady();
-                            return swerveReady && shooterReady && armReady && !ShootingDecider.inHighFerryZone(Swerve.getLocalizer().getCoarseFieldPose(0));
+                            boolean swerveVelocityReady = swerve.velocityReady(1.3);
+                            return swerveReady && shooterReady && armReady && swerveVelocityReady
+                                    && !ShootingDecider.inHighFerryZone(swerve.getLocalizer().getCoarseFieldPose(0));
                         }).andThen(
                                 Commands.waitSeconds(0.02),
                                 new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem,

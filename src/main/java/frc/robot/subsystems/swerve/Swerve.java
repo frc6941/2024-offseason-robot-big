@@ -573,6 +573,12 @@ public class Swerve implements Updatable, Subsystem {
         return dtReady && angularSpeedReady;
     }
 
+    public boolean velocityReady(double offset) {
+        boolean vReady = Math.abs(this.getLocalizer().getMeasuredVelocity().getTranslation().getNorm()) < offset;
+        SmartDashboard.putBoolean("SwerveReady", vReady);
+        return vReady;
+    }
+
     public enum State {
         BRAKE, DRIVE, PATH_FOLLOWING, EMPTY
     }
