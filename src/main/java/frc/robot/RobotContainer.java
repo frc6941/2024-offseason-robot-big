@@ -141,7 +141,7 @@ public class RobotContainer {
                         //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
                         //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()
                         //    ),
-                        Constants.SwerveConstants.maxSpeed.magnitude(),
+                        4.1,
                         0.55,
                         new ReplanningConfig()),
                 AllianceFlipUtil::shouldFlip,
@@ -234,7 +234,8 @@ public class RobotContainer {
 
 
     public Command getAutonomousCommand() {
-        return Commands.parallel(resetOdomAuto(), new ResetArmCommand(arm), autoChooser.get());
+        // return Commands.parallel(resetOdomAuto(), new ResetArmCommand(arm), autoChooser.get());
+        return autoChooser.get();
         // return AutoBuilder.buildAuto("S2-S-A1-A2-A3");
     }
 
