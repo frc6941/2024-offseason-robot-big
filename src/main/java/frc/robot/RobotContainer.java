@@ -232,7 +232,7 @@ public class RobotContainer {
 
 
     public Command getAutonomousCommand() {
-        return autoChooser.get();
+        return Commands.parallel(resetOdomAuto(), new ResetArmCommand(arm), autoChooser.get());
         // return AutoBuilder.buildAuto("S2-S-A1-A2-A3");
     }
 
@@ -329,7 +329,15 @@ public class RobotContainer {
             swerve.resetPose(
                     new Pose2d(AllianceFlipUtil.apply(Constants.FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d()),
                             Rotation2d.fromDegrees(swerve.getLocalizer().getLatestPose().getRotation().getDegrees())));
-        });
+            indicator.setPattern(IndicatorIO.Patterns.RESET_ODOM);
+        }).ignoringDisable(true);
+    }
+
+    public Command resetOdomAuto() {
+        return Commands.runOnce(() -> {
+            swerve.resetHeadingController();
+            swerve.resetPose(swerve.getLocalizer().getLatestPose());
+        }).ignoringDisable(true);
     }
 
     private Command setDest(Destination des) {
