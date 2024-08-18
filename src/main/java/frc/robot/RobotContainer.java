@@ -116,6 +116,7 @@ public class RobotContainer {
     private void configureAuto() {
         NamedCommands.registerCommand("AutoShoot", speakerAutoShot().withTimeout(2.0));
         NamedCommands.registerCommand("Intake", intake().withTimeout(2.0));
+        NamedCommands.registerCommand("IntakeOut", outtake().withTimeout(0.5));
         NamedCommands.registerCommand("ResetArm", new ResetArmCommand(arm));
         NamedCommands.registerCommand("FlyWheelRampUp", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));//READ ME change all "Preshoot" in auto files
         NamedCommands.registerCommand("AutoPreArm", new ArmAimCommand(arm, () -> Destination.SPEAKER));
@@ -228,6 +229,7 @@ public class RobotContainer {
         operatorController.leftTrigger().whileTrue(ManualShoot());
         operatorController.rightTrigger().onTrue(justShoot());
     }
+
 
     public Command getAutonomousCommand() {
         return autoChooser.get();

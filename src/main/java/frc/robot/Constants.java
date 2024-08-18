@@ -325,7 +325,7 @@ public class Constants {
         /**
          * Radius of the wheel in meters.
          */
-        private static final Measure<Distance> wheelRadius = Inches.of(1.8);//1.8752773878
+        private static final Measure<Distance> wheelRadius = Inches.of(1.8752773878);//1.8752773878
         /**
          * Circumference of the wheel in meters.
          */
