@@ -70,12 +70,6 @@
                 "data": {
                   "pathName": "R2-C1"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
               }
             ]
           }
