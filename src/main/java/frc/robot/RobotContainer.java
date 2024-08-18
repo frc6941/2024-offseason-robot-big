@@ -303,7 +303,8 @@ public class RobotContainer {
 
     private Command outtake() {
         return new IntakeOutCommand(intaker)
-                .alongWith(new IndexOutCommand(indexer));
+                .alongWith(new IndexOutCommand(indexer))
+                .alongWith(new ArmOutCommand(arm));
     }
 
     private Command drive() {
