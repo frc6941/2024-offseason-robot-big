@@ -166,10 +166,6 @@ public class Limelight implements Updatable {
         SmartDashboard.putNumber("Limelight/tagCnt3", tagCnt[3]);
         SmartDashboard.putNumber("Limelight/loopCnt", loopCnt);
         boolean isAutoDrive = Swerve.getInstance().getState() == Swerve.State.PATH_FOLLOWING;
-        double rejectionRange;
-        if (isAutoDrive) {
-            rejectionRange = 100;
-        } else rejectionRange = 3.1;
 
         LimelightHelpers.SetRobotOrientation(Constants.VisionConstants.AIM_LIMELIGHT_NAME,
                 Swerve.getInstance().getLocalizer().getLatestPose().getRotation().getDegrees(),
@@ -195,7 +191,7 @@ public class Limelight implements Updatable {
                 return;
             }
         }
-        if (isAutoDrive) {
+        if (isAutoDrive) {//TODO: fix it
             return;
         }
 
