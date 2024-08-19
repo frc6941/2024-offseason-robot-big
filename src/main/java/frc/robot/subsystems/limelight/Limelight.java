@@ -266,6 +266,9 @@ public class Limelight implements Updatable {
                 SmartDashboard.putNumber("latency", botEstimate.get().latency);
                 SmartDashboard.putNumber("Limelight/botEstimate", botEstimate.get().rawFiducials.length);
 //                LimelightHelpers.printPoseEstimate(botEstimate.get());
+                SmartDashboard.putNumber("Limelight/gryo offset",
+                        botEstimate.get().pose.getRotation().getDegrees() -
+                                Swerve.getInstance().getLocalizer().getCoarseFieldPose(0).getRotation().getDegrees());
             }
         }
         distanceLogged.set(Limelight.getInstance().getSpeakerRelativePosition().getNorm());
