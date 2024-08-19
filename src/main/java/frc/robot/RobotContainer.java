@@ -234,7 +234,8 @@ public class RobotContainer {
 
 
     public Command getAutonomousCommand() {
-        return Commands.parallel(resetOdomAuto(), new ResetArmCommand(arm), autoChooser.get());
+        // return Commands.parallel(resetOdomAuto(), new ResetArmCommand(arm), autoChooser.get());
+        return autoChooser.get();
         // return AutoBuilder.buildAuto("S2-S-A1-A2-A3");
     }
 
