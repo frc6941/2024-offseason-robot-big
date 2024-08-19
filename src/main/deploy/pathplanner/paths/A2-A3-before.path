@@ -8,98 +8,38 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.329669568430046,
-        "y": 5.550603828480384
+        "x": 1.8800898296766595,
+        "y": 5.292891367370182
       },
       "isLocked": false,
       "linkedName": "A2"
     },
     {
       "anchor": {
-        "x": 2.6450227445909436,
-        "y": 4.123305701156857
+        "x": 2.710323966102478,
+        "y": 4.225921906389267
       },
       "prevControl": {
-        "x": 1.2736970928487312,
-        "y": 4.813632899993073
+        "x": 1.998838660778926,
+        "y": 4.542137597644179
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.45,
-      "rotationDegrees": -11.486842623817145,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Intake"
-              }
-            },
-            {
-              "type": "parallel",
-              "data": {
-                "commands": [
-                  {
-                    "type": "named",
-                    "data": {
-                      "name": "AutoPreArm"
-                    }
-                  },
-                  {
-                    "type": "named",
-                    "data": {
-                      "name": "FlyWheelRampUp"
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.45,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Shoot"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.1,
-    "maxAcceleration": 2.4,
-    "maxAngularVelocity": 180.0,
-    "maxAngularAcceleration": 180.0
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -1.1934894239820102,
+    "rotation": -28.072486935852893,
     "rotateFast": false
   },
   "reversed": false,
