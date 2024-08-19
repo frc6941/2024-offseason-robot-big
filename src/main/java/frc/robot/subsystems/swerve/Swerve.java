@@ -510,11 +510,22 @@ public class Swerve implements Updatable, Subsystem {
 
     @Override
     public void telemetry() {
-        SmartDashboard.putString("Swerve/Speaker Relative", AllianceFlipUtil.shouldFlip() ?
+        //TODO: fix it
+        SmartDashboard.putString("Swerve/Auto Pos/S1", AllianceFlipUtil.shouldFlip() ?
+                new Pose2d(16.541 - 1.32 - 0.44, 6.46, Rotation2d.fromDegrees(178.18)).minus(
+                        this.getLocalizer().getCoarseFieldPose(0)).toString() :
+                this.getLocalizer().getCoarseFieldPose(0).minus(
+                        new Pose2d(1.32 + 0.44, 6.46, Rotation2d.fromDegrees(-1.82))).toString());
+        SmartDashboard.putString("Swerve/Auto Pos/S2", AllianceFlipUtil.shouldFlip() ?
                 new Pose2d(15.622 - 0.44, 5.545, Rotation2d.fromDegrees(180)).minus(
                         this.getLocalizer().getCoarseFieldPose(0)).toString() :
                 this.getLocalizer().getCoarseFieldPose(0).minus(
                         new Pose2d(0.91895 + 0.44, 5.545, Rotation2d.fromDegrees(0))).toString());
+        SmartDashboard.putString("Swerve/Auto Pos/S3", AllianceFlipUtil.shouldFlip() ?
+                new Pose2d(16.541 - 1.32 - 0.44, 6.46, Rotation2d.fromDegrees(178.18)).minus(
+                        this.getLocalizer().getCoarseFieldPose(0)).toString() :
+                this.getLocalizer().getCoarseFieldPose(0).minus(
+                        new Pose2d(1.32 + 0.44, 6.46, Rotation2d.fromDegrees(-1.82))).toString());
         Pose2d latestPose = swerveLocalizer.getLatestPose();
         dataTable.getEntry("Pose").setDoubleArray(
                 new double[]{
@@ -566,11 +577,4 @@ public class Swerve implements Updatable, Subsystem {
     public enum State {
         BRAKE, DRIVE, PATH_FOLLOWING, EMPTY
     }
-
-    public void setDriveMotorBreakMode() {
-        for (SwerveModuleBase mod : swerveMods) {
-
-        }
-    }
-
 }
