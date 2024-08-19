@@ -67,6 +67,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
+        Light.getInstance().setState(Light.STATE.ON);
         robotContainer.getUpdateManager().runEnableSingle();
         m_autonomousCommand = robotContainer.getAutonomousCommand();
 //        robotContainer.resetOdomAuto().schedule();
