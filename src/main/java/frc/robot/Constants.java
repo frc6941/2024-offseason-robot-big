@@ -412,7 +412,7 @@ public class Constants {
         private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 15;
         private static final int FRONT_LEFT_STEER_MOTOR_ID = 14;
         private static final int FRONT_LEFT_ENCODER_ID = 20;
-        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.4330253906;
+        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.2528613281;
         private static final Measure<Distance> frontLeftXPos = Meters.of(0.5);
         private static final Measure<Distance> frontLeftYPos = Meters.of(0.5);
         public static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
@@ -457,7 +457,7 @@ public class Constants {
         private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 10;
         private static final int BACK_RIGHT_STEER_MOTOR_ID = 6;
         private static final int BACK_RIGHT_ENCODER_ID = 12;
-        private static final double BACK_RIGHT_ENCODER_OFFSET = 0.4515136719;
+        private static final double BACK_RIGHT_ENCODER_OFFSET = 0.4254160156;
         private static final Measure<Distance> backRightXPos = Meters.of(-0.5);
         private static final Measure<Distance> backRightYPos = Meters.of(-0.5);
         public static final SwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
