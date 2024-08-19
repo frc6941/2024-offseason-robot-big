@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.ResetArmCommand;
-import frc.robot.commands.auto.ResetArmAutoCommand;
 import frc.robot.display.OperatorDashboard;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmSubsystem;
@@ -40,7 +39,6 @@ public class Robot extends LoggedRobot {
         DriverStation.silenceJoystickConnectionWarning(true);
         robotContainer.getUpdateManager().startEnableLoop(Constants.LOOPER_DT);
         FollowPathCommand.warmupCommand().schedule();
-
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
         new ResetArmCommand(armSubsystem).schedule();
@@ -60,6 +58,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
+        CommandScheduler.getInstance().run();
     }
 
     @Override
@@ -70,18 +69,14 @@ public class Robot extends LoggedRobot {
     public void autonomousInit() {
         robotContainer.getUpdateManager().runEnableSingle();
         m_autonomousCommand = robotContainer.getAutonomousCommand();
-
+//        robotContainer.resetOdomAuto().schedule();
+//        new ResetArmCommand(armSubsystem).schedule();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
         robotContainer.getUpdateManager().invokeStart();
         Swerve.getInstance().auto();
         Commands.runOnce(() -> dashboard.updateDestination(ShootingDecider.Destination.SPEAKER));
-        new ResetArmAutoCommand(armSubsystem).schedule();
-        Commands.runOnce(() -> {
-            Swerve.getInstance().resetHeadingController();
-            Swerve.getInstance().resetPose((Swerve.getInstance().getLocalizer().getCoarseFieldPose(0)));
-        });
         CommandScheduler.getInstance().run();
     }
 
@@ -101,6 +96,7 @@ public class Robot extends LoggedRobot {
             m_autonomousCommand.cancel();
         }
         robotContainer.getUpdateManager().invokeStart();
+        Light.getInstance().setState(Light.STATE.AUTO);
     }
 
     @Override

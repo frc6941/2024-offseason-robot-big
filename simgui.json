@@ -57,13 +57,16 @@
         }
       },
       "SmartDashboard": {
-        "Chooser": {
-          "open": true
-        },
         "Swerve": {
+          "Auto Pos": {
+            "open": true
+          },
           "open": true
         },
-        "open": true
+        "open": true,
+        "swerve": {
+          "open": true
+        }
       }
     }
   },
