@@ -22,7 +22,6 @@ public class ArmAimCommand extends Command {
         this.shootingDecider = ShootingDecider.getInstance();
         this.armSubsystem = armSubsystem;
         this.destinationSupplier = destinationSupplier;
-        addRequirements(armSubsystem);
     }
 
     @Override
