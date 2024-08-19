@@ -141,7 +141,7 @@ public class RobotContainer {
                         //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
                         //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()
                         //    ),
-                        Constants.SwerveConstants.maxSpeed.magnitude(),
+                        4.1,
                         0.55,
                         new ReplanningConfig()),
                 AllianceFlipUtil::shouldFlip,
@@ -303,7 +303,8 @@ public class RobotContainer {
 
     private Command outtake() {
         return new IntakeOutCommand(intaker)
-                .alongWith(new IndexOutCommand(indexer));
+                .alongWith(new IndexOutCommand(indexer))
+                .alongWith(new ArmOutCommand(arm));
     }
 
     private Command drive() {

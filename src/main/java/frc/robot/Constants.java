@@ -95,6 +95,7 @@ public class Constants {
         public static final Measure<Current> armZeroCurrent = Amps.of(1.0);
         public static final Measure<Voltage> armZeroVoltage = Volts.of(-1.5);
         public static final Measure<Voltage> armUpDownVoltage = Volts.of(-4);
+        public static final Measure<Angle> armOutPosition = Degrees.of(25);
         public static final ClosedLoopRampsConfigs rampConfigs = new ClosedLoopRampsConfigs()
                 .withVoltageClosedLoopRampPeriod(0.3);
         public static final MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs()
@@ -108,7 +109,7 @@ public class Constants {
         public static final FeedbackConfigs pullerfeedbackConfigs = new FeedbackConfigs()
                 .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
                 .withSensorToMechanismRatio(8d / 64 * 16 / 64);
-        public static final double pullVelocity = 4000; 
+        public static final double pullVelocity = 4000;
 
         public static class armGainsClass {
             public static final TunableNumber ARM_KP = new TunableNumber("ARM PID/kp", 400);//todo change it 

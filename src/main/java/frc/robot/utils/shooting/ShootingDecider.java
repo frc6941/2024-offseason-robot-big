@@ -32,6 +32,7 @@ public class ShootingDecider implements Updatable {
         ampAngle = new TunableNumber("Amp Angle Degs", 165.0);
         ampVelocity = new TunableNumber("Amp Velocity Rpm", -5000.0);
 
+        //The first speaker parameter will influence manual shoot, DO NOT CHANGE IT
         speakerParams.loadParameter(1.064, -4500, 14.755);// 20240808
         speakerParams.loadParameter(1.245, -4500, 21.811);// 20240808
         speakerParams.loadParameter(1.600, -4500, 30.614);// 20240808
