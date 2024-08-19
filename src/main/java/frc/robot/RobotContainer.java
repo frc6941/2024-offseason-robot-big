@@ -226,14 +226,15 @@ public class RobotContainer {
         operatorController.a().debounce(1).onTrue(climbUp());
         operatorController.b().debounce(0.5).onTrue(climbDown());
 
+        operatorController.start().onTrue(new ResetArmHomeCommand(arm));
+
         operatorController.leftTrigger().whileTrue(ManualShoot());
         operatorController.rightTrigger().onTrue(justShoot());
     }
 
 
     public Command getAutonomousCommand() {
-        // return Commands.parallel(resetOdomAuto(), new ResetArmCommand(arm), autoChooser.get());
-        return autoChooser.get();
+        return Commands.parallel(resetOdomAuto(), new ResetArmCommand(arm), autoChooser.get());
         // return AutoBuilder.buildAuto("S2-S-A1-A2-A3");
     }
 
