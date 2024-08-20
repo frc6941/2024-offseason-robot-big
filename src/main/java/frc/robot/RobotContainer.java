@@ -374,17 +374,17 @@ public class RobotContainer {
 
     private Command LightOn() {
         return Commands.run(() ->
-                Light.getInstance().setState(Light.STATE.ON), Light.getInstance());
+                Light.getInstance().setState(Light.STATE.ON), Light.getInstance()).ignoringDisable(true);
     }
 
     private Command LightOff() {
         return Commands.run(() ->
-                Light.getInstance().setState(Light.STATE.OFF), Light.getInstance());
+                Light.getInstance().setState(Light.STATE.OFF), Light.getInstance()).ignoringDisable(true);
     }
 
     private Command LightAuto() {
         return Commands.run(() ->
-                Light.getInstance().setState(Light.STATE.AUTO), Light.getInstance());
+                Light.getInstance().setState(Light.STATE.AUTO), Light.getInstance()).ignoringDisable(true);
     }
 
     private Command ManualShoot() {
