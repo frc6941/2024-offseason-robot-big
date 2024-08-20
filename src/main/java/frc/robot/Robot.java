@@ -23,6 +23,7 @@ import frc.robot.utils.shooting.ShootingDecider;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 
 public class Robot extends LoggedRobot {
@@ -34,13 +35,14 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotInit() {
+        Logger.addDataReceiver(new NT4Publisher());
+        Logger.addDataReceiver(new WPILOGWriter());
+        Logger.start();
         Light.getInstance().setState(Light.STATE.OFF);
         robotContainer = new RobotContainer();
         DriverStation.silenceJoystickConnectionWarning(true);
         robotContainer.getUpdateManager().startEnableLoop(Constants.LOOPER_DT);
         FollowPathCommand.warmupCommand().schedule();
-        Logger.addDataReceiver(new NT4Publisher());
-        Logger.start();
         new ResetArmCommand(armSubsystem).schedule();
     }
 
