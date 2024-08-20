@@ -521,6 +521,11 @@ public class Swerve implements Updatable, Subsystem {
                         this.getLocalizer().getCoarseFieldPose(0)).toString() :
                 this.getLocalizer().getCoarseFieldPose(0).minus(
                         new Pose2d(1.36, 5.56, Rotation2d.fromDegrees(0))).toString());
+        SmartDashboard.putString("Swerve/Auto Pos/S3", AllianceFlipUtil.shouldFlip() ?
+                new Pose2d(16.541 - 1.44, 4.58, Rotation2d.fromDegrees(180)).minus(
+                        this.getLocalizer().getCoarseFieldPose(0)).toString() :
+                this.getLocalizer().getCoarseFieldPose(0).minus(
+                        new Pose2d(1.44, 4.58, Rotation2d.fromDegrees(0))).toString());
         Pose2d latestPose = swerveLocalizer.getLatestPose();
         dataTable.getEntry("Pose").setDoubleArray(
                 new double[]{
