@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.47,
-      "y": 6.5
+      "x": 1.4267285779652068,
+      "y": 4.596618567119067
     },
     "rotation": 0
   },
@@ -12,21 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "S1-B1"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
+            "name": "AutoShoot"
           }
         },
         {
@@ -36,7 +24,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "B1-B2"
+                  "pathName": "S3-B4"
                 }
               },
               {
@@ -55,16 +43,16 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "B2-R2"
+                  "pathName": "B4-R3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake"
           }
         },
         {
@@ -80,7 +68,32 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "R2-C1"
+                  "pathName": "R3-B5"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "B5-R3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
                 }
               }
             ]
@@ -89,7 +102,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Intake"
+            "name": "AutoShoot"
           }
         }
       ]

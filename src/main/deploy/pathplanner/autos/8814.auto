@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 1.47,
-      "y": 6.5
+      "y": 6.5021359133627366
     },
     "rotation": 0
   },
@@ -11,6 +11,12 @@
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoShoot"
+          }
+        },
         {
           "type": "path",
           "data": {
@@ -49,28 +55,9 @@
           }
         },
         {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "B2-R2"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoShoot"
+            "name": "Shoot"
           }
         },
         {
@@ -80,16 +67,35 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "R2-C1"
+                  "pathName": "B2-B3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Intake"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "B3-R1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         }
       ]
