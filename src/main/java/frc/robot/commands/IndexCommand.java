@@ -20,6 +20,7 @@ public class IndexCommand extends Command {
         this.beamBreakSubsystem = beamBreakSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
         addRequirements(indicatorSubsystem);
+        addRequirements(indexerSubsystem);
     }
 
     @Override

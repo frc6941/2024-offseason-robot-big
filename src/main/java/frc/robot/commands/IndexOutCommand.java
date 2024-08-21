@@ -9,6 +9,7 @@ public class IndexOutCommand extends Command {
 
 	public IndexOutCommand(IndexerSubsystem indexerSubsystem) {
 		this.indexerSubsystem = indexerSubsystem;
+		addRequirements(indexerSubsystem);
 	}
 
 	@Override

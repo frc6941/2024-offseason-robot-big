@@ -44,9 +44,19 @@
     },
     "transitory": {
       "AdvantageKit": {
+        "Indexer": {
+          "open": true
+        },
+        "Intaker": {
+          "open": true
+        },
         "Shooter": {
           "open": true
-        }
+        },
+        "open": true
+      },
+      "FMSInfo": {
+        "open": true
       },
       "Shuffleboard": {
         "Operator": {
@@ -60,13 +70,15 @@
         "Swerve": {
           "Auto Pos": {
             "open": true
-          },
-          "open": true
+          }
         },
         "open": true,
         "swerve": {
           "open": true
         }
+      },
+      "limelight": {
+        "open": true
       }
     }
   },

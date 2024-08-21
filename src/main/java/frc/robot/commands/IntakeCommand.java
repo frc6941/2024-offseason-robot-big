@@ -25,6 +25,7 @@ public class IntakeCommand extends Command {
         this.beamBreakSubsystem = beamBreakSubsystem;
         this.shooterSubsystem = shooterSubsystem;
         this.armSubsystem = armSubsystem;
+        addRequirements(intakerSubsystem);
     }
 
     @Override

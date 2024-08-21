@@ -11,6 +11,7 @@ public class IntakeOutCommand extends Command {
 
 	public IntakeOutCommand(IntakerSubsystem intakerSubsystem) {
 		this.intakerSubsystem = intakerSubsystem;
+		addRequirements(intakerSubsystem);
 	}
 
 	@Override

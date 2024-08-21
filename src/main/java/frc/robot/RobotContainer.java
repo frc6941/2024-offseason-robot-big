@@ -199,7 +199,7 @@ public class RobotContainer {
         }, indicator));
 
         driverController.start().onTrue(resetOdom());
-        driverController.leftBumper().whileTrue(
+        driverController.leftBumper().onTrue(
                 intake().andThen(rumbleDriver(1.0)));
 
         // superstructure
@@ -223,8 +223,8 @@ public class RobotContainer {
         operatorController.povLeft().onTrue(LightOn());
         operatorController.povRight().onTrue(LightOff());
 
-        operatorController.a().debounce(1).onTrue(climbUp());
-        operatorController.b().debounce(0.5).onTrue(climbDown());
+        operatorController.a().debounce(0.5).onTrue(climbUp());
+        operatorController.b().debounce(0.2).onTrue(climbDown());
 
         operatorController.start().onTrue(new ResetArmHomeCommand(arm));
 
