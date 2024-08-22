@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -7,12 +7,12 @@ import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 
-public class IndexCommand extends Command {
+public class IndexAutoCommand extends Command {
     private final IndexerSubsystem indexerSubsystem;
     private final BeamBreakSubsystem beamBreakSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
 
-    public IndexCommand(
+    public IndexAutoCommand(
             IndexerSubsystem indexerSubsystem,
             BeamBreakSubsystem beamBreakSubsystem,
             IndicatorSubsystem indicatorSubsystem) {
@@ -20,7 +20,6 @@ public class IndexCommand extends Command {
         this.beamBreakSubsystem = beamBreakSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
         addRequirements(indicatorSubsystem);
-        addRequirements(indexerSubsystem);
     }
 
     @Override

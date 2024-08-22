@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
+import frc.robot.commands.auto.IndexAutoCommand;
+import frc.robot.commands.auto.IntakeAutoCommand;
 import frc.robot.commands.manual.ShootManualCommand;
 import frc.robot.display.Display;
 import frc.robot.display.OperatorDashboard;
@@ -114,24 +116,24 @@ public class RobotContainer {
     }
 
     private void configureAuto() {
-        NamedCommands.registerCommand("AutoShoot", speakerAutoShot().withTimeout(2.0));
-        NamedCommands.registerCommand("Intake", intake().withTimeout(2.0));
+        NamedCommands.registerCommand("AutoShoot", speakerAutoShot().withTimeout(3.0));
+        NamedCommands.registerCommand("Intake", intakeAuto().withTimeout(2.0));
         NamedCommands.registerCommand("IntakeOut", outtake().withTimeout(0.5));
         NamedCommands.registerCommand("ResetArm", new ResetArmCommand(arm));
         NamedCommands.registerCommand("FlyWheelRampUp", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));//READ ME change all "Preshoot" in auto files
         NamedCommands.registerCommand("AutoPreArm", new ArmAimCommand(arm, () -> Destination.SPEAKER));
         NamedCommands.registerCommand("ChassisAim", new ChassisAimCommand(swerve, () -> Destination.SPEAKER, () -> 0, () -> 0));
         NamedCommands.registerCommand("Shoot", new DeliverNoteCommand(indexer, beamBreak, indicator).withTimeout(1.0));
-        NamedCommands.registerCommand("PreloadShoot", PreloadShoot().withTimeout(1.0));
+        NamedCommands.registerCommand("PreloadShoot", PreloadShoot().withTimeout(2.0));
 
 
         AutoBuilder.configureHolonomic(
                 () -> Swerve.getInstance().getLocalizer().getCoarseFieldPose(0),
-                (Pose2d pose2d) -> /*Swerve.getInstance().resetPose(pose2d)*/{},
+                (Pose2d pose2d) -> Swerve.getInstance().resetPose(pose2d),
                 () -> Swerve.getInstance().getChassisSpeeds(),
                 (ChassisSpeeds chassisSpeeds) -> Swerve.getInstance().driveSpeed(chassisSpeeds),
                 new HolonomicPathFollowerConfig(
-                        //    new PIDConstants(  
+                        //    new PIDConstants(
                         //            Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
                         //            Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
                         //            Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()
@@ -141,9 +143,9 @@ public class RobotContainer {
                         //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
                         //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()
                         //    ),
-                        4.1,
+                        Constants.SwerveConstants.maxSpeed.magnitude(),
                         0.55,
-                        new ReplanningConfig(true, true)),
+                        new ReplanningConfig()),
                 AllianceFlipUtil::shouldFlip,
                 swerve
         );
@@ -199,7 +201,7 @@ public class RobotContainer {
         }, indicator));
 
         driverController.start().onTrue(resetOdom());
-        driverController.leftBumper().whileTrue(
+        driverController.leftBumper().onTrue(
                 intake().andThen(rumbleDriver(1.0)));
 
         // superstructure
@@ -223,8 +225,8 @@ public class RobotContainer {
         operatorController.povLeft().onTrue(LightOn());
         operatorController.povRight().onTrue(LightOff());
 
-        operatorController.a().debounce(1).onTrue(climbUp());
-        operatorController.b().debounce(0.5).onTrue(climbDown());
+        operatorController.a().debounce(0.5).onTrue(climbUp());
+        operatorController.b().debounce(0.2).onTrue(climbDown());
 
         operatorController.start().onTrue(new ResetArmHomeCommand(arm));
 
@@ -294,6 +296,11 @@ public class RobotContainer {
 
     private Command facing(double fieldAngleDeg) {
         return new SetFacingCommand(swerve, fieldAngleDeg);
+    }
+
+    private Command intakeAuto() {
+        return new IntakeAutoCommand(intaker, beamBreak, shooter, arm)
+                .alongWith(new IndexAutoCommand(indexer, beamBreak, indicator));
     }
 
     private Command intake() {
@@ -374,17 +381,17 @@ public class RobotContainer {
 
     private Command LightOn() {
         return Commands.run(() ->
-                Light.getInstance().setState(Light.STATE.ON), Light.getInstance());
+                Light.getInstance().setState(Light.STATE.ON), Light.getInstance()).ignoringDisable(true);
     }
 
     private Command LightOff() {
         return Commands.run(() ->
-                Light.getInstance().setState(Light.STATE.OFF), Light.getInstance());
+                Light.getInstance().setState(Light.STATE.OFF), Light.getInstance()).ignoringDisable(true);
     }
 
     private Command LightAuto() {
         return Commands.run(() ->
-                Light.getInstance().setState(Light.STATE.AUTO), Light.getInstance());
+                Light.getInstance().setState(Light.STATE.AUTO), Light.getInstance()).ignoringDisable(true);
     }
 
     private Command ManualShoot() {

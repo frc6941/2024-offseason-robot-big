@@ -24,9 +24,9 @@ public class LaunchParameterTable {
         int counter = 1;
         for (Double key : interpolatingTable.keySet()) {
             parameters.add(new ParametersBinding(
-                    new TunableNumber(prefix + counter + " Distance", key),
-                    new TunableNumber(prefix + counter + " Velocity", interpolatingTable.get(key).getFirst()),
-                    new TunableNumber(prefix + counter + " Angle", interpolatingTable.get(key).getSecond())));
+                    new TunableNumber(prefix + "/"+ counter + " Distance", key),
+                    new TunableNumber(prefix + "/"+ counter + " Velocity", interpolatingTable.get(key).getFirst()),
+                    new TunableNumber(prefix + "/"+ counter + " Angle", interpolatingTable.get(key).getSecond())));
             counter++;
         }
     }

@@ -4,6 +4,14 @@
       "window": {
         "visible": false
       }
+    },
+    "RoboRIO": {
+      "3.3V Rail": {
+        "open": true
+      },
+      "RoboRIO Input": {
+        "open": true
+      }
     }
   },
   "NTProvider": {
@@ -39,14 +47,43 @@
     }
   },
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
     "Retained Values": {
       "open": false
     },
+    "retained": {
+      "SmartDashboard": {
+        "open": true
+      }
+    },
     "transitory": {
       "AdvantageKit": {
+        "Indicator": {
+          "open": true
+        },
+        "Intaker": {
+          "open": true
+        },
+        "RealOutputs": {
+          "LoggedRobot": {
+            "open": true
+          }
+        },
         "Shooter": {
           "open": true
-        }
+        },
+        "open": true
+      },
+      "FMSInfo": {
+        "open": true
+      },
+      "LiveWindow": {
+        "open": true
+      },
+      "PathPlanner": {
+        "open": true
       },
       "Shuffleboard": {
         "Operator": {
@@ -54,19 +91,25 @@
             "open": true
           },
           "open": true
-        }
+        },
+        "open": true
       },
       "SmartDashboard": {
         "Swerve": {
           "Auto Pos": {
             "open": true
-          },
-          "open": true
+          }
         },
         "open": true,
         "swerve": {
           "open": true
         }
+      },
+      "Swerve": {
+        "open": true
+      },
+      "limelight": {
+        "open": true
       }
     }
   },

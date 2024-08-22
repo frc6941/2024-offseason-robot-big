@@ -30,7 +30,7 @@ public class ShootingDecider implements Updatable {
         lowFerryParams = new LaunchParameterTable("Low Ferry");
 
         ampAngle = new TunableNumber("Amp Angle Degs", 165.0);
-        ampVelocity = new TunableNumber("Amp Velocity Rpm", -5000.0);
+        ampVelocity = new TunableNumber("Amp Velocity Rpm", -1500.0);
 
         //The first speaker parameter will influence manual shoot, DO NOT CHANGE IT
         speakerParams.loadParameter(1.064, -4500, 14.755);// 20240808

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.36,
-      "y": 5.55802417487188
+      "x": 1.47,
+      "y": 6.5021359133627366
     },
     "rotation": 0
   },
@@ -18,22 +18,9 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "S2-A1"
-                }
-              }
-            ]
+            "pathName": "S1-B1"
           }
         },
         {
@@ -45,23 +32,23 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoShoot"
+            "name": "Shoot"
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "B1-B2"
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "Intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "A1-A2"
                 }
               }
             ]
@@ -70,44 +57,45 @@
         {
           "type": "named",
           "data": {
-            "name": "Intake"
+            "name": "Shoot"
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "AutoShoot"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "B2-B3"
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "Intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "A2-A3-before"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoShoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "B3-R1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         }
       ]

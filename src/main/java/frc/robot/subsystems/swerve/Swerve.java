@@ -156,7 +156,8 @@ public class Swerve implements Updatable, Subsystem {
         autoDrive(new Translation2d(
                 speeds.vxMetersPerSecond,
                 speeds.vyMetersPerSecond), speeds.omegaRadiansPerSecond, false, false);
-        System.out.println(speeds.toString());
+//        System.out.println(speeds.toString());
+        // TODO: fix it
     }
 
     public ChassisSpeeds getChassisSpeeds() {
@@ -321,7 +322,7 @@ public class Swerve implements Updatable, Subsystem {
 
     public void resetPose(Pose2d resetPose) {
         SmartDashboard.putString("aaa", resetPose.toString());
-        gyro.setYaw(resetPose.getRotation().getDegrees());
+        gyro.setYaw(resetPose.getRotation().getDegrees() + (AllianceFlipUtil.shouldFlip() ? 180 : 0));
         // System.out.println(resetPose.getRotation().getDegrees());
         // System.out.println(gyro.getYaw().getDegrees());
         swerveLocalizer.reset(resetPose, getModulePositions());
@@ -510,21 +511,22 @@ public class Swerve implements Updatable, Subsystem {
 
     @Override
     public void telemetry() {
+        //TODO: fix it
         SmartDashboard.putString("Swerve/Auto Pos/S1", AllianceFlipUtil.shouldFlip() ?
-                new Pose2d(16.541 - 1.32 - 0.44, 6.46, Rotation2d.fromDegrees(178.18)).minus(
+                new Pose2d(16.541 - 1.47, 6.5, Rotation2d.fromDegrees(0)).minus(
                         this.getLocalizer().getCoarseFieldPose(0)).toString() :
                 this.getLocalizer().getCoarseFieldPose(0).minus(
-                        new Pose2d(1.32 + 0.44, 6.46, Rotation2d.fromDegrees(-1.82))).toString());
+                        new Pose2d(1.47, 6.5, Rotation2d.fromDegrees(-0))).toString());
         SmartDashboard.putString("Swerve/Auto Pos/S2", AllianceFlipUtil.shouldFlip() ?
-                new Pose2d(15.622 - 0.44, 5.545, Rotation2d.fromDegrees(180)).minus(
+                new Pose2d(16.541 - 1.36, 5.56, Rotation2d.fromDegrees(180)).minus(
                         this.getLocalizer().getCoarseFieldPose(0)).toString() :
                 this.getLocalizer().getCoarseFieldPose(0).minus(
-                        new Pose2d(0.91895 + 0.44, 5.545, Rotation2d.fromDegrees(0))).toString());
+                        new Pose2d(1.36, 5.56, Rotation2d.fromDegrees(0))).toString());
         SmartDashboard.putString("Swerve/Auto Pos/S3", AllianceFlipUtil.shouldFlip() ?
-                new Pose2d(16.541 - 1.32 - 0.44, 6.46, Rotation2d.fromDegrees(178.18)).minus(
+                new Pose2d(16.541 - 1.44, 4.58, Rotation2d.fromDegrees(180)).minus(
                         this.getLocalizer().getCoarseFieldPose(0)).toString() :
                 this.getLocalizer().getCoarseFieldPose(0).minus(
-                        new Pose2d(1.32 + 0.44, 6.46, Rotation2d.fromDegrees(-1.82))).toString());
+                        new Pose2d(1.44, 4.58, Rotation2d.fromDegrees(0))).toString());
         Pose2d latestPose = swerveLocalizer.getLatestPose();
         dataTable.getEntry("Pose").setDoubleArray(
                 new double[]{
