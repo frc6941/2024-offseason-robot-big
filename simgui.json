@@ -4,6 +4,14 @@
       "window": {
         "visible": false
       }
+    },
+    "RoboRIO": {
+      "3.3V Rail": {
+        "open": true
+      },
+      "RoboRIO Input": {
+        "open": true
+      }
     }
   },
   "NTProvider": {
@@ -39,12 +47,20 @@
     }
   },
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
     "Retained Values": {
       "open": false
     },
+    "retained": {
+      "SmartDashboard": {
+        "open": true
+      }
+    },
     "transitory": {
       "AdvantageKit": {
-        "Indexer": {
+        "Indicator": {
           "open": true
         },
         "Intaker": {
@@ -84,9 +100,16 @@
             "open": true
           }
         },
+        "open": true,
         "swerve": {
           "open": true
         }
+      },
+      "Swerve": {
+        "open": true
+      },
+      "limelight": {
+        "open": true
       }
     }
   },

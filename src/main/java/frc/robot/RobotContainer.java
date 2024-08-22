@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
+import frc.robot.commands.auto.IndexAutoCommand;
+import frc.robot.commands.auto.IntakeAutoCommand;
 import frc.robot.commands.manual.ShootManualCommand;
 import frc.robot.display.Display;
 import frc.robot.display.OperatorDashboard;
@@ -115,7 +117,7 @@ public class RobotContainer {
 
     private void configureAuto() {
         NamedCommands.registerCommand("AutoShoot", speakerAutoShot().withTimeout(3.0));
-        NamedCommands.registerCommand("Intake", intake().withTimeout(2.0));
+        NamedCommands.registerCommand("Intake", intakeAuto().withTimeout(2.0));
         NamedCommands.registerCommand("IntakeOut", outtake().withTimeout(0.5));
         NamedCommands.registerCommand("ResetArm", new ResetArmCommand(arm));
         NamedCommands.registerCommand("FlyWheelRampUp", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));//READ ME change all "Preshoot" in auto files
@@ -294,6 +296,11 @@ public class RobotContainer {
 
     private Command facing(double fieldAngleDeg) {
         return new SetFacingCommand(swerve, fieldAngleDeg);
+    }
+
+    private Command intakeAuto() {
+        return new IntakeAutoCommand(intaker, beamBreak, shooter, arm)
+                .alongWith(new IndexAutoCommand(indexer, beamBreak, indicator));
     }
 
     private Command intake() {
