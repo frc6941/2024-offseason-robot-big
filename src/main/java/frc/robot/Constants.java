@@ -19,8 +19,8 @@ import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 import static edu.wpi.first.units.Units.*;
 
 public class Constants {
-    public static final boolean TUNING = true;
-    public static final double LOOPER_DT = 1 / 100.0;
+    public static final boolean TUNING = false;
+    public static final double LOOPER_DT = 1 / 50.0;
 
     public static Measure<Angle> armPosition = Radians.of(0);
 
