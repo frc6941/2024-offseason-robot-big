@@ -114,7 +114,7 @@ public class RobotContainer {
     }
 
     private void configureAuto() {
-        NamedCommands.registerCommand("AutoShoot", speakerAutoShot().withTimeout(2.0));
+        NamedCommands.registerCommand("AutoShoot", speakerAutoShot().withTimeout(3.0));
         NamedCommands.registerCommand("Intake", intake().withTimeout(2.0));
         NamedCommands.registerCommand("IntakeOut", outtake().withTimeout(0.5));
         NamedCommands.registerCommand("ResetArm", new ResetArmCommand(arm));
@@ -122,7 +122,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoPreArm", new ArmAimCommand(arm, () -> Destination.SPEAKER));
         NamedCommands.registerCommand("ChassisAim", new ChassisAimCommand(swerve, () -> Destination.SPEAKER, () -> 0, () -> 0));
         NamedCommands.registerCommand("Shoot", new DeliverNoteCommand(indexer, beamBreak, indicator).withTimeout(1.0));
-        NamedCommands.registerCommand("PreloadShoot", PreloadShoot().withTimeout(1.0));
+        NamedCommands.registerCommand("PreloadShoot", PreloadShoot().withTimeout(2.0));
 
 
         AutoBuilder.configureHolonomic(
