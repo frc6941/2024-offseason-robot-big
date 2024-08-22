@@ -50,6 +50,11 @@
         "Intaker": {
           "open": true
         },
+        "RealOutputs": {
+          "LoggedRobot": {
+            "open": true
+          }
+        },
         "Shooter": {
           "open": true
         },
@@ -58,13 +63,20 @@
       "FMSInfo": {
         "open": true
       },
+      "LiveWindow": {
+        "open": true
+      },
+      "PathPlanner": {
+        "open": true
+      },
       "Shuffleboard": {
         "Operator": {
           "Auto Selector": {
             "open": true
           },
           "open": true
-        }
+        },
+        "open": true
       },
       "SmartDashboard": {
         "Swerve": {
@@ -72,13 +84,9 @@
             "open": true
           }
         },
-        "open": true,
         "swerve": {
           "open": true
         }
-      },
-      "limelight": {
-        "open": true
       }
     }
   },

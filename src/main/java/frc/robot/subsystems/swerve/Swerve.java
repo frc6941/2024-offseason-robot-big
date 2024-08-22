@@ -156,7 +156,8 @@ public class Swerve implements Updatable, Subsystem {
         autoDrive(new Translation2d(
                 speeds.vxMetersPerSecond,
                 speeds.vyMetersPerSecond), speeds.omegaRadiansPerSecond, false, false);
-        System.out.println(speeds.toString());
+//        System.out.println(speeds.toString());
+        // TODO: fix it
     }
 
     public ChassisSpeeds getChassisSpeeds() {
