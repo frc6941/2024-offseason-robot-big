@@ -36,8 +36,8 @@ public class FerryShootCommand extends ParallelCommandGroup {
                             boolean shooterReady = shooterSubsystem.ShooterVelocityReady();
                             boolean armReady = armSubsystem.armAimingReady();
                             boolean swerveVelocityReady = swerve.velocityReady(1.3);
-                            return swerveReady && shooterReady && armReady && swerveVelocityReady
-                                    && !ShootingDecider.inHighFerryZone(swerve.getLocalizer().getCoarseFieldPose(0));
+                            return swerveReady && shooterReady && armReady && swerveVelocityReady;
+                                    //&& !ShootingDecider.inHighFerryZone(swerve.getLocalizer().getCoarseFieldPose(0));
                         }).andThen(
                                 Commands.waitSeconds(0.02),
                                 new DeliverNoteCommand(indexerSubsystem, beamBreakSubsystem,
