@@ -35,7 +35,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotInit() {
-        Logger.addDataReceiver(new NT4Publisher());
+        // Logger.addDataReceiver(new NT4Publisher());
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.start();
         Light.getInstance().setState(Light.STATE.OFF);
@@ -60,7 +60,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
-        CommandScheduler.getInstance().run();
     }
 
     @Override
@@ -80,7 +79,6 @@ public class Robot extends LoggedRobot {
         robotContainer.getUpdateManager().invokeStart();
         Swerve.getInstance().auto();
         Commands.runOnce(() -> dashboard.updateDestination(ShootingDecider.Destination.SPEAKER));
-        CommandScheduler.getInstance().run();
     }
 
     @Override
