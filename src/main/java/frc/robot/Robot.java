@@ -35,7 +35,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotInit() {
-//        Logger.addDataReceiver(new NT4Publisher());
+        // Logger.addDataReceiver(new NT4Publisher());
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.start();
         Light.getInstance().setState(Light.STATE.OFF);
