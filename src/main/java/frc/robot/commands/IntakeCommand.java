@@ -38,10 +38,6 @@ public class IntakeCommand extends Command {
         if (beamBreakSubsystem.getInputs().isIntakerBeamBreakOn) {
             enabledBefore = true;
         }
-        if (enabledBefore && !beamBreakSubsystem.getInputs().isIntakerBeamBreakOn) {
-//            intakerSubsystem.getIo().setIntakeVoltage(Volts.of(0.5));
-//            return;
-        }
         if ((armSubsystem.getInputs().armPosition.magnitude() > 0.1
                 && beamBreakSubsystem.getInputs().isIntakerBeamBreakOn)) {
             intakerSubsystem.getIo().setIntakeVoltage(Volts.of(0));
@@ -56,8 +52,6 @@ public class IntakeCommand extends Command {
                 .setIntakeVoltage(Volts.zero());
         shooterSubsystem.getIo()
                 .setFlyWheelDirectVoltage(Constants.ShooterConstants.shooterConstantVoltage);
-        if (interrupted)
-            return;
     }
 
     @Override

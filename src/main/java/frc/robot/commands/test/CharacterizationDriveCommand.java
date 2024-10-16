@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 public class CharacterizationDriveCommand extends Command {
     private final double maxVoltage;
-    private final double prepTime = 3.0;
     private final Timer prepTimer = new Timer();
     private final Timer timer = new Timer();
     private final ArrayList<Double> yVoltages = new ArrayList<>();
@@ -24,6 +23,7 @@ public class CharacterizationDriveCommand extends Command {
     private double startVoltage;
     private double deltaVoltage;
     private final Runnable r = () -> {
+        double prepTime = 3.0;
         if (prepTimer.get() < prepTime) {
             timer.stop();
             SwerveModuleState individualState = new SwerveModuleState(
@@ -38,9 +38,9 @@ public class CharacterizationDriveCommand extends Command {
         double targetVoltage = startVoltage + deltaVoltage * timer.get();
 
         SwerveModuleState individualState = new SwerveModuleState(
-                targetVoltage / 1.0, new Rotation2d()
+                targetVoltage, new Rotation2d()
         );
-        System.out.println("REQ = " + individualState.toString());
+        System.out.println("REQ = " + individualState);
         drivetrain.setModuleStates(new SwerveModuleState[]{
                 individualState,
                 individualState,
@@ -67,7 +67,6 @@ public class CharacterizationDriveCommand extends Command {
 
     };
     private final Notifier n = new Notifier(r);
-    private double travelTicks = 0;
 
     public CharacterizationDriveCommand(Swerve drivetrain, double startVoltage, double deltaVoltage, double maxVoltage) {
         this.drivetrain = drivetrain;
@@ -118,6 +117,7 @@ public class CharacterizationDriveCommand extends Command {
         System.out.println(
                 "Converted Module kV in Falcon Units:"
                         + 1024.0 * regressionFalcon.beta(0) + "Falcon Output Units / Falcon Encoder Units / 100ms");
+        double travelTicks = 0;
         System.out.println(
                 "Travelled Ticks: " + travelTicks
         );

@@ -4,12 +4,11 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
-import frc.robot.utils.Utils;
 
 public class SimSwerveModuleDummy implements SwerveModuleBase {
-    private int moduleNumber;
+    private final int moduleNumber;
+    private final SwerveModulePosition currentPosition;
     private SwerveModuleState currentState;
-    private SwerveModulePosition currentPosition;
 
     public SimSwerveModuleDummy(int id, SwerveModuleConstants constants) {
         moduleNumber = id;

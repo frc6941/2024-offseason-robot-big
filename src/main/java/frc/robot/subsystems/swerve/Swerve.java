@@ -189,14 +189,14 @@ public class Swerve implements Updatable, Subsystem {
             driveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
         } else {
 
-            double x = driveSignal.getTranslation().getX();
-            double y = driveSignal.getTranslation().getY();
-            double rotation = driveSignal.getRotation();
+            double x = driveSignal.translation().getX();
+            double y = driveSignal.translation().getY();
+            double rotation = driveSignal.rotation();
 
             Rotation2d robotAngle = swerveLocalizer.getLatestPose().getRotation();
 
 
-            if (driveSignal.isFieldOriented()) {
+            if (driveSignal.fieldOriented()) {
                 // if (AllianceFlipUtil.shouldFlip()) {
                 //     desiredChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation,
                 //             robotAngle.rotateBy(Rotation2d.fromDegrees(180)));
@@ -265,10 +265,6 @@ public class Swerve implements Updatable, Subsystem {
      */
     public void drive(Translation2d translationalVelocity, double rotationalVelocity,
                       boolean isFieldOriented, boolean isOpenLoop) {
-        // if (Math.hypot(translationalVelocity.getX(), translationalVelocity.getY())
-        // < Constants.SwerveConstants.deadband) {
-        // translationalVelocity = new Translation2d(0, 0);
-        // }
         if (Math.abs(translationalVelocity.getX()) < Constants.SwerveConstants.deadband) {
             translationalVelocity = new Translation2d(0, translationalVelocity.getY());
         }
@@ -323,8 +319,6 @@ public class Swerve implements Updatable, Subsystem {
     public void resetPose(Pose2d resetPose) {
         SmartDashboard.putString("aaa", resetPose.toString());
         gyro.setYaw(resetPose.getRotation().getDegrees() + (AllianceFlipUtil.shouldFlip() ? 180 : 0));
-        // System.out.println(resetPose.getRotation().getDegrees());
-        // System.out.println(gyro.getYaw().getDegrees());
         swerveLocalizer.reset(resetPose, getModulePositions());
     }
 
@@ -471,11 +465,11 @@ public class Swerve implements Updatable, Subsystem {
                             headingTarget, headingVelocityFeedforward)), -headingRotationLimit, headingRotationLimit);
 
             if (this.state == State.PATH_FOLLOWING) {
-                autoDriveSignal = new HolonomicDriveSignal(autoDriveSignal.getTranslation(), rotation,
-                        autoDriveSignal.isFieldOriented(), autoDriveSignal.isOpenLoop());
+                autoDriveSignal = new HolonomicDriveSignal(autoDriveSignal.translation(), rotation,
+                        autoDriveSignal.fieldOriented(), autoDriveSignal.isOpenLoop());
             } else {
-                driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), rotation,
-                        driveSignal.isFieldOriented(), driveSignal.isOpenLoop());
+                driveSignal = new HolonomicDriveSignal(driveSignal.translation(), rotation,
+                        driveSignal.fieldOriented(), driveSignal.isOpenLoop());
             }
             Logger.recordOutput("heading/rotation", rotation);
             Logger.recordOutput("heading/gyro", gyro.getYaw().getDegrees());
@@ -483,8 +477,8 @@ public class Swerve implements Updatable, Subsystem {
             Logger.recordOutput("heading/difference", Math.abs(headingTarget - gyro.getYaw().getDegrees()));
 
         } else if (overrideRotation != null) {
-            driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), overrideRotation,
-                    driveSignal.isFieldOriented(), driveSignal.isOpenLoop());
+            driveSignal = new HolonomicDriveSignal(driveSignal.translation(), overrideRotation,
+                    driveSignal.fieldOriented(), driveSignal.isOpenLoop());
         }
 
         rollVelocity.addNumber(gyro.getRaw()[0]);

@@ -36,17 +36,15 @@ public class Limelight implements Updatable {
     private static final Swerve swerve = Swerve.getInstance();
     private static int measuerCnt = 0;
     private static double deviationX, deviationY, deviationOmega;
-    private Translation2d kdeltaToTag;
-    private Pose3d kTagPose;
-
     // singleton
     private static Limelight instance;
-    private LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("Distance");
+    private final LoggedDashboardNumber distanceLogged = new LoggedDashboardNumber("Distance");
+    private final boolean[][] tagFlagCnt = new boolean[30][60];
+    private final double[] tagCnt = new double[30];//17
+    private Translation2d kdeltaToTag;
+    private Pose3d kTagPose;
     private Optional<PoseEstimate> botEstimate;
-
     private int loopCnt = 0;
-    private boolean[][] tagFlagCnt = new boolean[30][60];
-    private double[] tagCnt = new double[30];//17
 
     private Limelight() {
     }
@@ -101,16 +99,6 @@ public class Limelight implements Updatable {
             botEstimate = Optional.of(
                     LimelightHelpers
                             .getBotPoseEstimate_wpiBlue(Constants.VisionConstants.AIM_LIMELIGHT_NAME));
-            // if (lastPose != null) {
-            // 	SmartDashboard.putNumber("degree speed", Math
-            // 		.abs((botEstimate.get().pose.getRotation().getDegrees() - lastPose.pose.getRotation().getDegrees())
-            // 					/ (botEstimate.get().timestampSeconds - lastPose.timestampSeconds)));
-            // 	if(Math
-            // 	.abs((botEstimate.get().pose.getRotation().getDegrees() - lastPose.pose.getRotation().getDegrees())
-            // 					/ (botEstimate.get().timestampSeconds - lastPose.timestampSeconds)) > 30)
-            // 		botEstimate = Optional.empty();
-            // }
-            //if(!botEstimate.isEmpty()) lastPose = botEstimate.get();
         } else {
             botEstimate = Optional.empty();
         }
@@ -126,28 +114,6 @@ public class Limelight implements Updatable {
             if (tagFlagCnt[i][loopCnt]) tagCnt[i]--;
             tagFlagCnt[i][loopCnt] = false;
         }
-//        if (botEstimate.isPresent()) {
-//            for (LimelightHelpers.RawFiducial rawFiducial : botEstimate.get().rawFiducials) {
-//                if (rawFiducial != null) {
-//                    tagFlagCnt[rawFiducial.id][loopCnt] = true;
-//                    tagCnt[rawFiducial.id]++;
-//                } else {
-//                    System.out.println("wtf");
-//                }
-//            }
-//        }
-//        LimelightHelpers.setPriorityTagID(Constants.VisionConstants.AIM_LIMELIGHT_NAME, 7);
-//        ktagID = (int) LimelightHelpers.getFiducialID(Constants.VisionConstants.AIM_LIMELIGHT_NAME);
-//        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent()) {
-//            tagFlagCnt[ktagID][loopCnt] = true;
-//            tagCnt[ktagID]++;
-//        }
-//        LimelightHelpers.setPriorityTagID(Constants.VisionConstants.AIM_LIMELIGHT_NAME, 8);
-//        ktagID = (int) LimelightHelpers.getFiducialID(Constants.VisionConstants.AIM_LIMELIGHT_NAME);
-//        if (FieldLayout.kTagMap.getTagPose(ktagID).isPresent()) {
-//            tagFlagCnt[ktagID][loopCnt] = true;
-//            tagCnt[ktagID]++;
-//        }
         if (ktagID == speakerTag1 || ktagID == speakerTag2) {
             tagFlagCnt[ktagID][loopCnt] = true;
             tagCnt[ktagID]++;
@@ -197,11 +163,6 @@ public class Limelight implements Updatable {
         }
 
 
-        // if (Swerve.getInstance().getLocalizer().getLatestPose().getX() < 0
-        // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getX() > Constants.FieldConstants.fieldLength
-        // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getY() < 0
-        // 		|| Swerve.getInstance().getLocalizer().getLatestPose().getY() > Constants.FieldConstants.fieldWidth)
-        // 	return;
         if (botEstimate.isPresent()) {
             if (measuerCnt <= 3) {
                 measuerCnt++;
@@ -232,8 +193,6 @@ public class Limelight implements Updatable {
     public Translation2d getSpeakerRelativePosition() {
         Pose2d robotPos = swerve.getLocalizer().getCoarseFieldPose(edu.wpi.first.wpilibj.Timer.getFPGATimestamp());
         SmartDashboard.putString("robotPos", robotPos.toString());
-        // Pose2d SpeakerPos = new Pose2d(new Translation2d(Constants.FieldConstants.Speaker.centerSpeakerOpening.getX(),
-        // 		Constants.FieldConstants.Speaker.centerSpeakerOpening.getY()), new Rotation2d(0));
         Translation2d blueSpeakerTranslation = FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d();
         Pose2d blueSpeaker = new Pose2d(blueSpeakerTranslation, Rotation2d.fromDegrees(180.0));
         Translation2d redSpeakerTranslation = new Translation2d(
@@ -249,36 +208,18 @@ public class Limelight implements Updatable {
     }
 
     @Override
-    public void write(double time, double dt) {
-    }
-
-    @Override
     public void telemetry() {
-        //SmartDashboard.putBoolean("has_target", hasTarget());
         if (hasTarget()) {
-//            SmartDashboard.putString("metaTag2blue",
-//                    LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.AIM_LIMELIGHT_NAME).pose.toString());
             if (botEstimate.isPresent()) {
                 SmartDashboard.putString("limelight_pose", botEstimate.get().pose.toString());
                 SmartDashboard.putNumber("latency", botEstimate.get().latency);
                 SmartDashboard.putNumber("Limelight/botEstimate", botEstimate.get().rawFiducials.length);
-//                LimelightHelpers.printPoseEstimate(botEstimate.get());
                 SmartDashboard.putNumber("Limelight/gryo offset",
                         botEstimate.get().pose.getRotation().getDegrees() -
                                 Swerve.getInstance().getLocalizer().getCoarseFieldPose(0).getRotation().getDegrees());
             }
         }
         distanceLogged.set(Limelight.getInstance().getSpeakerRelativePosition().getNorm());
-        //System.out.println(tx.getDouble(0));
-        // SmartDashboard.putNumber("relativePos2",  getSpeakerRelativePosition());
-    }
-
-    @Override
-    public void start() {
-    }
-
-    @Override
-    public void stop() {
     }
 
     public record AprilTagTarget(

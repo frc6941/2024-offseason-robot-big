@@ -14,8 +14,6 @@ public class CTRESwerveModule implements SwerveModuleBase {
     @Getter
     private final CTRESwerveIO module;
 
-    // edu.wpi.first.math.geometry.Rotation2d angleLowSpeed = new edu.wpi.first.math.geometry.Rotation2d(0, 0);
-    // boolean lowSpeed = false;
     public CTRESwerveModule(int id, SwerveModuleConstants constants, String canbusName) {
         moduleNumber = id;
         module = new CTRESwerveIO(constants, canbusName);
@@ -60,28 +58,7 @@ public class CTRESwerveModule implements SwerveModuleBase {
                 .withKA(Constants.SwerveConstants.driveGainsClass.DRIVE_KA.get())
                 .withKV(Constants.SwerveConstants.driveGainsClass.DRIVE_KV.get())
                 .withKS(Constants.SwerveConstants.driveGainsClass.DRIVE_KS.get()));
-        // if (Math.abs(desiredState.speedMetersPerSecond) <= 0.15 * Constants.SwerveConstants.maxSpeed.magnitude()) {
-        // 	if (!lowSpeed) {
-        // 		angleLowSpeed = desiredState.angle;
-        // 		lowSpeed = true;
-        // 	}
-        // 	desiredState.angle = angleLowSpeed;
-        // }
-        // else if (lowSpeed) {
-        // 	lowSpeed = false;
-        // }
 
         module.apply(desiredState, isOpenLoop ? DriveRequestType.OpenLoopVoltage : DriveRequestType.Velocity);
-        // System.out.println(moduleNumber + " = " + desiredState.speedMetersPerSecond + " = "
-        // 		+ module.getDriveMotor().getMotorVoltage() + " " + module.getSteerMotor().getMotorVoltage());//speed output
-		/*
-		SmartDashboard.putNumber("Speed m/s", desiredState.speedMetersPerSecond);
-		SmartDashboard.putString("Drive Motor Voltage", module.getDriveMotor().getMotorVoltage());
-		SmartDashboard.putNumber("Steer Motor Voltage", module.getSteerMotor().getMotorVoltage());
-		*/
-        // cnt++;
-        // if (cnt % 50 == 0) {
-        // 	System.out.println(desiredState.speedMetersPerSecond);
-        // }
     }
 }

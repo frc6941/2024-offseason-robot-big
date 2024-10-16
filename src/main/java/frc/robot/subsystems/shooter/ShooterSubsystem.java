@@ -18,8 +18,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
     private final SysIdRoutine sysId;
 
-    private ShootingDecider.Destination destinationSupplier = ShootingDecider.Destination.AMP;
-    private ShootingDecider shootingDecider = ShootingDecider.getInstance();
+    private final ShootingDecider.Destination destinationSupplier = ShootingDecider.Destination.AMP;
+    private final ShootingDecider shootingDecider = ShootingDecider.getInstance();
 
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;

@@ -17,15 +17,15 @@ import org.frcteam6941.utils.MovingAveragePose2d;
 
 public class SwerveDeltaCoarseLocalizer implements Localizer {
     private final Object statusLock = new Object();
-    private SwerveDriveOdometry swerveOdometry;
-    private SwerveDrivePoseEstimator poseEstimator;
+    private final SwerveDriveOdometry swerveOdometry;
+    private final SwerveDrivePoseEstimator poseEstimator;
+    private final int poseBufferSize;
+    private final int velocityBufferSize;
+    private final int accelerationBufferSize;
     private Pose2d previousPose = null;
     private Pose2d previousVelocity = new Pose2d();
     private double distanceDriven = 0.0;
     private InterpolatingTreeMap<Double, Pose2d> fieldToVehicle;
-    private int poseBufferSize;
-    private int velocityBufferSize;
-    private int accelerationBufferSize;
     private Pose2d vehicleVelocityMeasured;
     private MovingAveragePose2d vehicleVelocityMeasuredFilter;
     private Pose2d vehicleAccelerationMeasured;
@@ -38,7 +38,7 @@ public class SwerveDeltaCoarseLocalizer implements Localizer {
         this.poseBufferSize = poseBufferSize;
         this.velocityBufferSize = velocityBufferSize;
         this.accelerationBufferSize = accelerationBufferSize;
-        fieldToVehicle = new InterpolatingTreeMap<Double, Pose2d>(poseBufferSize);
+        fieldToVehicle = new InterpolatingTreeMap<>(poseBufferSize);
         vehicleVelocityMeasured = new Pose2d();
         vehicleVelocityMeasuredFilter = new MovingAveragePose2d(velocityBufferSize);
         vehicleAccelerationMeasured = new Pose2d();
@@ -53,8 +53,8 @@ public class SwerveDeltaCoarseLocalizer implements Localizer {
         poseEstimator = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), initPosition, new Pose2d());
     }
 
-    public synchronized Pose2d updateWithTime(double time, double dt, Rotation2d gyroAngle,
-                                              SwerveModulePosition[] moduleStates) {
+    public synchronized void updateWithTime(double time, double dt, Rotation2d gyroAngle,
+                                            SwerveModulePosition[] moduleStates) {
         dt = Constants.LOOPER_DT;
         synchronized (statusLock) {
             // Get pose from kinematics update
@@ -99,7 +99,6 @@ public class SwerveDeltaCoarseLocalizer implements Localizer {
 
 
             // Return pose
-            return pose;
         }
     }
 
@@ -203,7 +202,7 @@ public class SwerveDeltaCoarseLocalizer implements Localizer {
             swerveOdometry.resetPosition(resetPose.getRotation(), modulePositions, resetPose);
             poseEstimator.resetPosition(resetPose.getRotation(), modulePositions, resetPose);
             previousPose = null;
-            fieldToVehicle = new InterpolatingTreeMap<Double, Pose2d>(poseBufferSize);
+            fieldToVehicle = new InterpolatingTreeMap<>(poseBufferSize);
             fieldToVehicle.put(Timer.getFPGATimestamp(), resetPose);
             vehicleVelocityMeasured = new Pose2d();
             vehicleVelocityMeasuredFilter = new MovingAveragePose2d(velocityBufferSize);

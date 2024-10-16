@@ -1,18 +1,17 @@
 package org.frcteam6941.utils;
 
 
-import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Helper class for storing and calculating a moving average of the pose2d class
  */
 public class MovingAveragePose2d {
+    private final int maxSize;
     CopyOnWriteArrayList<Pose2d> poses = new CopyOnWriteArrayList<>();
-    private int maxSize;
 
     public MovingAveragePose2d(int maxSize) {
         this.maxSize = maxSize;

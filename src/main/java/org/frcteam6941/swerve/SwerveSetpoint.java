@@ -14,10 +14,10 @@ public class SwerveSetpoint {
 
     @Override
     public String toString() {
-        String ret = mChassisSpeeds.toString() + "\n";
-        for (int i = 0; i < mModuleStates.length; ++i ) {
-            ret += "  " + mModuleStates[i].toString() + "\n";
+        StringBuilder ret = new StringBuilder(mChassisSpeeds.toString() + "\n");
+        for (SwerveModuleState mModuleState : mModuleStates) {
+            ret.append("  ").append(mModuleState.toString()).append("\n");
         }
-        return ret;
+        return ret.toString();
     }
 }

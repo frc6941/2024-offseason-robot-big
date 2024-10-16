@@ -23,19 +23,20 @@ public class BeamBreakSubsystem extends SubsystemBase {
                 inputs.isIndexerBeamBreakOn,
                 inputs.isShooterBeamBreakOn);
 
-        if (lastRecordedState == false && inputs.isIndexerBeamBreakOn){
+        if (!lastRecordedState && inputs.isIndexerBeamBreakOn) {
             noteState = true;
         }
         lastRecordedState = inputs.isIndexerBeamBreakOn;
-        
+
         io.updateInputs(inputs);
         Logger.processInputs("Beam Break", inputs);
     }
 
-    public boolean hasNote(){
+    public boolean hasNote() {
         return noteState;
     }
-    public void noteCleared(){
+
+    public void noteCleared() {
         noteState = false;
     }
 

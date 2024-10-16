@@ -1,13 +1,11 @@
 package frc.robot.utils.shooting;
 
+import edu.wpi.first.hal.util.BoundaryException;
+import edu.wpi.first.math.Pair;
 import frc.robot.utils.TunableNumber;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import edu.wpi.first.hal.util.BoundaryException;
-import edu.wpi.first.math.Pair;
-
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -24,15 +22,15 @@ public class LaunchParameterTable {
         int counter = 1;
         for (Double key : interpolatingTable.keySet()) {
             parameters.add(new ParametersBinding(
-                    new TunableNumber(prefix + "/"+ counter + " Distance", key),
-                    new TunableNumber(prefix + "/"+ counter + " Velocity", interpolatingTable.get(key).getFirst()),
-                    new TunableNumber(prefix + "/"+ counter + " Angle", interpolatingTable.get(key).getSecond())));
+                    new TunableNumber(prefix + "/" + counter + " Distance", key),
+                    new TunableNumber(prefix + "/" + counter + " Velocity", interpolatingTable.get(key).getFirst()),
+                    new TunableNumber(prefix + "/" + counter + " Angle", interpolatingTable.get(key).getSecond())));
             counter++;
         }
     }
 
     public void loadParameter(double distance, double velocity, double angle) {
-        interpolatingTable.put(distance, new Pair<Double, Double>(velocity, angle));
+        interpolatingTable.put(distance, new Pair<>(velocity, angle));
     }
 
     public void update() {
@@ -40,7 +38,7 @@ public class LaunchParameterTable {
             interpolatingTable.clear();
             for (ParametersBinding bind : parameters) {
                 interpolatingTable.put(bind.distance.get(),
-                        new Pair<Double, Double>(bind.shootingVelocity.get(), bind.shootingAngle.get()));
+                        new Pair<>(bind.shootingVelocity.get(), bind.shootingAngle.get()));
             }
         }
 
@@ -51,10 +49,10 @@ public class LaunchParameterTable {
             if (interpolatingTable.size() <= 1) {
                 throw new BoundaryException("not enought points, cannot interpolate.");
             }
-            if(distance < interpolatingTable.firstKey()) {
+            if (distance < interpolatingTable.firstKey()) {
                 return interpolatingTable.firstEntry().getValue();
             }
-            if(distance > interpolatingTable.lastKey()) {
+            if (distance > interpolatingTable.lastKey()) {
                 return interpolatingTable.lastEntry().getValue();
             }
 
@@ -62,7 +60,7 @@ public class LaunchParameterTable {
             var ceiling = interpolatingTable.ceilingEntry(distance);
 
             double k = (distance - floor.getKey()) / (ceiling.getKey() - floor.getKey());
-            return new Pair<Double, Double>(
+            return new Pair<>(
                     floor.getValue().getFirst()
                             + (ceiling.getValue().getFirst() - floor.getValue().getFirst()) * k,
                     floor.getValue().getSecond() + (ceiling.getValue().getSecond() - floor.getValue().getSecond()) * k);
@@ -73,7 +71,7 @@ public class LaunchParameterTable {
         return interpolatingTable.lastKey();
     }
 
-    private class ParametersBinding implements Comparable<ParametersBinding> {
+    private static class ParametersBinding implements Comparable<ParametersBinding> {
         public TunableNumber distance;
         public TunableNumber shootingAngle;
         public TunableNumber shootingVelocity;

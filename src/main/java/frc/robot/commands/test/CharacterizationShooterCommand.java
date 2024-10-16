@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 import java.util.ArrayList;
@@ -14,15 +13,15 @@ import static edu.wpi.first.units.Units.Volts;
 
 public class CharacterizationShooterCommand extends Command {
     private final double maxVoltage;
-    private final double prepTime = 3.0;
     private final Timer prepTimer = new Timer();
     private final Timer timer = new Timer();
     private final ArrayList<Double> yVoltages = new ArrayList<>();
     private final ArrayList<Double> xVelocities = new ArrayList<>();
-    ShooterSubsystem shooterSubsystem = new ShooterSubsystem(new ShooterIOTalonFX());
+    ShooterSubsystem shooterSubsystem;
     private double startVoltage;
     private double deltaVoltage;
     private final Runnable r = () -> {
+        double prepTime = 3.0;
         if (prepTimer.get() < prepTime) {
             timer.stop();
             shooterSubsystem.getIo().setFlyWheelDirectVoltage(Volts.of(0));

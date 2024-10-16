@@ -5,12 +5,6 @@ import frc.robot.Constants;
 import frc.robot.drivers.BeamBreak;
 
 public class BeamBreakIOSim implements BeamBreakIO {
-    private final AnalogInputSim intakerSim =
-            new AnalogInputSim(Constants.BeamBreakConstants.INTAKER_BEAM_BREAK_ID);
-    private final AnalogInputSim indexerSim =
-            new AnalogInputSim(Constants.BeamBreakConstants.INDEXER_BEAM_BREAK_ID);
-    private final AnalogInputSim shooterSim =
-            new AnalogInputSim(Constants.BeamBreakConstants.SHOOTER_BEAM_BREAK_ID);
     private final BeamBreak intakerBeamBreak =
             new BeamBreak(Constants.BeamBreakConstants.INTAKER_BEAM_BREAK_ID);
     private final BeamBreak indexerBeamBreak =
@@ -20,8 +14,11 @@ public class BeamBreakIOSim implements BeamBreakIO {
 
     public BeamBreakIOSim() {
         // do not fix it
+        AnalogInputSim intakerSim = new AnalogInputSim(Constants.BeamBreakConstants.INTAKER_BEAM_BREAK_ID);
         intakerSim.setInitialized(true);
+        AnalogInputSim indexerSim = new AnalogInputSim(Constants.BeamBreakConstants.INDEXER_BEAM_BREAK_ID);
         indexerSim.setInitialized(true);
+        AnalogInputSim shooterSim = new AnalogInputSim(Constants.BeamBreakConstants.SHOOTER_BEAM_BREAK_ID);
         shooterSim.setInitialized(true);
     }
 

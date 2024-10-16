@@ -17,462 +17,21 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LimelightHelpers {
 
     private static final Map<String, DoubleArrayEntry> doubleArrayEntries = new ConcurrentHashMap<>();
-
-
-    public static class LimelightTarget_Retro {
-
-        @JsonProperty("t6c_ts")
-        private double[] cameraPose_TargetSpace;
-
-        @JsonProperty("t6r_fs")
-        private double[] robotPose_FieldSpace;
-
-        @JsonProperty("t6r_ts")
-        private double[] robotPose_TargetSpace;
-
-        @JsonProperty("t6t_cs")
-        private double[] targetPose_CameraSpace;
-
-        @JsonProperty("t6t_rs")
-        private double[] targetPose_RobotSpace;
-
-        public Pose3d getCameraPose_TargetSpace() {
-            return toPose3D(cameraPose_TargetSpace);
-        }
-
-        public Pose3d getRobotPose_FieldSpace() {
-            return toPose3D(robotPose_FieldSpace);
-        }
-
-        public Pose3d getRobotPose_TargetSpace() {
-            return toPose3D(robotPose_TargetSpace);
-        }
-
-        public Pose3d getTargetPose_CameraSpace() {
-            return toPose3D(targetPose_CameraSpace);
-        }
-
-        public Pose3d getTargetPose_RobotSpace() {
-            return toPose3D(targetPose_RobotSpace);
-        }
-
-        public Pose2d getCameraPose_TargetSpace2D() {
-            return toPose2D(cameraPose_TargetSpace);
-        }
-
-        public Pose2d getRobotPose_FieldSpace2D() {
-            return toPose2D(robotPose_FieldSpace);
-        }
-
-        public Pose2d getRobotPose_TargetSpace2D() {
-            return toPose2D(robotPose_TargetSpace);
-        }
-
-        public Pose2d getTargetPose_CameraSpace2D() {
-            return toPose2D(targetPose_CameraSpace);
-        }
-
-        public Pose2d getTargetPose_RobotSpace2D() {
-            return toPose2D(targetPose_RobotSpace);
-        }
-
-        @JsonProperty("ta")
-        public double ta;
-
-        @JsonProperty("tx")
-        public double tx;
-
-        @JsonProperty("txp")
-        public double tx_pixels;
-
-        @JsonProperty("ty")
-        public double ty;
-
-        @JsonProperty("typ")
-        public double ty_pixels;
-
-        @JsonProperty("ts")
-        public double ts;
-
-        public LimelightTarget_Retro() {
-            cameraPose_TargetSpace = new double[6];
-            robotPose_FieldSpace = new double[6];
-            robotPose_TargetSpace = new double[6];
-            targetPose_CameraSpace = new double[6];
-            targetPose_RobotSpace = new double[6];
-        }
-
-    }
-
-    public static class LimelightTarget_Fiducial {
-
-        @JsonProperty("fID")
-        public double fiducialID;
-
-        @JsonProperty("fam")
-        public String fiducialFamily;
-
-        @JsonProperty("t6c_ts")
-        private double[] cameraPose_TargetSpace;
-
-        @JsonProperty("t6r_fs")
-        private double[] robotPose_FieldSpace;
-
-        @JsonProperty("t6r_ts")
-        private double[] robotPose_TargetSpace;
-
-        @JsonProperty("t6t_cs")
-        private double[] targetPose_CameraSpace;
-
-        @JsonProperty("t6t_rs")
-        private double[] targetPose_RobotSpace;
-
-        public Pose3d getCameraPose_TargetSpace() {
-            return toPose3D(cameraPose_TargetSpace);
-        }
-
-        public Pose3d getRobotPose_FieldSpace() {
-            return toPose3D(robotPose_FieldSpace);
-        }
-
-        public Pose3d getRobotPose_TargetSpace() {
-            return toPose3D(robotPose_TargetSpace);
-        }
-
-        public Pose3d getTargetPose_CameraSpace() {
-            return toPose3D(targetPose_CameraSpace);
-        }
-
-        public Pose3d getTargetPose_RobotSpace() {
-            return toPose3D(targetPose_RobotSpace);
-        }
-
-        public Pose2d getCameraPose_TargetSpace2D() {
-            return toPose2D(cameraPose_TargetSpace);
-        }
-
-        public Pose2d getRobotPose_FieldSpace2D() {
-            return toPose2D(robotPose_FieldSpace);
-        }
-
-        public Pose2d getRobotPose_TargetSpace2D() {
-            return toPose2D(robotPose_TargetSpace);
-        }
-
-        public Pose2d getTargetPose_CameraSpace2D() {
-            return toPose2D(targetPose_CameraSpace);
-        }
-
-        public Pose2d getTargetPose_RobotSpace2D() {
-            return toPose2D(targetPose_RobotSpace);
-        }
-
-        @JsonProperty("ta")
-        public double ta;
-
-        @JsonProperty("tx")
-        public double tx;
-
-        @JsonProperty("txp")
-        public double tx_pixels;
-
-        @JsonProperty("ty")
-        public double ty;
-
-        @JsonProperty("typ")
-        public double ty_pixels;
-
-        @JsonProperty("ts")
-        public double ts;
-
-        public LimelightTarget_Fiducial() {
-            cameraPose_TargetSpace = new double[6];
-            robotPose_FieldSpace = new double[6];
-            robotPose_TargetSpace = new double[6];
-            targetPose_CameraSpace = new double[6];
-            targetPose_RobotSpace = new double[6];
-        }
-    }
-
-    public static class LimelightTarget_Barcode {
-
-    }
-
-    public static class LimelightTarget_Classifier {
-
-        @JsonProperty("class")
-        public String className;
-
-        @JsonProperty("classID")
-        public double classID;
-
-        @JsonProperty("conf")
-        public double confidence;
-
-        @JsonProperty("zone")
-        public double zone;
-
-        @JsonProperty("tx")
-        public double tx;
-
-        @JsonProperty("txp")
-        public double tx_pixels;
-
-        @JsonProperty("ty")
-        public double ty;
-
-        @JsonProperty("typ")
-        public double ty_pixels;
-
-        public LimelightTarget_Classifier() {
-        }
-    }
-
-    public static class LimelightTarget_Detector {
-
-        @JsonProperty("class")
-        public String className;
-
-        @JsonProperty("classID")
-        public double classID;
-
-        @JsonProperty("conf")
-        public double confidence;
-
-        @JsonProperty("ta")
-        public double ta;
-
-        @JsonProperty("tx")
-        public double tx;
-
-        @JsonProperty("txp")
-        public double tx_pixels;
-
-        @JsonProperty("ty")
-        public double ty;
-
-        @JsonProperty("typ")
-        public double ty_pixels;
-
-        public LimelightTarget_Detector() {
-        }
-    }
-
-    public static class LimelightResults {
-
-        public String error;
-
-        @JsonProperty("pID")
-        public double pipelineID;
-
-        @JsonProperty("tl")
-        public double latency_pipeline;
-
-        @JsonProperty("cl")
-        public double latency_capture;
-
-        public double latency_jsonParse;
-
-        @JsonProperty("ts")
-        public double timestamp_LIMELIGHT_publish;
-
-        @JsonProperty("ts_rio")
-        public double timestamp_RIOFPGA_capture;
-
-        @JsonProperty("v")
-        @JsonFormat(shape = Shape.NUMBER)
-        public boolean valid;
-
-        @JsonProperty("botpose")
-        public double[] botpose;
-
-        @JsonProperty("botpose_wpired")
-        public double[] botpose_wpired;
-
-        @JsonProperty("botpose_wpiblue")
-        public double[] botpose_wpiblue;
-
-        @JsonProperty("botpose_tagcount")
-        public double botpose_tagcount;
-
-        @JsonProperty("botpose_span")
-        public double botpose_span;
-
-        @JsonProperty("botpose_avgdist")
-        public double botpose_avgdist;
-
-        @JsonProperty("botpose_avgarea")
-        public double botpose_avgarea;
-
-        @JsonProperty("t6c_rs")
-        public double[] camerapose_robotspace;
-
-        public Pose3d getBotPose3d() {
-            return toPose3D(botpose);
-        }
-
-        public Pose3d getBotPose3d_wpiRed() {
-            return toPose3D(botpose_wpired);
-        }
-
-        public Pose3d getBotPose3d_wpiBlue() {
-            return toPose3D(botpose_wpiblue);
-        }
-
-        public Pose2d getBotPose2d() {
-            return toPose2D(botpose);
-        }
-
-        public Pose2d getBotPose2d_wpiRed() {
-            return toPose2D(botpose_wpired);
-        }
-
-        public Pose2d getBotPose2d_wpiBlue() {
-            return toPose2D(botpose_wpiblue);
-        }
-
-        @JsonProperty("Retro")
-        public LimelightTarget_Retro[] targets_Retro;
-
-        @JsonProperty("Fiducial")
-        public LimelightTarget_Fiducial[] targets_Fiducials;
-
-        @JsonProperty("Classifier")
-        public LimelightTarget_Classifier[] targets_Classifier;
-
-        @JsonProperty("Detector")
-        public LimelightTarget_Detector[] targets_Detector;
-
-        @JsonProperty("Barcode")
-        public LimelightTarget_Barcode[] targets_Barcode;
-
-        public LimelightResults() {
-            botpose = new double[6];
-            botpose_wpired = new double[6];
-            botpose_wpiblue = new double[6];
-            camerapose_robotspace = new double[6];
-            targets_Retro = new LimelightTarget_Retro[0];
-            targets_Fiducials = new LimelightTarget_Fiducial[0];
-            targets_Classifier = new LimelightTarget_Classifier[0];
-            targets_Detector = new LimelightTarget_Detector[0];
-            targets_Barcode = new LimelightTarget_Barcode[0];
-
-        }
-
-
-    }
-
-    public static class RawFiducial {
-        public int id = 0;
-        public double txnc = 0;
-        public double tync = 0;
-        public double ta = 0;
-        public double distToCamera = 0;
-        public double distToRobot = 0;
-        public double ambiguity = 0;
-
-
-        public RawFiducial(int id, double txnc, double tync, double ta, double distToCamera, double distToRobot, double ambiguity) {
-            this.id = id;
-            this.txnc = txnc;
-            this.tync = tync;
-            this.ta = ta;
-            this.distToCamera = distToCamera;
-            this.distToRobot = distToRobot;
-            this.ambiguity = ambiguity;
-        }
-    }
-
-    public static class RawDetection {
-        public int classId = 0;
-        public double txnc = 0;
-        public double tync = 0;
-        public double ta = 0;
-        public double corner0_X = 0;
-        public double corner0_Y = 0;
-        public double corner1_X = 0;
-        public double corner1_Y = 0;
-        public double corner2_X = 0;
-        public double corner2_Y = 0;
-        public double corner3_X = 0;
-        public double corner3_Y = 0;
-
-
-        public RawDetection(int classId, double txnc, double tync, double ta,
-                            double corner0_X, double corner0_Y,
-                            double corner1_X, double corner1_Y,
-                            double corner2_X, double corner2_Y,
-                            double corner3_X, double corner3_Y) {
-            this.classId = classId;
-            this.txnc = txnc;
-            this.tync = tync;
-            this.ta = ta;
-            this.corner0_X = corner0_X;
-            this.corner0_Y = corner0_Y;
-            this.corner1_X = corner1_X;
-            this.corner1_Y = corner1_Y;
-            this.corner2_X = corner2_X;
-            this.corner2_Y = corner2_Y;
-            this.corner3_X = corner3_X;
-            this.corner3_Y = corner3_Y;
-        }
-    }
-
-    public static class PoseEstimate {
-        public Pose2d pose;
-        public double timestampSeconds;
-        public double latency;
-        public int tagCount;
-        public double tagSpan;
-        public double avgTagDist;
-        public double avgTagArea;
-        public RawFiducial[] rawFiducials;
-
-        /**
-         * Makes a PoseEstimate object with default values
-         */
-        public PoseEstimate() {
-            this.pose = new Pose2d();
-            this.timestampSeconds = 0;
-            this.latency = 0;
-            this.tagCount = 0;
-            this.tagSpan = 0;
-            this.avgTagDist = 0;
-            this.avgTagArea = 0;
-            this.rawFiducials = new RawFiducial[]{};
-        }
-
-        public PoseEstimate(Pose2d pose, double timestampSeconds, double latency,
-                            int tagCount, double tagSpan, double avgTagDist,
-                            double avgTagArea, RawFiducial[] rawFiducials) {
-
-            this.pose = pose;
-            this.timestampSeconds = timestampSeconds;
-            this.latency = latency;
-            this.tagCount = tagCount;
-            this.tagSpan = tagSpan;
-            this.avgTagDist = avgTagDist;
-            this.avgTagArea = avgTagArea;
-            this.rawFiducials = rawFiducials;
-        }
-
-    }
-
-    private static ObjectMapper mapper;
-
     /**
      * Print JSON Parse time to the console in milliseconds
      */
     static boolean profileJSON = false;
+    private static ObjectMapper mapper;
 
-    static final String sanitizeName(String name) {
-        if (name == "" || name == null) {
+    static String sanitizeName(String name) {
+        if (Objects.equals(name, "") || name == null) {
             return "limelight";
         }
         return name;
@@ -715,7 +274,6 @@ public class LimelightHelpers {
         return getLimelightNTTableEntry(tableName, entryName).getDoubleArray(new double[0]);
     }
 
-
     public static String getLimelightNTString(String tableName, String entryName) {
         return getLimelightNTTableEntry(tableName, entryName).getString("");
     }
@@ -723,7 +281,6 @@ public class LimelightHelpers {
     public static String[] getLimelightNTStringArray(String tableName, String entryName) {
         return getLimelightNTTableEntry(tableName, entryName).getStringArray(new String[0]);
     }
-
 
     public static URL getLimelightURLString(String tableName, String request) {
         String urlString = "http://" + sanitizeName(tableName) + ".local:5807/" + request;
@@ -736,8 +293,6 @@ public class LimelightHelpers {
         }
         return null;
     }
-    /////
-    /////
 
     public static double getTX(String limelightName) {
         return getLimelightNTDouble(limelightName, "tx");
@@ -754,7 +309,6 @@ public class LimelightHelpers {
     public static double[] getT2DArray(String limelightName) {
         return getLimelightNTDoubleArray(limelightName, "t2d");
     }
-
 
     public static int getTargetCount(String limelightName) {
         double[] t2d = getT2DArray(limelightName);
@@ -787,7 +341,8 @@ public class LimelightHelpers {
     public static String getDetectorClass(String limelightName) {
         return getLimelightNTString(limelightName, "tdclass");
     }
-
+    /////
+    /////
 
     public static double getLatency_Pipeline(String limelightName) {
         return getLimelightNTDouble(limelightName, "tl");
@@ -886,9 +441,6 @@ public class LimelightHelpers {
         return getLimelightNTStringArray(limelightName, "rawbarcodes");
     }
 
-    /////
-    /////
-
     public static Pose3d getBotPose3d(String limelightName) {
         double[] poseArray = getLimelightNTDoubleArray(limelightName, "botpose");
         return toPose3D(poseArray);
@@ -941,6 +493,9 @@ public class LimelightHelpers {
         double[] result = getBotPose_wpiBlue(limelightName);
         return toPose2D(result);
     }
+
+    /////
+    /////
 
     /**
      * Gets the Pose2d and timestamp for use with WPILib pose estimator (addVisionMeasurement) when you are on the BLUE
@@ -1018,13 +573,9 @@ public class LimelightHelpers {
         return 1.0 == getLimelightNTDouble(limelightName, "tv");
     }
 
-    /////
-    /////
-
     public static void setPipelineIndex(String limelightName, int pipelineIndex) {
         setLimelightNTDouble(limelightName, "pipeline", pipelineIndex);
     }
-
 
     public static void setPriorityTagID(String limelightName, int ID) {
         setLimelightNTDouble(limelightName, "priorityid", ID);
@@ -1062,6 +613,8 @@ public class LimelightHelpers {
         setLimelightNTDouble(limelightName, "stream", 2);
     }
 
+    /////
+    /////
 
     /**
      * Sets the crop window. The crop window in the UI must be completely open for
@@ -1116,7 +669,6 @@ public class LimelightHelpers {
         }
     }
 
-
     public static void SetFidcuial3DOffset(String limelightName, double x, double y,
                                            double z) {
 
@@ -1166,9 +718,6 @@ public class LimelightHelpers {
         setLimelightNTDoubleArray(limelightName, "camerapose_robotspace_set", entries);
     }
 
-    /////
-    /////
-
     public static void setPythonScriptData(String limelightName, double[] outgoingPythonData) {
         setLimelightNTDoubleArray(limelightName, "llrobot", outgoingPythonData);
     }
@@ -1177,16 +726,11 @@ public class LimelightHelpers {
         return getLimelightNTDoubleArray(limelightName, "llpython");
     }
 
-    /////
-    /////
-
     /**
      * Asynchronously take snapshot.
      */
     public static CompletableFuture<Boolean> takeSnapshot(String tableName, String snapshotName) {
-        return CompletableFuture.supplyAsync(() -> {
-            return SYNCH_TAKESNAPSHOT(tableName, snapshotName);
-        });
+        return CompletableFuture.supplyAsync(() -> SYNCH_TAKESNAPSHOT(tableName, snapshotName));
     }
 
     private static boolean SYNCH_TAKESNAPSHOT(String tableName, String snapshotName) {
@@ -1194,7 +738,7 @@ public class LimelightHelpers {
         try {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            if (snapshotName != null && snapshotName != "") {
+            if (snapshotName != null && !snapshotName.equals("")) {
                 connection.setRequestProperty("snapname", snapshotName);
             }
 
@@ -1235,5 +779,424 @@ public class LimelightHelpers {
         }
 
         return results;
+    }
+
+    public static class LimelightTarget_Retro {
+
+        @JsonProperty("ta")
+        public double ta;
+        @JsonProperty("tx")
+        public double tx;
+        @JsonProperty("txp")
+        public double tx_pixels;
+        @JsonProperty("ty")
+        public double ty;
+        @JsonProperty("typ")
+        public double ty_pixels;
+        @JsonProperty("ts")
+        public double ts;
+        @JsonProperty("t6c_ts")
+        private double[] cameraPose_TargetSpace;
+        @JsonProperty("t6r_fs")
+        private double[] robotPose_FieldSpace;
+        @JsonProperty("t6r_ts")
+        private double[] robotPose_TargetSpace;
+        @JsonProperty("t6t_cs")
+        private double[] targetPose_CameraSpace;
+        @JsonProperty("t6t_rs")
+        private double[] targetPose_RobotSpace;
+
+        public LimelightTarget_Retro() {
+            cameraPose_TargetSpace = new double[6];
+            robotPose_FieldSpace = new double[6];
+            robotPose_TargetSpace = new double[6];
+            targetPose_CameraSpace = new double[6];
+            targetPose_RobotSpace = new double[6];
+        }
+
+        public Pose3d getCameraPose_TargetSpace() {
+            return toPose3D(cameraPose_TargetSpace);
+        }
+
+        public Pose3d getRobotPose_FieldSpace() {
+            return toPose3D(robotPose_FieldSpace);
+        }
+
+        public Pose3d getRobotPose_TargetSpace() {
+            return toPose3D(robotPose_TargetSpace);
+        }
+
+        public Pose3d getTargetPose_CameraSpace() {
+            return toPose3D(targetPose_CameraSpace);
+        }
+
+        public Pose3d getTargetPose_RobotSpace() {
+            return toPose3D(targetPose_RobotSpace);
+        }
+
+        public Pose2d getCameraPose_TargetSpace2D() {
+            return toPose2D(cameraPose_TargetSpace);
+        }
+
+        public Pose2d getRobotPose_FieldSpace2D() {
+            return toPose2D(robotPose_FieldSpace);
+        }
+
+        public Pose2d getRobotPose_TargetSpace2D() {
+            return toPose2D(robotPose_TargetSpace);
+        }
+
+        public Pose2d getTargetPose_CameraSpace2D() {
+            return toPose2D(targetPose_CameraSpace);
+        }
+
+        public Pose2d getTargetPose_RobotSpace2D() {
+            return toPose2D(targetPose_RobotSpace);
+        }
+
+    }
+
+    public static class LimelightTarget_Fiducial {
+
+        @JsonProperty("fID")
+        public double fiducialID;
+
+        @JsonProperty("fam")
+        public String fiducialFamily;
+        @JsonProperty("ta")
+        public double ta;
+        @JsonProperty("tx")
+        public double tx;
+        @JsonProperty("txp")
+        public double tx_pixels;
+        @JsonProperty("ty")
+        public double ty;
+        @JsonProperty("typ")
+        public double ty_pixels;
+        @JsonProperty("ts")
+        public double ts;
+        @JsonProperty("t6c_ts")
+        private double[] cameraPose_TargetSpace;
+        @JsonProperty("t6r_fs")
+        private double[] robotPose_FieldSpace;
+        @JsonProperty("t6r_ts")
+        private double[] robotPose_TargetSpace;
+        @JsonProperty("t6t_cs")
+        private double[] targetPose_CameraSpace;
+        @JsonProperty("t6t_rs")
+        private double[] targetPose_RobotSpace;
+
+        public LimelightTarget_Fiducial() {
+            cameraPose_TargetSpace = new double[6];
+            robotPose_FieldSpace = new double[6];
+            robotPose_TargetSpace = new double[6];
+            targetPose_CameraSpace = new double[6];
+            targetPose_RobotSpace = new double[6];
+        }
+
+        public Pose3d getCameraPose_TargetSpace() {
+            return toPose3D(cameraPose_TargetSpace);
+        }
+
+        public Pose3d getRobotPose_FieldSpace() {
+            return toPose3D(robotPose_FieldSpace);
+        }
+
+        public Pose3d getRobotPose_TargetSpace() {
+            return toPose3D(robotPose_TargetSpace);
+        }
+
+        public Pose3d getTargetPose_CameraSpace() {
+            return toPose3D(targetPose_CameraSpace);
+        }
+
+        public Pose3d getTargetPose_RobotSpace() {
+            return toPose3D(targetPose_RobotSpace);
+        }
+
+        public Pose2d getCameraPose_TargetSpace2D() {
+            return toPose2D(cameraPose_TargetSpace);
+        }
+
+        public Pose2d getRobotPose_FieldSpace2D() {
+            return toPose2D(robotPose_FieldSpace);
+        }
+
+        public Pose2d getRobotPose_TargetSpace2D() {
+            return toPose2D(robotPose_TargetSpace);
+        }
+
+        public Pose2d getTargetPose_CameraSpace2D() {
+            return toPose2D(targetPose_CameraSpace);
+        }
+
+        public Pose2d getTargetPose_RobotSpace2D() {
+            return toPose2D(targetPose_RobotSpace);
+        }
+    }
+
+    public static class LimelightTarget_Barcode {
+
+    }
+
+    public static class LimelightTarget_Classifier {
+
+        @JsonProperty("class")
+        public String className;
+
+        @JsonProperty("classID")
+        public double classID;
+
+        @JsonProperty("conf")
+        public double confidence;
+
+        @JsonProperty("zone")
+        public double zone;
+
+        @JsonProperty("tx")
+        public double tx;
+
+        @JsonProperty("txp")
+        public double tx_pixels;
+
+        @JsonProperty("ty")
+        public double ty;
+
+        @JsonProperty("typ")
+        public double ty_pixels;
+
+        public LimelightTarget_Classifier() {
+        }
+    }
+
+    /////
+    /////
+
+    public static class LimelightTarget_Detector {
+
+        @JsonProperty("class")
+        public String className;
+
+        @JsonProperty("classID")
+        public double classID;
+
+        @JsonProperty("conf")
+        public double confidence;
+
+        @JsonProperty("ta")
+        public double ta;
+
+        @JsonProperty("tx")
+        public double tx;
+
+        @JsonProperty("txp")
+        public double tx_pixels;
+
+        @JsonProperty("ty")
+        public double ty;
+
+        @JsonProperty("typ")
+        public double ty_pixels;
+
+        public LimelightTarget_Detector() {
+        }
+    }
+
+    public static class LimelightResults {
+
+        public String error;
+
+        @JsonProperty("pID")
+        public double pipelineID;
+
+        @JsonProperty("tl")
+        public double latency_pipeline;
+
+        @JsonProperty("cl")
+        public double latency_capture;
+
+        public double latency_jsonParse;
+
+        @JsonProperty("ts")
+        public double timestamp_LIMELIGHT_publish;
+
+        @JsonProperty("ts_rio")
+        public double timestamp_RIOFPGA_capture;
+
+        @JsonProperty("v")
+        @JsonFormat(shape = Shape.NUMBER)
+        public boolean valid;
+
+        @JsonProperty("botpose")
+        public double[] botpose;
+
+        @JsonProperty("botpose_wpired")
+        public double[] botpose_wpired;
+
+        @JsonProperty("botpose_wpiblue")
+        public double[] botpose_wpiblue;
+
+        @JsonProperty("botpose_tagcount")
+        public double botpose_tagcount;
+
+        @JsonProperty("botpose_span")
+        public double botpose_span;
+
+        @JsonProperty("botpose_avgdist")
+        public double botpose_avgdist;
+
+        @JsonProperty("botpose_avgarea")
+        public double botpose_avgarea;
+
+        @JsonProperty("t6c_rs")
+        public double[] camerapose_robotspace;
+        @JsonProperty("Retro")
+        public LimelightTarget_Retro[] targets_Retro;
+        @JsonProperty("Fiducial")
+        public LimelightTarget_Fiducial[] targets_Fiducials;
+        @JsonProperty("Classifier")
+        public LimelightTarget_Classifier[] targets_Classifier;
+        @JsonProperty("Detector")
+        public LimelightTarget_Detector[] targets_Detector;
+        @JsonProperty("Barcode")
+        public LimelightTarget_Barcode[] targets_Barcode;
+
+        public LimelightResults() {
+            botpose = new double[6];
+            botpose_wpired = new double[6];
+            botpose_wpiblue = new double[6];
+            camerapose_robotspace = new double[6];
+            targets_Retro = new LimelightTarget_Retro[0];
+            targets_Fiducials = new LimelightTarget_Fiducial[0];
+            targets_Classifier = new LimelightTarget_Classifier[0];
+            targets_Detector = new LimelightTarget_Detector[0];
+            targets_Barcode = new LimelightTarget_Barcode[0];
+
+        }
+
+        public Pose3d getBotPose3d() {
+            return toPose3D(botpose);
+        }
+
+        public Pose3d getBotPose3d_wpiRed() {
+            return toPose3D(botpose_wpired);
+        }
+
+        public Pose3d getBotPose3d_wpiBlue() {
+            return toPose3D(botpose_wpiblue);
+        }
+
+        public Pose2d getBotPose2d() {
+            return toPose2D(botpose);
+        }
+
+        public Pose2d getBotPose2d_wpiRed() {
+            return toPose2D(botpose_wpired);
+        }
+
+        public Pose2d getBotPose2d_wpiBlue() {
+            return toPose2D(botpose_wpiblue);
+        }
+
+
+    }
+
+    /////
+    /////
+
+    public static class RawFiducial {
+        public int id = 0;
+        public double txnc = 0;
+        public double tync = 0;
+        public double ta = 0;
+        public double distToCamera = 0;
+        public double distToRobot = 0;
+        public double ambiguity = 0;
+
+
+        public RawFiducial(int id, double txnc, double tync, double ta, double distToCamera, double distToRobot, double ambiguity) {
+            this.id = id;
+            this.txnc = txnc;
+            this.tync = tync;
+            this.ta = ta;
+            this.distToCamera = distToCamera;
+            this.distToRobot = distToRobot;
+            this.ambiguity = ambiguity;
+        }
+    }
+
+    public static class RawDetection {
+        public int classId = 0;
+        public double txnc = 0;
+        public double tync = 0;
+        public double ta = 0;
+        public double corner0_X = 0;
+        public double corner0_Y = 0;
+        public double corner1_X = 0;
+        public double corner1_Y = 0;
+        public double corner2_X = 0;
+        public double corner2_Y = 0;
+        public double corner3_X = 0;
+        public double corner3_Y = 0;
+
+
+        public RawDetection(int classId, double txnc, double tync, double ta,
+                            double corner0_X, double corner0_Y,
+                            double corner1_X, double corner1_Y,
+                            double corner2_X, double corner2_Y,
+                            double corner3_X, double corner3_Y) {
+            this.classId = classId;
+            this.txnc = txnc;
+            this.tync = tync;
+            this.ta = ta;
+            this.corner0_X = corner0_X;
+            this.corner0_Y = corner0_Y;
+            this.corner1_X = corner1_X;
+            this.corner1_Y = corner1_Y;
+            this.corner2_X = corner2_X;
+            this.corner2_Y = corner2_Y;
+            this.corner3_X = corner3_X;
+            this.corner3_Y = corner3_Y;
+        }
+    }
+
+    public static class PoseEstimate {
+        public Pose2d pose;
+        public double timestampSeconds;
+        public double latency;
+        public int tagCount;
+        public double tagSpan;
+        public double avgTagDist;
+        public double avgTagArea;
+        public RawFiducial[] rawFiducials;
+
+        /**
+         * Makes a PoseEstimate object with default values
+         */
+        public PoseEstimate() {
+            this.pose = new Pose2d();
+            this.timestampSeconds = 0;
+            this.latency = 0;
+            this.tagCount = 0;
+            this.tagSpan = 0;
+            this.avgTagDist = 0;
+            this.avgTagArea = 0;
+            this.rawFiducials = new RawFiducial[]{};
+        }
+
+        public PoseEstimate(Pose2d pose, double timestampSeconds, double latency,
+                            int tagCount, double tagSpan, double avgTagDist,
+                            double avgTagArea, RawFiducial[] rawFiducials) {
+
+            this.pose = pose;
+            this.timestampSeconds = timestampSeconds;
+            this.latency = latency;
+            this.tagCount = tagCount;
+            this.tagSpan = tagSpan;
+            this.avgTagDist = avgTagDist;
+            this.avgTagArea = avgTagArea;
+            this.rawFiducials = rawFiducials;
+        }
+
     }
 }

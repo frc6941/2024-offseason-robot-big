@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -54,13 +55,9 @@ import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static edu.wpi.first.units.Units.Seconds;
 
 public class RobotContainer {
-    private static Map<Destination, Command> shootingCommandMapping;
     @Getter
     private final UpdateManager updateManager;
     IntakerSubsystem intaker;
@@ -88,11 +85,6 @@ public class RobotContainer {
                 decider);
         updateManager.registerAll();
 
-        shootingCommandMapping = new HashMap<>();
-        shootingCommandMapping.put(Destination.FERRY, ferryShot());
-        shootingCommandMapping.put(Destination.AMP, ampShot());
-        shootingCommandMapping.put(Destination.SPEAKER, speakerShot());
-
         configureAuto();
         configureBindings();
     }
@@ -113,13 +105,16 @@ public class RobotContainer {
             indicator = new IndicatorSubsystem(new IndicatorIOSim());
             arm = new ArmSubsystem(new ArmIOSim());
         }
+        FollowPathCommand.warmupCommand().schedule();
+        new ResetArmHomeCommand(arm).schedule();
+        Light.getInstance().setState(Light.STATE.OFF);
     }
 
     private void configureAuto() {
         NamedCommands.registerCommand("AutoShoot", speakerAutoShot().withTimeout(3.0));
         NamedCommands.registerCommand("Intake", intakeAuto().withTimeout(2.0));
         NamedCommands.registerCommand("IntakeOut", outtake().withTimeout(0.5));
-        NamedCommands.registerCommand("ResetArm", new ResetArmCommand(arm));
+        NamedCommands.registerCommand("ResetArm", new ResetArmHomeCommand(arm));
         NamedCommands.registerCommand("FlyWheelRampUp", new FlyWheelRampUp(shooter, () -> Destination.SPEAKER));//READ ME change all "Preshoot" in auto files
         NamedCommands.registerCommand("AutoPreArm", new ArmAimCommand(arm, () -> Destination.SPEAKER));
         NamedCommands.registerCommand("ChassisAim", new ChassisAimCommand(swerve, () -> Destination.SPEAKER, () -> 0, () -> 0));
@@ -133,16 +128,6 @@ public class RobotContainer {
                 () -> Swerve.getInstance().getChassisSpeeds(),
                 (ChassisSpeeds chassisSpeeds) -> Swerve.getInstance().driveSpeed(chassisSpeeds),
                 new HolonomicPathFollowerConfig(
-                        //    new PIDConstants(
-                        //            Constants.AutoConstants.swerveXGainsClass.swerveX_KP.get(),
-                        //            Constants.AutoConstants.swerveXGainsClass.swerveX_KI.get(),
-                        //            Constants.AutoConstants.swerveXGainsClass.swerveX_KD.get()
-                        //    ),
-                        //    new PIDConstants(
-                        //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KP.get(),
-                        //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KI.get(),
-                        //            Constants.AutoConstants.swerveOmegaGainsClass.swerveOmega_KD.get()
-                        //    ),
                         Constants.SwerveConstants.maxSpeed.magnitude(),
                         0.55,
                         new ReplanningConfig()),
@@ -152,16 +137,6 @@ public class RobotContainer {
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
 
-        // autoChooser.addOption(
-        //         "Flywheel SysId (Quasistatic Forward)",
-        //         shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        // autoChooser.addOption(
-        //         "Flywheel SysId (Quasistatic Reverse)",
-        //         shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        // autoChooser.addOption(
-        //         "Flywheel SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        // autoChooser.addOption(
-        //         "Flywheel SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
         dashboard.registerAutoSelector(autoChooser.getSendableChooser());
     }
 
@@ -236,9 +211,7 @@ public class RobotContainer {
 
 
     public Command getAutonomousCommand() {
-        // return Commands.parallel(resetOdomAuto(), new ResetArmCommand(arm), autoChooser.get());
         return autoChooser.get();
-        // return AutoBuilder.buildAuto("S2-S-A1-A2-A3");
     }
 
     // command composer
@@ -275,27 +248,7 @@ public class RobotContainer {
     }
 
     private Command speakerAutoShot() {
-        //return new SpeakerShootAutoCommand(shooter, indexer, beamBreak, indicator, swerve);
         return new SpeakerShootCommand(shooter, arm, indexer, beamBreak, indicator, swerve);
-    }
-
-    private Command preheat() {
-        return new FlyWheelRampUp(shooter, () -> dashboard.getCurrDestination());
-//                .alongWith(
-//                new ArmAimCommand(arm, () -> dashboard.getCurrDestination())
-//        ).alongWith(
-//                Commands.print("Preheat Started!")
-//        ).handleInterrupt(() -> {
-//            System.out.println("Preheat Interrupted, Driver Take Control!");
-//        });
-    }
-
-    private Command selectShot() {
-        return Commands.select(shootingCommandMapping, dashboard::getCurrDestination);
-    }
-
-    private Command facing(double fieldAngleDeg) {
-        return new SetFacingCommand(swerve, fieldAngleDeg);
     }
 
     private Command intakeAuto() {
@@ -341,13 +294,6 @@ public class RobotContainer {
                     new Pose2d(AllianceFlipUtil.apply(Constants.FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d()),
                             Rotation2d.fromDegrees(swerve.getLocalizer().getLatestPose().getRotation().getDegrees())));
             indicator.setPattern(IndicatorIO.Patterns.RESET_ODOM);
-        }).ignoringDisable(true);
-    }
-
-    public Command resetOdomAuto() {
-        return Commands.runOnce(() -> {
-            swerve.resetHeadingController();
-            swerve.resetPose(swerve.getLocalizer().getLatestPose());
         }).ignoringDisable(true);
     }
 

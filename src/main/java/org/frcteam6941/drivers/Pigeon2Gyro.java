@@ -2,13 +2,14 @@ package org.frcteam6941.drivers;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.utils.AllianceFlipUtil;
+import lombok.Setter;
 
 public class Pigeon2Gyro implements Gyro {
     // Actual pigeon object
     public final Pigeon2 mGyro;
 
     // Configs
+    @Setter
     private boolean inverted = false;
     private Rotation2d yawAdjustmentAngle = new Rotation2d(0);
     private Rotation2d rollAdjustmentAngle = new Rotation2d();
@@ -24,8 +25,6 @@ public class Pigeon2Gyro implements Gyro {
 
     @Override
     public Rotation2d getYaw() {
-        // Rotation2d angle = getUnadjustedYaw().minus(yawAdjustmentAngle);
-        //angle.getDegrees();
         double angle = getUnadjustedYaw().getDegrees();
         angle %= 360;
         angle = angle > 180 ? angle - 360 : angle;
@@ -34,24 +33,10 @@ public class Pigeon2Gyro implements Gyro {
         angle %= 360;
         angle = angle > 180 ? angle - 360 : angle;
         angle = angle < -180 ? angle + 360 : angle;
-        //System.out.println(angle);
         if (inverted) {
             return new Rotation2d(Math.toRadians(-angle));
-            //return angle.unaryMinus();
         }
-        //System.out.println("ADJ = " + angle);
         return new Rotation2d(Math.toRadians(angle));
-        //return angle;
-    }
-
-    @Override
-    public Rotation2d getRoll() {
-        return getUnadjustedRoll().minus(rollAdjustmentAngle);
-    }
-
-    @Override
-    public Rotation2d getPitch() {
-        return getUnadjustedPitch().minus(pitchAdjustmentAngle);
     }
 
     /**
@@ -66,6 +51,11 @@ public class Pigeon2Gyro implements Gyro {
         //System.out.println(yawAdjustmentAngle);
     }
 
+    @Override
+    public Rotation2d getRoll() {
+        return getUnadjustedRoll().minus(rollAdjustmentAngle);
+    }
+
     /**
      * Sets the roll register to read the specified value.
      *
@@ -76,6 +66,11 @@ public class Pigeon2Gyro implements Gyro {
         rollAdjustmentAngle = getUnadjustedRoll().rotateBy(Rotation2d.fromDegrees(angleDeg).unaryMinus());
     }
 
+    @Override
+    public Rotation2d getPitch() {
+        return getUnadjustedPitch().minus(pitchAdjustmentAngle);
+    }
+
     /**
      * Sets the pitch register to read the specified value.
      *
@@ -84,10 +79,6 @@ public class Pigeon2Gyro implements Gyro {
     @Override
     public void setPitch(double angleDeg) {
         pitchAdjustmentAngle = getUnadjustedRoll().rotateBy(Rotation2d.fromDegrees(angleDeg).unaryMinus());
-    }
-
-    public void setInverted(boolean inv) {
-        inverted = inv;
     }
 
     public Rotation2d getUnadjustedYaw() {
@@ -108,8 +99,7 @@ public class Pigeon2Gyro implements Gyro {
 
     @Override
     public double[] getRaw() {
-        double[] xyz_dps = new double[]{0.0, 0.0, 0.0};
         // mGyro.getRawGyro(xyz_dps);
-        return xyz_dps;
+        return new double[]{0.0, 0.0, 0.0};
     }
 }
